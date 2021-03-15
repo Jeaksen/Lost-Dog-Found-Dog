@@ -9,15 +9,8 @@ namespace Backend.Services
     {
         public T Data { get; set; }
 
-        public bool Successful { get; set; }
+        public bool Successful { get; set; } = true;
 
-        public string Message { get; set; }
-
-        public ServiceResponse(T data, bool successul = true, string message = null)
-        {
-            Data = data;
-            Successful = successul;
-            Message = message;
-        }
+        public string Message { get; set; } = null;
     }
 }

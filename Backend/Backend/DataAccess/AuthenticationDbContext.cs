@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.DataAccess
 {
-    public class AppDbContext : IdentityDbContext<Account, IdentityRole<int>, int>
+    public class AuthenticationDbContext : IdentityDbContext<Account, IdentityRole<int>, int>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options)
         { }
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -34,11 +34,13 @@ namespace Backend
         {
 
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>()
-                .AddEntityFrameworkStores<AppDbContext>()
+                .AddEntityFrameworkStores<AuthenticationDbContext>()
+                .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<AuthenticationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });

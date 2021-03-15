@@ -1,6 +1,6 @@
 ﻿namespace Backend.Models.Authentication
 {
-    public class AcountRoles
+    public static class AccountRoles
     {
         public const string User = "User";
         public const string Admin = "Admin";
