@@ -34,7 +34,7 @@ namespace Backend
         {
 
             services.AddControllers();
-            services.AddIdentity<Account, IdentityRole>()
+            services.AddIdentity<Account, IdentityRole<int>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
