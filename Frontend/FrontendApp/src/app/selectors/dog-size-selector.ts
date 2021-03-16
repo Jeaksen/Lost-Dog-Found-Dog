@@ -1,4 +1,5 @@
-export const DogSizeSelector: string[] = [
-    'Small',
-    'Medium'
+export const DogSizeSelector: string [] = [
+    "Small",
+    "Medium",
+    "Large"
 ]
