@@ -28,6 +28,42 @@
         </mat-form-field><br>
 
         <mat-form-field  appearance="standard">
+            <mat-label>Color</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'color')">
+                    <mat-option *ngFor="let color of dogColors" [value]="color">
+                        {{color}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('color')?.hasError('required')">
+                Color is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Ears</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'ears')">
+                    <mat-option *ngFor="let ears of dogEars" [value]="ears">
+                        {{ears}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('ears')?.hasError('required')">
+                Ears are required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Hair</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hair')">
+                    <mat-option *ngFor="let hair of dogHair" [value]="hair">
+                        {{hair}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('hair')?.hasError('required')">
+                Hair is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
             <mat-label>Size</mat-label>
                 <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'size')">
                     <mat-option *ngFor="let size of dogSizes" [value]="size">
@@ -39,7 +75,19 @@
             </mat-error>
         </mat-form-field><br>
 
-        <button mat-raised-button type="submit" color="primary">
+        <mat-form-field  appearance="standard">
+            <mat-label>Tail</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tail')">
+                    <mat-option *ngFor="let tail of dogTails" [value]="tail">
+                        {{tail}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('tail')?.hasError('required')">
+                Tail is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid"  color="primary">
             Submit
         </button>
     </form>

@@ -3,7 +3,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 
+import { DogColorSelector } from '../../selectors/dog-color-selector';
+import { DogEarsSelector } from '../../selectors/dog-ears-selector';
+import { DogHairSelector } from '../../selectors/dog-hair-selector';
 import { DogSizeSelector } from '../../selectors/dog-size-selector';
+import { DogTailSelector } from '../../selectors/dog-tail-selector';
 
 @Component({
   selector: 'app-register-lost-dog',
@@ -22,7 +26,11 @@ export class RegisterLostDogComponent implements OnInit {
     earsType: new FormControl('', [Validators.required])
   });
 
+  dogColors: string[] = DogColorSelector;
+  dogEars: string[] = DogEarsSelector;
+  dogHair: string[] = DogHairSelector;
   dogSizes: string[] = DogSizeSelector;
+  dogTails: string[] = DogTailSelector;
   
   constructor(private router: Router) { }
 
