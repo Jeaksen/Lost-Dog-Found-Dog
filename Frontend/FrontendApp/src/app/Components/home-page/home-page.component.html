@@ -1,1 +1,32 @@
-<button mat-raised-button color="primary" (click)="onClick()">Register a Lost Dog</button>
+<app-navbar></app-navbar>
+<div style="margin-top:20px;"> 
+    <div class="container">
+        <h1>Welcome, User!</h1>
+        <div>
+            <button mat-raised-button color="primary" (click)="onClick()">Register Lost Dog</button>
+            <button mat-raised-button color="primary">Search for Lost Dog</button>
+            <button mat-raised-button color="primary">Display Shelters</button>
+            <button mat-raised-button color="primary">Edit Contact Info</button>
+        </div>
+    </div>
+    <h2 style="margin-left: 12px;">This site is currently under development. Your current options are limited.</h2>
+    
+    <mat-card>
+        <div class="grid">
+            <div >
+                <mat-list class="inline-list">
+                    <mat-list-item role="listitem"> Pepper </mat-list-item>
+                    <mat-list-item role="listitem"> Fluffy </mat-list-item>
+                    <mat-list-item role="listitem"> Rex </mat-list-item>
+                </mat-list>
+            </div>
+            <div class="images">
+                <img src="assets/doge.jpg" height="350">
+            </div>
+            <div class="images">
+                <img src="assets/doge.jpg" height="350">
+            </div>
+        </div>
+    </mat-card>
+</div>
+

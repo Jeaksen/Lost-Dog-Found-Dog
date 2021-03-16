@@ -1,3 +1,4 @@
+<app-navbar></app-navbar>
 <mat-card id="card" style="text-align: center;">
     <h1>
         Register Lost Dog
@@ -87,8 +88,9 @@
             </mat-error>
         </mat-form-field><br>
 
-        <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid"  color="primary">
+        <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid" color="primary">
             Submit
         </button>
+        <button mat-raised-button (click)="onCancel()">Cancel</button>
     </form>
 </mat-card>
