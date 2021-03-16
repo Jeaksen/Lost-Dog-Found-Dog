@@ -1,1 +1,94 @@
-<p>register-lost-dog works!</p>
+<mat-card id="card" style="text-align: center;">
+    <h1>
+        Register Lost Dog
+    </h1>
+    <form [formGroup]="registerLostDogForm" (ngSubmit)="onSubmit()">
+        <mat-form-field  appearance="standard">
+            <mat-label>Name</mat-label>
+            <input type="text" matInput formControlName="name" placeholder="Name">
+            <mat-error *ngIf="registerLostDogForm.get('name')?.hasError('required')">
+                The name is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Breed</mat-label>
+            <input type="text" matInput formControlName="breed" placeholder="Breed">
+            <mat-error *ngIf="registerLostDogForm.get('breed')?.hasError('required')">
+                Breed is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Age</mat-label>
+            <input type="number" matInput formControlName="age" placeholder="Age">
+            <mat-error *ngIf="registerLostDogForm.get('age')?.hasError('required')">
+                Age is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Color</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'color')">
+                    <mat-option *ngFor="let color of dogColors" [value]="color">
+                        {{color}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('color')?.hasError('required')">
+                Color is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Ears</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'ears')">
+                    <mat-option *ngFor="let ears of dogEars" [value]="ears">
+                        {{ears}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('ears')?.hasError('required')">
+                Ears are required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Hair</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hair')">
+                    <mat-option *ngFor="let hair of dogHair" [value]="hair">
+                        {{hair}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('hair')?.hasError('required')">
+                Hair is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Size</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'size')">
+                    <mat-option *ngFor="let size of dogSizes" [value]="size">
+                        {{size}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('size')?.hasError('required')">
+                Size is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="standard">
+            <mat-label>Tail</mat-label>
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tail')">
+                    <mat-option *ngFor="let tail of dogTails" [value]="tail">
+                        {{tail}}
+                    </mat-option>
+                </mat-select>
+            <mat-error *ngIf="registerLostDogForm.get('tail')?.hasError('required')">
+                Tail is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid"  color="primary">
+            Submit
+        </button>
+    </form>
+</mat-card>
