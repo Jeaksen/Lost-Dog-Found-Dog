@@ -42,6 +42,10 @@ export class RegisterLostDogComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
+  onCancel() {
+    this.router.navigate(['/home']);
+  }
+
   onOptionSetChangedHandler(event: MatSelectChange, controlName: string) {
     this.registerLostDogForm.get(controlName)?.setValue(event.value);
   }

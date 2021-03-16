@@ -1,16 +1,29 @@
-.card-container {
-    padding: 10px;
-    display:flex;
-    justify-content: space-between;
-    background-color:rgb(188, 235, 241) !important;
+app-root {
+    height: 100%;
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px max-content 1fr max-content;
+    grid-template-areas:
+      "header"
+      "navbar"
+      "main"
+      "footer";
 }
 
+app-header {
+    grid-area: header;
+}
 
-.title {
-    font-size: xx-large; 
-    font-family:'Times New Roman', Times, serif;
-    font-style: italic;
-    font-weight: 900;
-    text-align: center;
-    padding-top: 6px;
+app-navbar {
+    grid-area: navbar;
+}
+
+router-outlet + * {
+    grid-area: main;
+}
+
+app-footer {
+    grid-area: footer;
 }
