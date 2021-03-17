@@ -50,7 +50,7 @@ namespace Backend.Services.AuthenticationService
             return new ServiceResponse<Account>() { Data = account, Successful = true, Message = "User created successfully!" };
         }
 
-        public async Task<ServiceResponse<Account>> GetAccountsById(int id)
+        public async Task<ServiceResponse<Account>> GetAccountById(int id)
         {
             var serviceResponse = new ServiceResponse<Account>();
             serviceResponse.Data = await _userManager.FindByIdAsync(id.ToString());
@@ -62,10 +62,10 @@ namespace Backend.Services.AuthenticationService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IList<Account>>> GetAllAccounts()
+        public async Task<ServiceResponse<IList<Account>>> GetAllAccountsForRole(string role)
         {
             var serviceResponse = new ServiceResponse<IList<Account>>();
-            serviceResponse.Data = await _userManager.GetUsersInRoleAsync(AccountRoles.User);
+            serviceResponse.Data = await _userManager.GetUsersInRoleAsync(role);
             if (serviceResponse.Data == null)
             {
                 serviceResponse.Successful = false;
