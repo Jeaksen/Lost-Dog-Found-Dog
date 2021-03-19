@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using AutoMapper.Configuration;
-using Backend.DataAccess;
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,11 +20,11 @@ namespace Backend.Services.AuthenticationService
     {
         private readonly UserManager<Account> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountService> _logger;
 
-        public AccountService(UserManager<Account> userManager, RoleManager<IdentityRole> roleManager, Microsoft.Extensions.Configuration.IConfiguration configuration, IMapper mapper, ILogger<AccountService> logger)
+        public AccountService(UserManager<Account> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper, ILogger<AccountService> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
