@@ -19,12 +19,12 @@ namespace Backend.Services.AuthenticationService
 
     {
         private readonly UserManager<Account> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountService> _logger;
 
-        public AccountService(UserManager<Account> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper, ILogger<AccountService> logger)
+        public AccountService(UserManager<Account> userManager, RoleManager<IdentityRole<int>> roleManager, IConfiguration configuration, IMapper mapper, ILogger<AccountService> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
