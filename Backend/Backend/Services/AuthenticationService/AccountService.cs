@@ -43,7 +43,13 @@ namespace Backend.Services.AuthenticationService
             var result = await _userManager.CreateAsync(account, _account.Password);
             if (!result.Succeeded)
                 return new ServiceResponse<Account>() { Data = null, Successful = false, Message = "User creation failed! Please check user details and try again." };
-            
+
+            if (!await _roleManager.RoleExistsAsync(AccountRoles.User))
+                await _roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.User));
+
+            if (await _roleManager.RoleExistsAsync(AccountRoles.User))
+                await _userManager.AddToRoleAsync(account, AccountRoles.User);
+
             return new ServiceResponse<Account>() { Data = account, Successful = true, Message = "User created successfully!" };
         }
 

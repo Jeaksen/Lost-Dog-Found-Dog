@@ -1,5 +1,6 @@
 using Backend.DataAccess;
 using Backend.Models.Authentication;
+using Backend.Services.AuthenticationService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,7 @@ namespace Backend
         {
 
             services.AddControllers();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>()
                 .AddEntityFrameworkStores<AuthenticationDbContext>()
