@@ -43,17 +43,24 @@ namespace Backend.Tests
             IdentityDbContext.Database.EnsureCreated();
 
 
-            serviceCollection.AddIdentity<Account, IdentityRole<int>>()
+            serviceCollection.AddIdentity<Account, IdentityRole<int>>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = true;
+            })
                 .AddEntityFrameworkStores<AuthenticationDbContext>()
                 .AddDefaultTokenProviders();
 
             serviceCollection.AddLogging();
 
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory() + @"..\..")
+                .SetBasePath(Directory.GetCurrentDirectory() + @"\..\..\..\")
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-            IConfigurationRoot configuration = builder.Build();
+            IConfiguration configuration = builder.Build();
 
             serviceCollection.AddAuthentication(options =>
             {

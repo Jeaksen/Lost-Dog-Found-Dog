@@ -37,7 +37,14 @@ namespace Backend
             services.AddControllers();
             services.AddScoped<IAccountService, AccountService>();
             services.AddAutoMapper(typeof(Startup));
-            services.AddIdentity<Account, IdentityRole<int>>()
+            services.AddIdentity<Account, IdentityRole<int>>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = true;
+            })
                 .AddEntityFrameworkStores<AuthenticationDbContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();

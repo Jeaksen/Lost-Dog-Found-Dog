@@ -104,13 +104,13 @@ namespace Backend.Services.AuthenticationService
             {
                 if (await _userManager.CheckPasswordAsync(user, loginDto.Password))
                 {
+                    var userRole = (await _userManager.GetRolesAsync(user)).First();
                     var authClaims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(ClaimTypes.Role, userRole)
                     };
-                    var userRole = (await _userManager.GetRolesAsync(user)).First();
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
 
                     var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
