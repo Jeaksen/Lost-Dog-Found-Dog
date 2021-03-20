@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -31,26 +32,42 @@ namespace Backend.Services.AuthenticationService
             _configuration = configuration;
             _mapper = mapper;
             _logger = logger;
+
+            ConfigureRoles().Wait();
+        }
+
+        private async Task<bool> ConfigureRoles()
+        {
+            try
+            {
+                if (!await _roleManager.RoleExistsAsync(AccountRoles.User))
+                    await _roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.User));
+                if (!await _roleManager.RoleExistsAsync(AccountRoles.Admin))
+                    await _roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Admin));
+                if (!await _roleManager.RoleExistsAsync(AccountRoles.Shelter))
+                    await _roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Shelter));
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task<ServiceResponse<Account>> AddAccount(AddAccountDto _account)
         {
             var userExists = await _userManager.FindByNameAsync(_account.UserName);
             if (userExists != null)
-                return new ServiceResponse<Account>() { Data = null, Successful = false, Message = "User already exists!" };
+                return new ServiceResponse<Account>() { Data = null, StatusCode = StatusCodes.Status400BadRequest, Successful = false, Message = "User already exists!" };
             Account account = _mapper.Map<Account>(_account);
             account.SecurityStamp = Guid.NewGuid().ToString();
             var result = await _userManager.CreateAsync(account, _account.Password);
             if (!result.Succeeded)
-                return new ServiceResponse<Account>() { Data = null, Successful = false, Message = "User creation failed! Please check user details and try again." };
+                return new ServiceResponse<Account>() { Data = null, StatusCode = StatusCodes.Status400BadRequest, Successful = false, Message = "User creation failed! Please check user details and try again." };
 
-            if (!await _roleManager.RoleExistsAsync(AccountRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.User));
+            await _userManager.AddToRoleAsync(account, AccountRoles.User);
 
-            if (await _roleManager.RoleExistsAsync(AccountRoles.User))
-                await _userManager.AddToRoleAsync(account, AccountRoles.User);
-
-            return new ServiceResponse<Account>() { Data = account, Successful = true, Message = "User created successfully!" };
+            return new ServiceResponse<Account>() { Data = account, StatusCode = StatusCodes.Status201Created, Successful = true, Message = "User created successfully!" };
         }
 
         public async Task<ServiceResponse<Account>> GetAccountById(int id)
@@ -59,6 +76,7 @@ namespace Backend.Services.AuthenticationService
             serviceResponse.Data = await _userManager.FindByIdAsync(id.ToString());
             if (serviceResponse.Data == null)
             {
+                serviceResponse.StatusCode = StatusCodes.Status404NotFound;
                 serviceResponse.Successful = false;
                 serviceResponse.Message = $"Failed to fetch User with id: {id}";
             }
@@ -71,6 +89,7 @@ namespace Backend.Services.AuthenticationService
             serviceResponse.Data = await _userManager.GetUsersInRoleAsync(role);
             if (serviceResponse.Data == null)
             {
+                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
                 serviceResponse.Successful = false;
                 serviceResponse.Message = "Failed to fetch Users";
             }
@@ -79,7 +98,7 @@ namespace Backend.Services.AuthenticationService
 
         public async Task<ServiceResponse<AuthenticationResult>> Authenticate(LoginDto loginDto)
         {
-            var response = new ServiceResponse<AuthenticationResult>();
+            var serviceResponse = new ServiceResponse<AuthenticationResult>();
             var user = await _userManager.FindByNameAsync(loginDto.UserName);
             if (user != null)
             {
@@ -102,7 +121,7 @@ namespace Backend.Services.AuthenticationService
                         claims: authClaims,
                         signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                         );
-                    response.Data = new AuthenticationResult()
+                    serviceResponse.Data = new AuthenticationResult()
                     {
                         UserType = userRole,
                         Token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -110,16 +129,18 @@ namespace Backend.Services.AuthenticationService
                 }
                 else
                 {
-                    response.Message = "Invalid user password";
-                    response.Successful = false;
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    serviceResponse.Message = "Invalid user password";
+                    serviceResponse.Successful = false;
                 }
             }
             else
             {
-                response.Message = "User not defined in the system";
-                response.Successful = false;
+                serviceResponse.StatusCode = StatusCodes.Status404NotFound;
+                serviceResponse.Message = "User not defined in the system";
+                serviceResponse.Successful = false;
             }
-            return response;
+            return serviceResponse;
         }
     }
 }

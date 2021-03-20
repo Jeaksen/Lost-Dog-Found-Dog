@@ -29,10 +29,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> AddAccount(AddAccountDto _account)
         {
             var result = await _accountService.AddAccount(_account);
-            if (result.Successful)
-                return Created("", result);
-            else
-                return BadRequest(result);
+            return StatusCode(result.StatusCode, result);
         }
 
         [HttpPost]
@@ -40,10 +37,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Authenticate(LoginDto _account)
         {
             var result = await _accountService.Authenticate(_account);
-            if (result.Successful)
-                return Ok(result);
-            else
-                return BadRequest(result);
+            return StatusCode(result.StatusCode, result);
         }
 
         [Authorize(Roles = AccountRoles.Admin)] //temporary
@@ -52,10 +46,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetAccountById(int id)
         {
             var result = await _accountService.GetAccountById(id);
-            if (result.Successful)
-                return Ok(result);
-            else
-                return NotFound(result);
+            return StatusCode(result.StatusCode, result);
         }
 
         [Authorize(Roles = AccountRoles.Admin)]
@@ -64,10 +55,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetAllUserAccounts()
         {
             var result = await _accountService.GetAllAccountsForRole(AccountRoles.User);
-            if (result.Successful)
-                return Ok(result);
-            else
-                return NotFound(result);
+            return StatusCode(result.StatusCode, result);
         }
 
     }
