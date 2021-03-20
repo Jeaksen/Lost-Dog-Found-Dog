@@ -7,14 +7,14 @@ on:
       - develop
       - release
       - +/hotfix/**
-      - features/backend*
+      - features/backend**
   pull_request:
     branches:
       - main
       - develop
       - release
       - +/hotfix/**
-      - features/backend*
+      - features/backend**
 
 jobs:
   build:
