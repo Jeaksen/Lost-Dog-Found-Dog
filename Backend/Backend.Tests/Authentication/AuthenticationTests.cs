@@ -12,6 +12,9 @@ namespace Backend.Tests
 
         private static Random random = new Random();
         private readonly DatabaseAuthFixture databaseAuthFixture;
+        private const string chars = "abcdefghijklmnoprstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        private const int nameLenght = 40;
+
 
         public AuthenticationTests(DatabaseAuthFixture databaseAuthFixture)
         {
@@ -20,8 +23,7 @@ namespace Backend.Tests
 
         private Account GetValidAccount()
         {
-            const string chars = "abcdefghijklmnoprstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var uname = new string(Enumerable.Repeat(chars, 40).Select(s => s[random.Next(s.Length)]).ToArray());
+            var uname = new string(Enumerable.Range(1, nameLenght).Select(_ => chars[random.Next(chars.Length)]).ToArray());
             return new Account() { 
                 UserName = uname, 
                 Email = $"{uname}@gmail.com", 
