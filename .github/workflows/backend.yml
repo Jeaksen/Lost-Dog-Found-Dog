@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ main develop release +/hotfix/** features/backend* ]
+    branches: [ main, develop, release, +/hotfix/**, features/backend* ]
   pull_request:
-    branches: [ main develop release ]
+    branches: [ main, develop, release ]
 
 jobs:
   build:
@@ -13,12 +13,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Move to Backend dir
-      run: cd .\Backend; ls
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+    - name: Move to Backend dir
+      run: cd .\Backend; ls
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
