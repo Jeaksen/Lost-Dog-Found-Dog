@@ -57,7 +57,7 @@ namespace Backend.Tests
             serviceCollection.AddLogging();
 
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory() + @"\..\..\..\")
+                .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             IConfiguration configuration = builder.Build();
