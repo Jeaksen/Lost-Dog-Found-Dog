@@ -45,11 +45,11 @@ namespace Backend
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = true;
             })
-                .AddEntityFrameworkStores<AuthenticationDbContext>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            services.AddDbContext<AuthenticationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });

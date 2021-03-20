@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
-    [DbContext(typeof(AuthenticationDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20210315192155_Init-Migration")]
     partial class InitMigration
     {

@@ -18,27 +18,27 @@ namespace Backend.Tests
     public class DatabaseAuthFixture : IDisposable
     {
 
-        public AuthenticationDbContext IdentityDbContext { get; }
+        public ApplicationDbContext IdentityDbContext { get; }
         public UserManager<Account> UserManager { get; }
         public RoleManager<IdentityRole<int>> RoleManager { get; }
         public IMapper Mapper { get; }
         public ILoggerFactory LoggerFactory { get; }
         public IAccountService AccountService { get; }
 
-        private AuthenticationDbContext dbContext;
+        private ApplicationDbContext dbContext;
 
         public DatabaseAuthFixture()
         {
             IServiceCollection serviceCollection = new ServiceCollection();
 
-            serviceCollection.AddDbContext<AuthenticationDbContext>(options => options.UseSqlite("Filename=AuthTest.db"));
+            serviceCollection.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename=AuthTest.db"));
 
-            dbContext = serviceCollection.BuildServiceProvider().GetRequiredService<AuthenticationDbContext>();
+            dbContext = serviceCollection.BuildServiceProvider().GetRequiredService<ApplicationDbContext>();
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
 
-            IdentityDbContext = serviceCollection.BuildServiceProvider().GetService<AuthenticationDbContext>();
+            IdentityDbContext = serviceCollection.BuildServiceProvider().GetService<ApplicationDbContext>();
             IdentityDbContext.Database.OpenConnection();
             IdentityDbContext.Database.EnsureCreated();
 
@@ -51,7 +51,7 @@ namespace Backend.Tests
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = true;
             })
-                .AddEntityFrameworkStores<AuthenticationDbContext>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             serviceCollection.AddLogging();
