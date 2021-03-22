@@ -50,7 +50,9 @@ namespace Backend.Services.LostDogService
                     serviceResponse.Successful = false;
                     serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
                     serviceResponse.Message = "Failed to Add Dog!";
-                }
+                } 
+                else
+                    serviceResponse.Data.Picture.Data = null;
             } 
             else
             {
