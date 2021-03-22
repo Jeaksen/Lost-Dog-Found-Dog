@@ -1,6 +1,8 @@
 using Backend.DataAccess;
+using Backend.DataAccess.Dogs;
 using Backend.Models.Authentication;
 using Backend.Services.AuthenticationService;
+using Backend.Services.LostDogService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +32,8 @@ namespace Backend
 
             services.AddControllers();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ILostDogRepository, LostDogDataRepository>();
+            services.AddScoped<ILostDogService, LostDogService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>(options =>
             {
