@@ -14,7 +14,8 @@ namespace Backend
         {
             CreateMap<AddAccountDto, Account>();
             CreateMap<AddLostDogDto, LostDog>().AfterMap((source, dest) => dest.Behaviors = source.Behaviors.Select(name => new DogBehavior() { Behvaior = name }).ToList());
-            CreateMap<AddLocationDto, DogBehvaior>();
+            CreateMap<AddLocationDto, Location>();
+            CreateMap<AddLostDogCommentDto, LostDogComment>();
         }
     }
 }

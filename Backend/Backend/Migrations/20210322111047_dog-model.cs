@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Backend.Migrations
 {
-    public partial class dogmodelmigration : Migration
+    public partial class dogmodel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -95,6 +95,36 @@ namespace Backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "LostDogComments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Text = table.Column<int>(type: "int", nullable: false),
+                    Location = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    DogId = table.Column<int>(type: "int", nullable: false),
+                    PictureId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    LostDogId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LostDogComments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LostDogComments_Dogs_LostDogId",
+                        column: x => x.LostDogId,
+                        principalTable: "Dogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LostDogComments_Picture_PictureId",
+                        column: x => x.PictureId,
+                        principalTable: "Picture",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DogBehavior_DogId",
                 table: "DogBehavior",
@@ -109,12 +139,25 @@ namespace Backend.Migrations
                 name: "IX_Dogs_PictureId",
                 table: "Dogs",
                 column: "PictureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LostDogComments_LostDogId",
+                table: "LostDogComments",
+                column: "LostDogId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LostDogComments_PictureId",
+                table: "LostDogComments",
+                column: "PictureId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "DogBehavior");
+
+            migrationBuilder.DropTable(
+                name: "LostDogComments");
 
             migrationBuilder.DropTable(
                 name: "Dogs");

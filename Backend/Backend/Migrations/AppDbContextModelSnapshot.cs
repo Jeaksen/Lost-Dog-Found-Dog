@@ -200,6 +200,40 @@ namespace Backend.Migrations
                     b.ToTable("Location");
                 });
 
+            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDogComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DogId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Location")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LostDogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PictureId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Text")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LostDogId");
+
+                    b.HasIndex("PictureId");
+
+                    b.ToTable("LostDogComments");
+                });
+
             modelBuilder.Entity("Backend.Models.DogBase.Picture", b =>
                 {
                     b.Property<string>("Id")
@@ -403,6 +437,19 @@ namespace Backend.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDogComment", b =>
+                {
+                    b.HasOne("Backend.Models.DogBase.LostDog.LostDog", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("LostDogId");
+
+                    b.HasOne("Backend.Models.DogBase.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId");
+
+                    b.Navigation("Picture");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -466,6 +513,11 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.DogBase.Dog", b =>
                 {
                     b.Navigation("Behaviors");
+                });
+
+            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDog", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

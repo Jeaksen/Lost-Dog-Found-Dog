@@ -2,7 +2,7 @@
 
 namespace Backend.Models.DogBase
 {
-    public class DogBehvaior
+    public class Location
     {
         [Required]
         public int Id { get; set; }
