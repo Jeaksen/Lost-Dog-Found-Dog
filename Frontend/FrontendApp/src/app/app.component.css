@@ -27,3 +27,8 @@ router-outlet + * {
 app-footer {
     grid-area: footer;
 }
+
+.mat-button, .mat-raised-button{
+    background-color:#8c1aff;
+    color: whitesmoke;
+} 

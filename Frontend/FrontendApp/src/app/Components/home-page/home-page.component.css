@@ -1,5 +1,6 @@
-:host {
+.home-page {
     padding: 3px 19px;
+    margin-top:20px;
 }
 .container {
     display:flex;
@@ -9,7 +10,7 @@
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows:    1fr 1fr;
+    grid-template-rows:    1fr;
 }
 div:nth-child(1) {
     grid-column-start: 1;
@@ -19,6 +20,7 @@ div:nth-child(1) {
 }
 .images {
     float:right;
+    /* background-image: url('/assets/webBackground.jpg');; */
 }
 .mat-raised-button {
     margin-left: 10px;
