@@ -1,15 +1,13 @@
 <app-navbar></app-navbar>
-<div style="margin-top:20px;"> 
+<div class="home-page"> 
     <div class="container">
         <h1>Welcome, User!</h1>
         <div>
-            <button mat-raised-button color="primary" (click)="onClick()">Register Lost Dog</button>
-            <button mat-raised-button color="primary">Search for Lost Dog</button>
-            <button mat-raised-button color="primary">Display Shelters</button>
-            <button mat-raised-button color="primary">Edit Contact Info</button>
+            <button mat-raised-button (click)="onClick()">Register Lost Dog</button>
+            <button mat-raised-button >Edit Contact Info</button>
         </div>
     </div>
-    <h2 style="margin-left: 12px;">This site is currently under development. Your current options are limited.</h2>
+    <h2 style="margin-left: 12px;">This site is under development. Your current options are limited.</h2>
     
     <mat-card>
         <div class="grid">
@@ -21,10 +19,7 @@
                 </mat-list>
             </div>
             <div class="images">
-                <img src="assets/doge.jpg" height="350">
-            </div>
-            <div class="images">
-                <img src="assets/doge.jpg" height="350">
+                
             </div>
         </div>
     </mat-card>

@@ -1,20 +1,26 @@
 :host {
-    border: 0 solid #e1e1e1;
-    border-bottom-width: 1px;
-    height: 49px;
+    border: 0 solid #a366ff;
+    /* #e1e1e1; */
+    border-width: 1px;
+    border-radius: 5px;
+    height: 45px;
     padding: 0 16px;
 
     display: flex;
     flex-flow: row;
     align-items: center;
+    margin-top: 6px;
+    margin-left:19px;
+    margin-right: 19px;
   }
 
   a {
     /* color: #c697d8; */
-    color:#9900cc;
+    color: #a366ff;
     font-size: 19px;
-    font-weight: 900;
+    font-weight: 600;
     line-height: 49px;
     margin-right: 27px;
+    float: left;
     text-decoration: none;
   }
