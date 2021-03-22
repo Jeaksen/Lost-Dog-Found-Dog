@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Backend.Models.Authentication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,8 +20,10 @@ namespace Backend.Models.DogBase.LostDog
         public int Location { get; set; }
 
         [Required]
-        [Display(Name = "authorId")]
-        public int AccountId { get; set; }
+        public int AuthorId { get; set; }
+
+        [Required]
+        public Account Author { get; set; } 
 
         [Required]
         public int DogId { get; set; }

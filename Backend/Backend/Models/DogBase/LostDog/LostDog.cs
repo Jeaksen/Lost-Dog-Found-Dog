@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Backend.Models.Authentication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models.DogBase.LostDog
 {
@@ -17,6 +19,9 @@ namespace Backend.Models.DogBase.LostDog
 
         [Required]
         public int OwnerId { get; set; }
+
+        [Required]
+        public Account Owner { get; set; }
 
         [Required]
         public List<LostDogComment> Comments { get; set; }

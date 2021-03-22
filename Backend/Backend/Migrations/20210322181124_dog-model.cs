@@ -8,7 +8,7 @@ namespace Backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Location",
+                name: "Locations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -18,11 +18,11 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Location", x => x.Id);
+                    table.PrimaryKey("PK_Locations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Picture",
+                name: "Pictures",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -33,7 +33,7 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Picture", x => x.Id);
+                    table.PrimaryKey("PK_Pictures", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,21 +63,27 @@ namespace Backend.Migrations
                 {
                     table.PrimaryKey("PK_Dogs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Dogs_Location_LocationId",
+                        name: "FK_Dogs_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dogs_Locations_LocationId",
                         column: x => x.LocationId,
-                        principalTable: "Location",
+                        principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Dogs_Picture_PictureId",
+                        name: "FK_Dogs_Pictures_PictureId",
                         column: x => x.PictureId,
-                        principalTable: "Picture",
+                        principalTable: "Pictures",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "DogBehavior",
+                name: "DogBehaviors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -87,9 +93,9 @@ namespace Backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DogBehavior", x => x.Id);
+                    table.PrimaryKey("PK_DogBehaviors", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DogBehavior_Dogs_DogId",
+                        name: "FK_DogBehaviors_Dogs_DogId",
                         column: x => x.DogId,
                         principalTable: "Dogs",
                         principalColumn: "Id",
@@ -104,7 +110,7 @@ namespace Backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<int>(type: "int", nullable: false),
                     Location = table.Column<int>(type: "int", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    AuthorId = table.Column<int>(type: "int", nullable: false),
                     DogId = table.Column<int>(type: "int", nullable: false),
                     PictureId = table.Column<int>(type: "int", nullable: true),
                     LostDogId = table.Column<int>(type: "int", nullable: true)
@@ -113,22 +119,28 @@ namespace Backend.Migrations
                 {
                     table.PrimaryKey("PK_LostDogComments", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_LostDogComments_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_LostDogComments_Dogs_LostDogId",
                         column: x => x.LostDogId,
                         principalTable: "Dogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LostDogComments_Picture_PictureId",
+                        name: "FK_LostDogComments_Pictures_PictureId",
                         column: x => x.PictureId,
-                        principalTable: "Picture",
+                        principalTable: "Pictures",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_DogBehavior_DogId",
-                table: "DogBehavior",
+                name: "IX_DogBehaviors_DogId",
+                table: "DogBehaviors",
                 column: "DogId");
 
             migrationBuilder.CreateIndex(
@@ -137,9 +149,19 @@ namespace Backend.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Dogs_OwnerId",
+                table: "Dogs",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Dogs_PictureId",
                 table: "Dogs",
                 column: "PictureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LostDogComments_AuthorId",
+                table: "LostDogComments",
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LostDogComments_LostDogId",
@@ -155,7 +177,7 @@ namespace Backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DogBehavior");
+                name: "DogBehaviors");
 
             migrationBuilder.DropTable(
                 name: "LostDogComments");
@@ -164,10 +186,10 @@ namespace Backend.Migrations
                 name: "Dogs");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                name: "Locations");
 
             migrationBuilder.DropTable(
-                name: "Picture");
+                name: "Pictures");
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210322134827_dog-model")]
+    [Migration("20210322181124_dog-model")]
     partial class dogmodel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,7 +177,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("DogId");
 
-                    b.ToTable("DogBehavior");
+                    b.ToTable("DogBehaviors");
                 });
 
             modelBuilder.Entity("Backend.Models.DogBase.Location", b =>
@@ -199,7 +199,7 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Location");
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDogComment", b =>
@@ -209,7 +209,7 @@ namespace Backend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccountId")
+                    b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
                     b.Property<int>("DogId")
@@ -228,6 +228,8 @@ namespace Backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("LostDogId");
 
@@ -259,7 +261,7 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Picture");
+                    b.ToTable("Pictures");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -410,6 +412,8 @@ namespace Backend.Migrations
 
                     b.HasIndex("LocationId");
 
+                    b.HasIndex("OwnerId");
+
                     b.HasDiscriminator().HasValue("LostDog");
                 });
 
@@ -443,6 +447,12 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDogComment", b =>
                 {
+                    b.HasOne("Backend.Models.Authentication.Account", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.DogBase.LostDog.LostDog", null)
                         .WithMany("Comments")
                         .HasForeignKey("LostDogId");
@@ -450,6 +460,8 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.DogBase.Picture", "Picture")
                         .WithMany()
                         .HasForeignKey("PictureId");
+
+                    b.Navigation("Author");
 
                     b.Navigation("Picture");
                 });
@@ -511,7 +523,15 @@ namespace Backend.Migrations
                         .WithMany()
                         .HasForeignKey("LocationId");
 
+                    b.HasOne("Backend.Models.Authentication.Account", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Location");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Backend.Models.DogBase.Dog", b =>
