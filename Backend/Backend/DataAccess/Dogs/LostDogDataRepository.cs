@@ -2,6 +2,7 @@
 using Backend.DTOs.Dogs;
 using Backend.Models.DogBase.LostDog;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                var lostDog = _dbContext.LostDogs.Find(dogId);
+                var lostDog = await _dbContext.LostDogs.FindAsync(dogId);
                 if (lostDog == null) throw new Exception();
                 _dbContext.LostDogs.Remove(lostDog);
                 _dbContext.SaveChanges();
@@ -53,14 +54,14 @@ namespace Backend.DataAccess.Dogs
 
         public async Task<LostDog> GetLostDogDetails(int dogId)
         {
-            return _dbContext.LostDogs.Find(dogId);
+            return await _dbContext.LostDogs.FindAsync(dogId);
         }
 
         public async Task<List<LostDog>> GetLostDogs()
         {
             try
             {
-                return _dbContext.LostDogs.OrderBy(ld => ld.Id).ToList();
+                return await _dbContext.LostDogs.ToListAsync();
             }
             catch (Exception)
             {
@@ -72,7 +73,7 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                return _dbContext.LostDogs.Where(ld => ld.OwnerId == ownerId).OrderBy(ld => ld.Id).ToList();
+                return await _dbContext.LostDogs.Where(ld => ld.OwnerId == ownerId).ToListAsync();
             }
             catch (Exception)
             {
@@ -84,10 +85,9 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                var lostDog = _dbContext.LostDogs.Find(comment.DogId);
+                var lostDog = await _dbContext.LostDogs.FindAsync(comment.DogId);
                 if (lostDog == null) throw new Exception();
                 lostDog.Comments.Add(comment);
-                _dbContext.LostDogs.Update(lostDog);
                 _dbContext.SaveChanges();
                 return comment;
             }
@@ -101,7 +101,7 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                return _dbContext.LostDogs.Find(dogId).Comments;
+                return (await _dbContext.LostDogs.FindAsync(dogId)).Comments;
             }
             catch (Exception)
             {
@@ -113,12 +113,11 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                var lostDog = _dbContext.LostDogs.Find(comment.DogId);
+                var lostDog = await _dbContext.LostDogs.FindAsync(comment.DogId);
                 if (lostDog == null) throw new Exception();
                 var oldComment = lostDog.Comments.Find(c => c.Id == comment.Id);
                 if (oldComment == null) throw new Exception();
                 oldComment = comment;
-                _dbContext.LostDogs.Update(lostDog);
                 _dbContext.SaveChanges();
                 return comment;
             }
