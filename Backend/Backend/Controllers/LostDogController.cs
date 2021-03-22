@@ -4,14 +4,19 @@ using Backend.Models.DogBase.LostDog;
 using Backend.Services;
 using Backend.Services.LostDogService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
+    
     [Authorize(Roles = AccountRoles.User)]
     [Route("/lostdogs/")]
     [ApiController]
@@ -25,9 +30,17 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddLostDog(AddLostDogDto lostDogDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile image)
         {
-            var serviceResponse = await _lostDogService.AddLostDog(lostDogDto);
+            var addLostDogDto = new AddLostDogDto();
+            var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
+            var bindingSuccessful = await TryUpdateModelAsync(addLostDogDto, "", formValueProvider);
+
+            if (!bindingSuccessful)
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to bind AddLostDogDto");
+
+            var serviceResponse = await _lostDogService.AddLostDog(addLostDogDto, image);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 

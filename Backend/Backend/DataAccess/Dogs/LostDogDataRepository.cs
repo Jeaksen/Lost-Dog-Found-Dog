@@ -22,12 +22,14 @@ namespace Backend.DataAccess.Dogs
             _logger = logger;
         }
 
+        // Returned data of picture is erased
         public async Task<LostDog> AddLostDog(LostDog lostDog)
         {
             try
             {
                 var returningDog = await _dbContext.LostDogs.AddAsync(lostDog);
                 await _dbContext.SaveChangesAsync();
+                returningDog.Entity.Picture.Data = null;
                 return returningDog.Entity;
             }
             catch (Exception)

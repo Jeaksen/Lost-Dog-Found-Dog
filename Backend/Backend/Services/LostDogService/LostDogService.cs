@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Backend.DataAccess.Dogs;
 using Backend.DTOs.Dogs;
+using Backend.Models.DogBase;
 using Backend.Models.DogBase.LostDog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,17 +26,39 @@ namespace Backend.Services.LostDogService
             _logger = logger;
         }
 
-        public async Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDogDto)
+        public async Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDogDto, IFormFile image)
         {
             ServiceResponse<LostDog> serviceResponse = new ServiceResponse<LostDog>();
             LostDog lostDog = _mapper.Map<LostDog>(lostDogDto);
-            serviceResponse.Data = await _lostDogDataRepository.AddLostDog(lostDog);
-            if (serviceResponse.Data == null)
+            byte[] data;
+            if (image.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    image.CopyTo(ms);
+                    data = ms.ToArray();
+                }
+                lostDog.Picture = new Picture()
+                {
+                    FileName = image.FileName,
+                    FileType = image.ContentType,
+                    Data = data
+                };
+                serviceResponse.Data = await _lostDogDataRepository.AddLostDog(lostDog);
+                if (serviceResponse.Data == null)
+                {
+                    serviceResponse.Successful = false;
+                    serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                    serviceResponse.Message = "Failed to Add Dog!";
+                }
+            } 
+            else
             {
                 serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                serviceResponse.Message = "Failed to Add Dog!";
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                serviceResponse.Message = "No picture was provided!";
             }
+
             return serviceResponse;
         }
 
