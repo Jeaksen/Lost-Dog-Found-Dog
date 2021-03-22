@@ -1,23 +1,19 @@
 using Backend.DataAccess;
+using Backend.DataAccess.Dogs;
 using Backend.Models.Authentication;
 using Backend.Services.AuthenticationService;
+using Backend.Services.LostDogService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Backend
 {
@@ -36,6 +32,8 @@ namespace Backend
 
             services.AddControllers();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ILostDogRepository, LostDogDataRepository>();
+            services.AddScoped<ILostDogService, LostDogService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>(options =>
             {
@@ -45,11 +43,11 @@ namespace Backend
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = true;
             })
-                .AddEntityFrameworkStores<AuthenticationDbContext>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            services.AddDbContext<AuthenticationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });
