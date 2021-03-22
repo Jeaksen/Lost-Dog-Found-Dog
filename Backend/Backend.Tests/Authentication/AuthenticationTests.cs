@@ -1,23 +1,22 @@
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
-using Backend.Services.AuthenticationService;
 using System;
 using System.Linq;
 using Xunit;
 
 namespace Backend.Tests
 {
-    [Collection("Database Auth collection")]
+    [Collection("Database collection")]
     public class AuthenticationTests
     {
 
         private static Random random = new Random();
-        private readonly DatabaseAuthFixture _databaseAuthFixture;
+        private readonly DatabaseFixture _databaseAuthFixture;
         private const string chars = "abcdefghijklmnoprstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private const int nameLenght = 40;
 
 
-        public AuthenticationTests(DatabaseAuthFixture databaseAuthFixture)
+        public AuthenticationTests(DatabaseFixture databaseAuthFixture)
         {
             _databaseAuthFixture = databaseAuthFixture;
         }

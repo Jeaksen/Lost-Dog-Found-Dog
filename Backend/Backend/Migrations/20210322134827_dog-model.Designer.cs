@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210322111047_dog-model")]
+    [Migration("20210322134827_dog-model")]
     partial class dogmodel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,8 +131,8 @@ namespace Backend.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("PictureId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("PictureId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Size")
                         .IsRequired()
@@ -221,8 +221,8 @@ namespace Backend.Migrations
                     b.Property<int?>("LostDogId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PictureId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("PictureId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Text")
                         .HasColumnType("int");
@@ -238,8 +238,10 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.DogBase.Picture", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<byte[]>("Data")
                         .IsRequired()

@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace Backend.DataAccess.Dogs
 {
-    interface ILostDogRepository
+    public interface ILostDogRepository
     {
-        public List<LostDog> GetLostDogs();
-        public List<LostDog> GetUserLostDogs(int ownerId);
-        public LostDog AddLostDog(LostDog lostDog);
-        public LostDog GetLostDogDetails(int dogId);
-        public bool DeleteLostDog(int dogId);
+        public Task<List<LostDog>> GetLostDogs();
+        public Task<List<LostDog>> GetUserLostDogs(int ownerId);
+        public Task<LostDog> AddLostDog(LostDog lostDog);
+        public Task<LostDog> GetLostDogDetails(int dogId);
+        public Task<bool> DeleteLostDog(int dogId);
 
-        public List<LostDogComment> GetLostDogComments(int dogId);
-        public LostDogComment AddLostDogComment(LostDogComment comment);
-        public LostDogComment EditLostDogComment(LostDogComment comment);
+        public Task<List<LostDogComment>> GetLostDogComments(int dogId);
+        public Task<LostDogComment> AddLostDogComment(LostDogComment comment);
+        public Task<LostDogComment> EditLostDogComment(LostDogComment comment);
 
     }
 }

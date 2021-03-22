@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.DataAccess.Dogs
 {
@@ -20,13 +21,13 @@ namespace Backend.DataAccess.Dogs
             _logger = logger;
         }
 
-        public LostDog AddLostDog(LostDog lostDog)
+        public async Task<LostDog> AddLostDog(LostDog lostDog)
         {
             try
             {
-                var returningDog = _dbContext.LostDogs.Add(lostDog).Entity;
-                _dbContext.SaveChanges();
-                return returningDog;
+                var returningDog = await _dbContext.LostDogs.AddAsync(lostDog);
+                await _dbContext.SaveChangesAsync();
+                return returningDog.Entity;
             }
             catch (Exception)
             {
@@ -34,7 +35,7 @@ namespace Backend.DataAccess.Dogs
             }
         }
 
-        public bool DeleteLostDog(int dogId)
+        public async Task<bool> DeleteLostDog(int dogId)
         {
             try
             {
@@ -50,12 +51,12 @@ namespace Backend.DataAccess.Dogs
             }
         }
 
-        public LostDog GetLostDogDetails(int dogId)
+        public async Task<LostDog> GetLostDogDetails(int dogId)
         {
             return _dbContext.LostDogs.Find(dogId);
         }
 
-        public List<LostDog> GetLostDogs()
+        public async Task<List<LostDog>> GetLostDogs()
         {
             try
             {
@@ -67,7 +68,7 @@ namespace Backend.DataAccess.Dogs
             }
         }
 
-        public List<LostDog> GetUserLostDogs(int ownerId)
+        public async Task<List<LostDog>> GetUserLostDogs(int ownerId)
         {
             try
             {
@@ -79,7 +80,7 @@ namespace Backend.DataAccess.Dogs
             }
         }
 
-        public LostDogComment AddLostDogComment(LostDogComment comment)
+        public async Task<LostDogComment> AddLostDogComment(LostDogComment comment)
         {
             try
             {
@@ -96,7 +97,7 @@ namespace Backend.DataAccess.Dogs
             }
         }
 
-        public List<LostDogComment> GetLostDogComments(int dogId)
+        public async Task<List<LostDogComment>> GetLostDogComments(int dogId)
         {
             try
             {
@@ -108,7 +109,7 @@ namespace Backend.DataAccess.Dogs
             }
         }
 
-        public LostDogComment EditLostDogComment(LostDogComment comment)
+        public async Task<LostDogComment> EditLostDogComment(LostDogComment comment)
         {
             try
             {

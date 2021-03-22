@@ -25,7 +25,8 @@ namespace Backend.Migrations
                 name: "Picture",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FileType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
@@ -47,7 +48,7 @@ namespace Backend.Migrations
                     Color = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SpecialMark = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PictureId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PictureId = table.Column<int>(type: "int", nullable: true),
                     HairLength = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     EarsType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TailLength = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -105,7 +106,7 @@ namespace Backend.Migrations
                     Location = table.Column<int>(type: "int", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     DogId = table.Column<int>(type: "int", nullable: false),
-                    PictureId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PictureId = table.Column<int>(type: "int", nullable: true),
                     LostDogId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

@@ -13,7 +13,7 @@ namespace Backend.Models.DogBase.LostDog
         public DateTime DateLost { get; set; }
 
         [Required]
-        public bool IsFound { get; set; }
+        public bool IsFound { get; set; } = false;
 
         [Required]
         public int OwnerId { get; set; }
