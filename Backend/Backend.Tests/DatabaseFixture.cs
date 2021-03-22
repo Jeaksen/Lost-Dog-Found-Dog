@@ -26,14 +26,13 @@ namespace Backend.Tests
         private IServiceProvider serviceProvider;
         private IConfiguration configuration;
 
-
         private UserManager<Account> UserManager { get; }
         private RoleManager<IdentityRole<int>> RoleManager { get; }
         private IMapper Mapper { get; }
         private ILoggerFactory LoggerFactory { get; }
 
         public IAccountService AccountService => new AccountService(UserManager, RoleManager, configuration, Mapper, LoggerFactory.CreateLogger<AccountService>());
-        public ILostDogRepository LostDogRepository => new LostDogDataRepository(serviceProvider.GetRequiredService<ApplicationDbContext>(), LoggerFactory.CreateLogger<LostDogDataRepository>());
+        public ILostDogRepository LostDogRepository => new LostDogDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<LostDogDataRepository>());
 
 
         public DatabaseFixture()

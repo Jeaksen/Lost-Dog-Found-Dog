@@ -14,6 +14,9 @@ namespace Backend.DataAccess
         public DbSet<Dog> Dogs { get; set; }
         public DbSet<ShelterDog> ShelterDogs { get; set; }
         public DbSet<LostDogComment> LostDogComments { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
+        public DbSet<DogBehavior> DogBehaviors { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
