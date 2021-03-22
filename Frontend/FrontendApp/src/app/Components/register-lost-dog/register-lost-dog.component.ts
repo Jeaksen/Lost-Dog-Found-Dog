@@ -23,7 +23,11 @@ export class RegisterLostDogComponent implements OnInit {
     color: new FormControl('', [Validators.required]),
     hairLength: new FormControl('', [Validators.required]),
     tailLength: new FormControl('', [Validators.required]),
-    earsType: new FormControl('', [Validators.required])
+    earsType: new FormControl('', [Validators.required]),
+    dateLost: new FormControl('', [Validators.required]),
+    specialMarks: new FormControl('', []),
+    behaviour: new FormControl('', []),
+    location: new FormControl('', [Validators.required]),
   });
 
   dogColors: string[] = DogColorSelector;
