@@ -43,7 +43,7 @@
 
         <mat-form-field  appearance="standard">
             <mat-label>Ears</mat-label>
-                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'ears')">
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'earsType')">
                     <mat-option *ngFor="let ears of dogEars" [value]="ears">
                         {{ears}}
                     </mat-option>
@@ -55,7 +55,7 @@
 
         <mat-form-field  appearance="standard">
             <mat-label>Hair</mat-label>
-                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hair')">
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hairLength')">
                     <mat-option *ngFor="let hair of dogHair" [value]="hair">
                         {{hair}}
                     </mat-option>
@@ -79,7 +79,7 @@
 
         <mat-form-field  appearance="standard">
             <mat-label>Tail</mat-label>
-                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tail')">
+                <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tailLength')">
                     <mat-option *ngFor="let tail of dogTails" [value]="tail">
                         {{tail}}
                     </mat-option>

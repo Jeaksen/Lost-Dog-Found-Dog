@@ -4,13 +4,10 @@
     </h1>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <mat-form-field  appearance="standard">
-            <mat-label>Email</mat-label>
-            <input type="email" matInput formControlName="email" placeholder="Email">
-            <mat-error *ngIf="loginForm.get('email')?.hasError('email') && !loginForm.get('email')?.hasError('required')">
-                Please enter a valid email address
-            </mat-error>
-            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
-                Email is required
+            <mat-label>Username</mat-label>
+            <input type="text" matInput formControlName="username" placeholder="Username">
+            <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+                Username is required
             </mat-error>
         </mat-form-field><br>
 

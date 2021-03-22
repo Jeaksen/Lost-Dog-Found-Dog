@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +19,9 @@ import { HeaderComponent } from './Components/header/header.component';
 import { NavbarComponent } from './Components/navbar/navbar.component';
 import { FooterComponent } from './Components/footer/footer.component';
 
+import { ErrorInterceptor } from './helpers/error-interceptor';
+import { JwtInterceptor } from './helpers/jwt-interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +34,7 @@ import { FooterComponent } from './Components/footer/footer.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
@@ -41,7 +46,10 @@ import { FooterComponent } from './Components/footer/footer.component';
     MatGridListModule,
     MatListModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
   exports: [
     MatInputModule,
