@@ -24,7 +24,6 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.getLostDogs();
-    console.log(this.lostDogs)
   }
 
   onClick() {

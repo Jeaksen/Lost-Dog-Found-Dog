@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { LostDogsResponse, PostLostDogResponse } from '../models/respones';
+import { LostDogsResponse, PostLostDogResponse } from '../models/responses';
 import { environment } from '../environments/environment-dev';
 import { Observable, of } from "rxjs";
 

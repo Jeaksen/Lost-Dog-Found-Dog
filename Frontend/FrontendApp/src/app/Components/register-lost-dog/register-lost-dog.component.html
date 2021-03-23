@@ -169,7 +169,7 @@
         </div>
 
         <div>
-            <mat-card class="images-list">
+            <!-- <mat-card class="images-list">
                 <h2>Uploaded images</h2>
                 <div class="list-container">
                     <ul>
@@ -183,7 +183,10 @@
                     </ul>
                 </div>
                 <button mat-raised-button class="upload-button">Upload</button>
-            </mat-card>
+            </mat-card> -->
+
+            <span>Select Image</span>
+            <input #imageInput type="file" accept="image/*" (change)="processFile(imageInput)">
         
             <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid">
                 Submit
