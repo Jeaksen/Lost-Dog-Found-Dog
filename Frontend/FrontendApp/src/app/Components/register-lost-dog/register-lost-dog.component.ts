@@ -27,7 +27,8 @@ export class RegisterLostDogComponent implements OnInit {
     dateLost: new FormControl('', [Validators.required]),
     specialMarks: new FormControl('', []),
     behaviour: new FormControl('', []),
-    location: new FormControl('', [Validators.required]),
+    locationCity: new FormControl('', [Validators.required]),
+    locationDistrict: new FormControl('', [Validators.required]),
   });
 
   dogColors: string[] = DogColorSelector;

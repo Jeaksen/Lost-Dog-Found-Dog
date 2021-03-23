@@ -1,6 +1,7 @@
 :host {
-    border: 0 solid #a366ff;
-    /* #e1e1e1; */
+    border: 0 solid #7575a3;
+    background-color:  #5c5c8a;
+    /* #e1e1e1;  #a366ff*/
     border-width: 1px;
     border-radius: 5px;
     height: 45px;
@@ -16,9 +17,9 @@
 
   a {
     /* color: #c697d8; */
-    color: #a366ff;
+    color: white;
     font-size: 19px;
-    font-weight: 600;
+    font-weight: 550;
     line-height: 49px;
     margin-right: 27px;
     float: left;

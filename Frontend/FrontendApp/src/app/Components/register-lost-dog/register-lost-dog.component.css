@@ -34,4 +34,21 @@ label {
     border-width: 1px;
     border-color: black;
     padding: 5px;
+    margin-left: -30px;
+    margin-bottom: 10px;
+}
+
+.images-list {
+    height: 85% !important; 
+    margin-bottom: 15px;
+    text-align: center;
+    justify-content: center;
+}
+
+.upload-button {
+    position:absolute; 
+    margin-left:-50px;
+    left:50%;
+    width:100px;
+    bottom:10px;
 }

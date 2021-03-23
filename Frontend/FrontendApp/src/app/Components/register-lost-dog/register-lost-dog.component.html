@@ -148,28 +148,41 @@
             <div class="container">
                 <label>Location</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>Location</mat-label>
-                    <textarea matInput placeholder="Type address" formControlName="location"></textarea> 
-                    <mat-error *ngIf="registerLostDogForm.get('location')?.hasError('required')">
-                        Location is required
+                    <mat-label>City</mat-label>
+                    <input matInput placeholder="Enter city" formControlName="locationCity"> 
+                    <mat-error *ngIf="registerLostDogForm.get('locationCity')?.hasError('required')">
+                        City is required
                     </mat-error>
                 </mat-form-field><br>
             </div>
+            <div class="container">
+                <label></label>
+                <mat-form-field  appearance="standard">
+                    <mat-label>District</mat-label>
+                    <input matInput placeholder="Enter district" formControlName="locationDistrict"> 
+                    <mat-error *ngIf="registerLostDogForm.get('locationDistrict')?.hasError('required')">
+                        District is required
+                    </mat-error>
+                </mat-form-field><br>
+            </div>
+            
         </div>
 
         <div>
-            <mat-card style="height: 85% !important; margin-bottom: 15px;">
+            <mat-card class="images-list">
                 <h2>Uploaded images</h2>
                 <div class="list-container">
                     <ul>
                         <li class="list-item">
-                          <img src="assets/doge.jpg" height="50">
-                          <label>Doge.jpg</label>
-                          <button mat-raised-button>X</button>
+                            <img src="assets/doge.jpg" height="50">
+                            <div style="padding-top: 7px;">
+                                <label >doge.jpg</label>
+                                <button mat-raised-button>X</button>
+                            </div>
                         </li>
                       </ul>
                 </div>
-                <button mat-raised-button style="position: absolute; bottom: 0;">Upload photos</button>
+                <button mat-raised-button class="upload-button">Upload</button>
             </mat-card>
         
             <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid">
