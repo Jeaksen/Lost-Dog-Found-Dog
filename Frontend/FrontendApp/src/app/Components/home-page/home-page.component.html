@@ -11,12 +11,12 @@
     
     <mat-card>
         <div class="grid">
-            <div >
-                <mat-list class="inline-list">
-                    <mat-list-item role="listitem"> Pepper </mat-list-item>
-                    <mat-list-item role="listitem"> Fluffy </mat-list-item>
-                    <mat-list-item role="listitem"> Rex </mat-list-item>
-                </mat-list>
+            <div class="list-container">
+                <ul>
+                    <li class="list-item" *ngFor="let lostdog of lostDogs">
+                        <label>{{lostdog.name}}</label>
+                    </li>
+                </ul>
             </div>
             <div class="images">
                 

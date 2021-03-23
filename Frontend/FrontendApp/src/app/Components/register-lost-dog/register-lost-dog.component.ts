@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
+import { LostDogService } from 'src/app/services/lost-dog-service';
 
 import { DogColorSelector } from '../../selectors/dog-color-selector';
 import { DogEarsSelector } from '../../selectors/dog-ears-selector';
@@ -36,14 +37,37 @@ export class RegisterLostDogComponent implements OnInit {
   dogSizes: string[] = DogSizeSelector;
   dogTails: string[] = DogTailSelector;
   
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private lostDogService: LostDogService) { }
 
   ngOnInit(): void {
   }
 
   onSubmit() {
-    console.log(this.registerLostDogForm.get('size')?.value);
+    this.lostDogService.postLostDog(this.constructLostDogForm()).subscribe(response => console.log(response));
     this.router.navigate(['/home']);
+  }
+
+  private constructLostDogForm(): FormData {
+    const data = new FormData();
+    data.append('name', this.registerLostDogForm.get('name')?.value);
+    data.append('breed', this.registerLostDogForm.get('breed')?.value);
+    data.append('age', this.registerLostDogForm.get('age')?.value);
+    data.append('size', this.registerLostDogForm.get('size')?.value);
+    data.append('color', this.registerLostDogForm.get('color')?.value);
+    data.append('hairLength', this.registerLostDogForm.get('hairLength')?.value);
+    data.append('tailLength', this.registerLostDogForm.get('tailLength')?.value);
+    data.append('earsType', this.registerLostDogForm.get('earsType')?.value);
+    data.append('dateLost', this.registerLostDogForm.get('dateLost')?.value);
+    data.append('specialMark', '');
+    data.append('behaviors', '');
+    data.append('location.City', '');
+    data.append('location.District', '');
+    data.append('ownerId', '1');
+    
+
+    return data;
   }
 
   onCancel() {
