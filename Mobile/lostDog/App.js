@@ -1,19 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { View, StyleSheet,Image, Text,ImageBackground,Dimensions  } from 'react-native';
+import Navigator from './Components/Navigator';
+import Background from './Components/Helpers/Background'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.titleText}>This is Lost Dog app</Text>
-      <Text>Let safe some dogs !!!</Text>
+const {width, height} = Dimensions.get("screen")
 
-      <StatusBar style="auto" />
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+      <Background />
+      <Navigator />
     </View>
-  );
+    );
+  }
 }
 
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "column"
+  },
+  BackImage: {
+    flex: 1,
+    width: width,
+    height: height,
+    resizeMode: "cover",
+    justifyContent: "center"
+  },
   titleText: {
     fontSize: 23,
     fontWeight: "bold"
@@ -23,5 +39,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
 });
