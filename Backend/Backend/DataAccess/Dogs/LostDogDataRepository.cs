@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Backend.DTOs.Dogs;
-using Backend.Models.DogBase.LostDog;
-using Microsoft.AspNetCore.Http;
+﻿using Backend.Models.DogBase.LostDog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -61,7 +58,13 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                return await _dbContext.LostDogs.ToListAsync();
+                return await _dbContext.LostDogs
+                            .Include(dog => dog.Behaviors)
+                            .Include(dog => dog.Picture)
+                            .Include(dog => dog.Comments)
+                            .Include(dog => dog.Location)
+                            .ToListAsync();
+                    
             }
             catch (Exception)
             {
@@ -73,7 +76,12 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                return await _dbContext.LostDogs.Where(ld => ld.OwnerId == ownerId).ToListAsync();
+                return await _dbContext.LostDogs.Where(ld => ld.OwnerId == ownerId)
+                            .Include(dog => dog.Behaviors)
+                            .Include(dog => dog.Picture)
+                            .Include(dog => dog.Comments)
+                            .Include(dog => dog.Location)
+                            .ToListAsync();
             }
             catch (Exception)
             {
@@ -101,7 +109,7 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
-                return (await _dbContext.LostDogs.FindAsync(dogId)).Comments;
+                return (await _dbContext.LostDogComments.Where(c => c.DogId == dogId).ToListAsync());
             }
             catch (Exception)
             {
@@ -113,6 +121,7 @@ namespace Backend.DataAccess.Dogs
         {
             try
             {
+                // Comments may be null?
                 var lostDog = await _dbContext.LostDogs.FindAsync(comment.DogId);
                 if (lostDog == null) throw new Exception();
                 var oldComment = lostDog.Comments.Find(c => c.Id == comment.Id);
