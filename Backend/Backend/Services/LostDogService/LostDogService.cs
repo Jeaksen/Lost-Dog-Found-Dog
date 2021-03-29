@@ -112,8 +112,11 @@ namespace Backend.Services.LostDogService
             if (serviceResponse.Data == false)
             {
                 serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 serviceResponse.Message = "Failed to mark dog as found!";
+            } else
+            {
+                serviceResponse.Message = $"Lost Dog with id {dogId} marked as found";
             }
             return serviceResponse;
         }
@@ -130,8 +133,6 @@ namespace Backend.Services.LostDogService
             }
             return serviceResponse;
         }
-
-
 
         public async Task<ServiceResponse<LostDogComment>> EditLostDogComment(LostDogComment comment)
         {

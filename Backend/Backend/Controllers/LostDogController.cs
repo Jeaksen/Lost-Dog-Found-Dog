@@ -29,6 +29,24 @@ namespace Backend.Controllers
             this.lostDogService = lostDogService;
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetLostDogs()
+        {
+            var serviceResponse = await lostDogService.GetLostDogs();
+            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+        }
+
+
+        [HttpGet]
+        [Route("{dogId}")]
+        public async Task<IActionResult> GetLostDogDetails(int dogId)
+        {
+            var serviceResponse = await lostDogService.GetLostDogDetails(dogId);
+            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+        }
+
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile image)
@@ -44,13 +62,15 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
-        //[HttpPost]
-        //[Route("{}/comment")]
-        //public async Task<IActionResult> AddLostDogComment(AddLostDogCommentDto commentDto)
-        //{
-        //    var serviceResponse = await _lostDogService.AddLostDogComment(commentDto);
-        //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
-        //}
+
+        [HttpPut]
+        [Route("{dogId}/found")]
+        public async Task<IActionResult> MarkLostDogAsFound(int dogId)
+        {
+            var serviceResponse = await lostDogService.MarkLostDogAsFound(dogId);
+            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+        }
+
 
         [HttpDelete]
         [Route("{dogId}")]
@@ -60,33 +80,23 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
+        //[HttpPost]
+        //[Route("{}/comment")]
+        //public async Task<IActionResult> AddLostDogComment(AddLostDogCommentDto commentDto)
+        //{
+        //    var serviceResponse = await _lostDogService.AddLostDogComment(commentDto);
+        //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
+        //}
         //public async Task<IActionResult> EditLostDogComment(LostDogComment comment)
         //{
         //    var serviceResponse = await _lostDogService.EditLostDogComment(comment);
         //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
         //}
-
         //public async Task<IActionResult> GetLostDogComments(int dogId)
         //{
         //    var serviceResponse = await _lostDogService.GetLostDogComments(dogId);
         //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
         //}
-
-        [HttpGet]
-        [Route("{dogId}")]
-        public async Task<IActionResult> GetLostDogDetails(int dogId)
-        {
-            var serviceResponse = await lostDogService.GetLostDogDetails(dogId);
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetLostDogs()
-        {
-            var serviceResponse = await lostDogService.GetLostDogs();
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
-        }
-
         //[HttpGet]
         //[Route]
         //public async Task<IActionResult> GetUserLostDogs(int ownerId)
