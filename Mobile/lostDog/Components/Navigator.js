@@ -6,6 +6,7 @@ import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import Header from './Helpers/Header';
 import ExamplePage from './ExamplePage';
+//import DogList from './DogList';
 
 const {width, height} = Dimensions.get("screen")
 const speed=350;
@@ -15,13 +16,15 @@ var pos_right=delta;
 var moveDirection=1;
 
 const Headers=[
-  [{id: "1",title: "logout",},{id: "0",title: "Main",},{id: "0",title: "Page1",},{id: "0",title: "Page2",}],
-  [{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],
-  [{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],  
+  /*Example page */[{id: "1",title: "logout",},{id: "0",title: "Main",},{id: "3",title: "DogList",},{id: "0",title: "Page2",}], 
+  /*Login page   */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],                                                    
+  /*Registe page */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],  
+  /*DogList page */[{id: "1",title: "logout",},{id: "0",title: "Main",},{id: "3",title: "DogList",},{id: "0",title: "Page2",}],
 ]
 
 export default class Navigator extends React.Component {
   state={
+    Token: "",
     switchAnim: new Animated.Value(0),
     fadeAnim: new Animated.Value(1),
     navimMainPanel_pos: 0,
@@ -86,10 +89,17 @@ moveLeft= (indx) =>{
   this.leftAnim(indx);
 }
 
+// Functions avaible in every component:
 swtichPage= (indx)=>{
   console.log("SWITCH PAGE: "+indx)
   if(indx != this.state.currentViewID)
     this.moveLeft(indx);
+}
+setToken=(newToken)=>{
+if(newToken=="CLEAR"){/*reset token, to be implemented*/}
+else{
+  this.setState({Token: newToken});
+}
 }
 
 ViewContent = (indx)=>{
@@ -99,11 +109,15 @@ ViewContent = (indx)=>{
   }
   else if(indx==1)
   {
-    return (<LoginScreen swtichPage={this.swtichPage}/>);
+    return (<LoginScreen    swtichPage={this.swtichPage} setToken={this.setToken}/>);
   }
   else if(indx==2)
   {
-    return (<RegisterScreen swtichPage={this.swtichPage}/>);
+    return (<RegisterScreen swtichPage={this.swtichPage} setToken={this.setToken}/>);
+  }
+  else if(indx==3)
+  {
+   // return (<DogList        swtichPage={this.swtichPage} setToken={this.setToken}  Token={this.state.Token}/>);
   }
 }
 render(){
@@ -142,13 +156,13 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   naviHeaderPanel: {
-    marginTop: '10%',
+    marginTop: '5%',
     height: '10%',
     alignContent: 'center',
     //backgroundColor: 'black',
   },
   naviMainPanel: {
-    marginTop: '10%',
+    marginTop: '5%',
     height: '80%',
     alignContent: 'center',
   }

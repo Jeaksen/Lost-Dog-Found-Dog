@@ -7,14 +7,63 @@ const {width, height} = Dimensions.get("screen")
 export default class LoginScreen extends React.Component {
 
   state={
-    login: "",
-    password: "",
+    login: "popo",
+    password: "SafePass66",
+    loadingState: false,
   }
 
 
   loginButton = ()=>{
-    console.log("login: "+ this.state.login + " password: "+ this.state.password);
-    this.props.swtichPage(0);
+    var name = this.state.login;
+    var pass = this.state.password;
+    console.log("login: "+ name + " password: "+ pass);
+
+    this.setState({loadingState: true})
+    fetch('http://10.0.2.2:5000/login', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*'
+            },
+            body: JSON.stringify({userName: name, password: pass})
+
+        })
+        .then(response => {
+          if (response.status == 404 || response.status == 401) {
+              Alert.alert(
+                'Access denied',
+                'Invalid username or password',
+                [
+                  {text: 'OK'},
+                ],
+                {cancelable: true},
+              )
+              return null;
+          }
+          else if (response.status == 200) {
+              return response.json();
+            }
+          else{
+            Alert.alert(
+              'An error occured',
+              'Error ' + response.status,
+              [
+                {text: 'OK'},
+              ],
+              {cancelable: true},
+            )
+            return null;
+          }
+          })
+          .then(responseData => {
+            if (responseData != null) 
+            {
+              console.log(responseData.data.token);
+              this.props.swtichPage(0);
+            } 
+          })
+
+    //this.props.swtichPage(0);
   }
 
   render(){
@@ -23,9 +72,15 @@ export default class LoginScreen extends React.Component {
           <Text style={styles.Title}>Lost Dog</Text>
           <TextInput style={styles.inputtext} placeholder="Login" onChangeText={(x) => this.setState({login: x})}/>
           <TextInput style={styles.inputtext} placeholder="Password" onChangeText={(x) => this.setState({password: x})}/>
-          <TouchableOpacity style={styles.loginButton} onPress={() => this.loginButton()}>
+          {this.state.loadingState==false ?
+            <TouchableOpacity style={styles.loginButton} onPress={() => this.loginButton()}>
               <Text style={styles.logintext}>Login</Text>
             </TouchableOpacity>
+            :
+            <Text>
+                Loading ...
+            </Text>
+            }
         </View>
   )
   }
