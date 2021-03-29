@@ -15,6 +15,8 @@ namespace Backend.DataAccess.Dogs
         public Task<LostDog> AddLostDog(LostDog lostDog);
         public Task<LostDog> GetLostDogDetails(int dogId);
         public Task<bool> DeleteLostDog(int dogId);
+        public Task<bool> MarkDogAsFound(int dogId);
+
 
         public Task<List<LostDogComment>> GetLostDogComments(int dogId);
         public Task<LostDogComment> AddLostDogComment(LostDogComment comment);
