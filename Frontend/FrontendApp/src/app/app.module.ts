@@ -24,6 +24,7 @@ import { FooterComponent } from './Components/footer/footer.component';
 
 import { ErrorInterceptor } from './helpers/error-interceptor';
 import { JwtInterceptor } from './helpers/jwt-interceptor';
+import { RegisterUserComponent } from './register-user/register-user.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { JwtInterceptor } from './helpers/jwt-interceptor';
     HomePageComponent,
     HeaderComponent,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    RegisterUserComponent
   ],
   imports: [
     BrowserModule,
