@@ -22,11 +22,11 @@ namespace Backend.Controllers
     [ApiController]
     public class LostDogController : ControllerBase
     {
-        private readonly ILostDogService _lostDogService;
+        private readonly ILostDogService lostDogService;
 
         public LostDogController(ILostDogService lostDogService)
         {
-            _lostDogService = lostDogService;
+            this.lostDogService = lostDogService;
         }
 
         [HttpPost]
@@ -40,7 +40,7 @@ namespace Backend.Controllers
             if (!bindingSuccessful)
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to bind AddLostDogDto");
 
-            var serviceResponse = await _lostDogService.AddLostDog(addLostDogDto, image);
+            var serviceResponse = await lostDogService.AddLostDog(addLostDogDto, image);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
@@ -56,7 +56,7 @@ namespace Backend.Controllers
         [Route("{dogId}")]
         public async Task<IActionResult> DeleteLostDog(int dogId)
         {
-            var serviceResponse = await _lostDogService.DeleteLostDog(dogId);
+            var serviceResponse = await lostDogService.DeleteLostDog(dogId);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
@@ -76,14 +76,14 @@ namespace Backend.Controllers
         [Route("{dogId}")]
         public async Task<IActionResult> GetLostDogDetails(int dogId)
         {
-            var serviceResponse = await _lostDogService.GetLostDogDetails(dogId);
+            var serviceResponse = await lostDogService.GetLostDogDetails(dogId);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetLostDogs()
         {
-            var serviceResponse = await _lostDogService.GetLostDogs();
+            var serviceResponse = await lostDogService.GetLostDogs();
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
