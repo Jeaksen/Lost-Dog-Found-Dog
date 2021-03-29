@@ -49,6 +49,23 @@ namespace Backend.DataAccess.Dogs
             }
         }
 
+        public async Task<bool> MarkDogAsFound(int dogId)
+        {
+            try
+            {
+                var lostDog = await _dbContext.LostDogs.FindAsync(dogId);
+                if (lostDog == null || lostDog.IsFound)
+                    return false;
+                lostDog.IsFound = true;
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public async Task<LostDog> GetLostDogDetails(int dogId)
         {
             return await _dbContext.LostDogs.FindAsync(dogId);
