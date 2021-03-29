@@ -124,7 +124,7 @@ namespace Backend.Services.AuthenticationService
                     serviceResponse.Data = new AuthenticationResult()
                     {
                         UserType = userRole,
-                        UserId = user.Id,
+                        Id = user.Id,
                         Token = new JwtSecurityTokenHandler().WriteToken(token),
                     };
                 }

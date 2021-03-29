@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace Backend.Tests
+namespace Backend.Tests.Authentication
 {
     [Collection("Database collection")]
     public class AuthenticationTests
