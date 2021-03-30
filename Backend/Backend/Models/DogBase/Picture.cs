@@ -5,7 +5,7 @@ namespace Backend.Models.DogBase
     public class Picture
     {
         [Required]
-        [MaxLength(50)]
+        [MaxLength(150)]
         public string FileName { get; set; }
 
         [Required]
