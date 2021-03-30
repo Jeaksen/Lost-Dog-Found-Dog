@@ -169,14 +169,16 @@
         </div>
 
         <div>
-            <!-- <mat-card class="images-list">
-                <h2>Dog picture</h2>
-                <img >
-                <button mat-raised-button class="upload-button">Upload</button>
-            </mat-card> -->
+            <mat-card class="images-list">
+                <h2>Photo</h2>
+                <img [src]="url" id="dog_img" style="height: 80%; ">
 
-            <span>Select Image</span>
-            <input #imageInput type="file" accept="image/*" (change)="processFile(imageInput)">
+                <!-- <span>Select Image</span> -->
+                <!-- <button #imageInput mat-raised-button class="upload-button">Upload -->
+                    <input #imageInput type="file" accept="image/*" (change)="processFile(imageInput)" 
+                    class="img-input" lang="en" />
+                <!-- </button> -->
+            </mat-card>
         
             <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid">
                 Submit

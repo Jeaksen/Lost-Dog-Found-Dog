@@ -1,7 +1,7 @@
-<div>
-    <a  [routerLink]="['/home']">HOME</a>
-    <a  >SHELTERS</a>
-    <a  >SEARCH DOG</a>
+<div style="overflow: hidden;">
+    <a [routerLinkActive]="['active']" [routerLink]="['/home']">HOME</a>
+    <a [routerLinkActive]="['active']" >SHELTERS</a>
+    <a [routerLinkActive]="['active']" >SEARCH DOG</a>
     <div style="float: right;">
         <a (click)="onClick()" [routerLink]="['/login']">LOG OUT</a>
     </div>
