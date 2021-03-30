@@ -1,0 +1,29 @@
+<app-navbar></app-navbar>
+<div class="home-page"> 
+    <div class="container">
+        <h1>Welcome, User!</h1>
+        <div>
+            <button mat-raised-button (click)="onClick()">Register Lost Dog</button>
+            <button mat-raised-button >Edit Contact Info</button>
+        </div>
+    </div>
+    <h2 style="margin-left: 12px;">This site is under development. Your current options are limited.</h2>
+    
+    
+    <div class="grid">
+        <mat-card>
+            <h2 style="text-align: center;">Lost Dogs registered by me</h2>
+            <mat-list dense class="mat-list">
+                <mat-list-item *ngFor="let lostdog of lostDogs">
+                    <img src="assets/doge.jpg" height=50>
+                    <mat-label class="item-label">{{lostdog.name}} ({{lostdog.breed}}),</mat-label>
+                    <mat-label class="item-label">Lost on {{lostdog.dateLost | date:'longDate'}}</mat-label>
+                    <button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id)" mat-raised-button class="list-button">
+                        Mark as Found
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </mat-card>
+    </div>
+</div>
+

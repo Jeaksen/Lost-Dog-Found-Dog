@@ -1,0 +1,26 @@
+:host { 
+    /* background: #9154f3; */
+    /* background:#9900cc; */
+    /* background-size:cover; width:auto;
+    background-position: center center; */
+    background-image: url('/assets/webBackground.jpg');
+    color: whitesmoke;
+
+    border-top: 0px solid#9900cc;
+    font-size: 50px;
+    font-weight: 500;
+    line-height: 49px;
+    border-bottom-width: 1px;
+    padding: 0 34px;
+    padding-top: 30px;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.image {
+    background-image: url('/assets/webBackground.jpg');
+}

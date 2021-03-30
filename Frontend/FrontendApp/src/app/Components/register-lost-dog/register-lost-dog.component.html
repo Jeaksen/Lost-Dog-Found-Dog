@@ -1,1 +1,190 @@
-<p>register-lost-dog works!</p>
+<app-navbar></app-navbar>
+<div style="padding: 3px 19px;">
+<mat-card id="card" style="text-align: center;">
+    <h1>
+        Register Lost Dog
+    </h1>
+    <form [formGroup]="registerLostDogForm" (ngSubmit)="onSubmit()" class="grid">
+        <div>
+            <div class="container">
+            <label>Dog's name</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Name</mat-label>
+                <input type="text" matInput formControlName="name" placeholder="Name">
+                <mat-error *ngIf="registerLostDogForm.get('name')?.hasError('required')">
+                    The name is required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+
+            <div class="container">
+            <label>Breed</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Breed</mat-label>
+                <input type="text" matInput formControlName="breed" placeholder="Breed">
+                <mat-error *ngIf="registerLostDogForm.get('breed')?.hasError('required')">
+                    Breed is required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+
+            <div class="container">
+            <label>Age</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Age</mat-label>
+                <input type="number" matInput formControlName="age" placeholder="Age">
+                <mat-error *ngIf="registerLostDogForm.get('age')?.hasError('required')">
+                    Age is required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+        
+            <div class="container">
+            <label>Color</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Color</mat-label>
+                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'color')">
+                        <mat-option *ngFor="let color of dogColors" [value]="color">
+                            {{color}}
+                        </mat-option>
+                    </mat-select>
+                <mat-error *ngIf="registerLostDogForm.get('color')?.hasError('required')">
+                    Color is required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+
+            <div class="container">
+            <label>Ears</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Ears</mat-label>
+                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'earsType')">
+                        <mat-option *ngFor="let ears of dogEars" [value]="ears">
+                            {{ears}}
+                        </mat-option>
+                    </mat-select>
+                <mat-error *ngIf="registerLostDogForm.get('ears')?.hasError('required')">
+                    Ears are required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+
+            <div class="container">
+            <label>Hair</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Hair</mat-label>
+                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hairLength')">
+                        <mat-option *ngFor="let hair of dogHair" [value]="hair">
+                            {{hair}}
+                        </mat-option>
+                    </mat-select>
+                <mat-error *ngIf="registerLostDogForm.get('hair')?.hasError('required')">
+                    Hair is required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+
+            <div class="container">
+            <label>Size</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Size</mat-label>
+                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'size')">
+                        <mat-option *ngFor="let size of dogSizes" [value]="size">
+                            {{size}}
+                        </mat-option>
+                    </mat-select>
+                <mat-error *ngIf="registerLostDogForm.get('size')?.hasError('required')">
+                    Size is required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+
+            <div class="container">
+            <label>Tail</label>
+            <mat-form-field  appearance="standard">
+                <mat-label>Tail</mat-label>
+                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tailLength')">
+                        <mat-option *ngFor="let tail of dogTails" [value]="tail">
+                            {{tail}}
+                        </mat-option>
+                    </mat-select>
+                <mat-error *ngIf="registerLostDogForm.get('tail')?.hasError('required')">
+                    Tail is required
+                </mat-error>
+            </mat-form-field><br>
+            </div>
+        </div>
+
+        <div>
+            <div class="container">
+                <label>Date Lost</label>
+                <mat-form-field  appearance="standard">
+                    <mat-label>Choose a date</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="dateLost" placeholder="Choose a date">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="registerLostDogForm.get('dateLost')?.hasError('required')">
+                        Date is required
+                    </mat-error>
+                </mat-form-field><br>
+            </div>
+
+            <div class="container">
+                <label>Special marks</label>
+                <mat-form-field  appearance="standard">
+                    <mat-label>Special marks</mat-label>
+                    <textarea matInput placeholder="Describe special marks" formControlName="specialMarks"></textarea> 
+                </mat-form-field><br>
+            </div>
+
+            <div class="container">
+                <label>Behaviour</label>
+                <mat-form-field  appearance="standard">
+                    <mat-label>Behaviour</mat-label>
+                    <textarea matInput placeholder="Describe special behaviours" formControlName="behaviour"></textarea> 
+                </mat-form-field><br>
+            </div>
+
+            <div class="container">
+                <label>Location</label>
+                <mat-form-field  appearance="standard">
+                    <mat-label>City</mat-label>
+                    <input matInput placeholder="Enter city" formControlName="locationCity"> 
+                    <mat-error *ngIf="registerLostDogForm.get('locationCity')?.hasError('required')">
+                        City is required
+                    </mat-error>
+                </mat-form-field><br>
+            </div>
+            <div class="container">
+                <label></label>
+                <mat-form-field  appearance="standard">
+                    <mat-label>District</mat-label>
+                    <input matInput placeholder="Enter district" formControlName="locationDistrict"> 
+                    <mat-error *ngIf="registerLostDogForm.get('locationDistrict')?.hasError('required')">
+                        District is required
+                    </mat-error>
+                </mat-form-field><br>
+            </div>
+            
+        </div>
+
+        <div>
+            <mat-card class="images-list">
+                <h2>Photo</h2>
+                <img [src]="url" id="dog_img" style="height: 80%; ">
+
+                <!-- <span>Select Image</span> -->
+                <!-- <button #imageInput mat-raised-button class="upload-button">Upload -->
+                    <input #imageInput type="file" accept="image/*" (change)="processFile(imageInput)" 
+                    class="img-input" lang="en" />
+                <!-- </button> -->
+            </mat-card>
+        
+            <button mat-raised-button type="submit" [disabled]="!registerLostDogForm.valid">
+                Submit
+            </button>
+            <button mat-raised-button (click)="onCancel()">Cancel</button>
+        </div>
+    </form>
+</mat-card>
+</div>
