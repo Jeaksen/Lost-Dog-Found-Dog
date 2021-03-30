@@ -1,0 +1,34 @@
+app-root {
+    height: 100%;
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px max-content 1fr max-content;
+    grid-template-areas:
+      "header"
+      "navbar"
+      "main"
+      "footer";
+}
+
+app-header {
+    grid-area: header;
+}
+
+app-navbar {
+    grid-area: navbar;
+}
+
+router-outlet + * {
+    grid-area: main;
+}
+
+app-footer {
+    grid-area: footer;
+}
+
+.mat-button, .mat-raised-button{
+    background-color:#8c1aff;
+    color: whitesmoke;
+} 

@@ -17,18 +17,18 @@ namespace Backend.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAccountService _accountService;
+        private readonly IAccountService accountService;
 
         public AccountController(IAccountService accountService)
         {
-            _accountService = accountService;
+            this.accountService = accountService;
         }
 
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> AddAccount(AddAccountDto _account)
         {
-            var result = await _accountService.AddAccount(_account);
+            var result = await accountService.AddAccount(_account);
             result.Data = null;
             return StatusCode(result.StatusCode, result);
         }
@@ -37,7 +37,7 @@ namespace Backend.Controllers
         [Route("login")]
         public async Task<IActionResult> Authenticate(LoginDto _account)
         {
-            var result = await _accountService.Authenticate(_account);
+            var result = await accountService.Authenticate(_account);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -46,7 +46,7 @@ namespace Backend.Controllers
         [Route("users/{id}")]
         public async Task<IActionResult> GetAccountById(int id)
         {
-            var result = await _accountService.GetAccountById(id);
+            var result = await accountService.GetAccountById(id);
             return StatusCode(result.StatusCode, result);
         }
 
@@ -55,7 +55,7 @@ namespace Backend.Controllers
         [Route("admin/users")]
         public async Task<IActionResult> GetAllUserAccounts()
         {
-            var result = await _accountService.GetAllAccountsForRole(AccountRoles.User);
+            var result = await accountService.GetAllAccountsForRole(AccountRoles.User);
             return StatusCode(result.StatusCode, result);
         }
 

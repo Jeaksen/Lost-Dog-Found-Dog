@@ -15,21 +15,61 @@ namespace Backend.Services.LostDogService
 {
     public class LostDogService : ILostDogService
     {
-        private readonly ILostDogRepository _lostDogDataRepository;
-        private readonly IMapper _mapper;
-        private readonly ILogger<LostDogService> _logger;
+        private readonly ILostDogRepository lostDogDataRepository;
+        private readonly IMapper mapper;
+        private readonly ILogger<LostDogService> logger;
 
         public LostDogService(ILostDogRepository lostDogDataRepository, IMapper mapper, ILogger<LostDogService> logger)
         {
-            _lostDogDataRepository = lostDogDataRepository;
-            _mapper = mapper;
-            _logger = logger;
+            this.lostDogDataRepository = lostDogDataRepository;
+            this.mapper = mapper;
+            this.logger = logger;
+        }
+
+
+        public async Task<ServiceResponse<List<LostDog>>> GetLostDogs()
+        {
+            ServiceResponse<List<LostDog>> serviceResponse = new ServiceResponse<List<LostDog>>();
+            serviceResponse.Data = await lostDogDataRepository.GetLostDogs();
+            if (serviceResponse.Data == null)
+            {
+                serviceResponse.Successful = false;
+                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.Message = "Failed to Get List of Lost Dogs!";
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<LostDog>>> GetUserLostDogs(int ownerId)
+        {
+            ServiceResponse<List<LostDog>> serviceResponse = new ServiceResponse<List<LostDog>>();
+            serviceResponse.Data = await lostDogDataRepository.GetUserLostDogs(ownerId);
+            if (serviceResponse.Data == null)
+            {
+                serviceResponse.Successful = false;
+                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.Message = "Failed to Get List of User's LostDogs!";
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<LostDog>> GetLostDogDetails(int dogId)
+        {
+            ServiceResponse<LostDog> serviceResponse = new ServiceResponse<LostDog>();
+            serviceResponse.Data = await lostDogDataRepository.GetLostDogDetails(dogId);
+            if (serviceResponse.Data == null)
+            {
+                serviceResponse.Successful = false;
+                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.Message = "Failed to Get Dog!";
+            }
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDogDto, IFormFile picture)
         {
             ServiceResponse<LostDog> serviceResponse = new ServiceResponse<LostDog>();
-            LostDog lostDog = _mapper.Map<LostDog>(lostDogDto);
+            LostDog lostDog = mapper.Map<LostDog>(lostDogDto);
             byte[] data;
             if (picture?.Length > 0)
             {
@@ -44,7 +84,7 @@ namespace Backend.Services.LostDogService
                     FileType = picture.ContentType,
                     Data = data
                 };
-                serviceResponse.Data = await _lostDogDataRepository.AddLostDog(lostDog);
+                serviceResponse.Data = await lostDogDataRepository.AddLostDog(lostDog);
                 if (serviceResponse.Data == null)
                 {
                     serviceResponse.Successful = false;
@@ -64,16 +104,19 @@ namespace Backend.Services.LostDogService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto commentDto)
+        public async Task<ServiceResponse<bool>> MarkLostDogAsFound(int dogId)
         {
-            ServiceResponse<LostDogComment> serviceResponse = new ServiceResponse<LostDogComment>();
-            LostDogComment comment = _mapper.Map<LostDogComment>(commentDto);
-            serviceResponse.Data = await _lostDogDataRepository.AddLostDogComment(comment);
-            if (serviceResponse.Data == null)
+            ServiceResponse<bool> serviceResponse = new ServiceResponse<bool>();
+            serviceResponse.Data = await lostDogDataRepository.MarkDogAsFound(dogId);
+
+            if (serviceResponse.Data == false)
             {
                 serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                serviceResponse.Message = "Failed to Add Comment to the Dog!";
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                serviceResponse.Message = "Failed to mark dog as found!";
+            } else
+            {
+                serviceResponse.Message = $"Lost Dog with id {dogId} marked as found";
             }
             return serviceResponse;
         }
@@ -81,7 +124,7 @@ namespace Backend.Services.LostDogService
         public async Task<ServiceResponse<bool>> DeleteLostDog(int dogId)
         {
             ServiceResponse<bool> serviceResponse = new ServiceResponse<bool>();
-            serviceResponse.Data = await _lostDogDataRepository.DeleteLostDog(dogId);
+            serviceResponse.Data = await lostDogDataRepository.DeleteLostDog(dogId);
             if (serviceResponse.Data == false)
             {
                 serviceResponse.Successful = false;
@@ -94,7 +137,7 @@ namespace Backend.Services.LostDogService
         public async Task<ServiceResponse<LostDogComment>> EditLostDogComment(LostDogComment comment)
         {
             ServiceResponse<LostDogComment> serviceResponse = new ServiceResponse<LostDogComment>();
-            serviceResponse.Data = await _lostDogDataRepository.EditLostDogComment(comment);
+            serviceResponse.Data = await lostDogDataRepository.EditLostDogComment(comment);
             if (serviceResponse.Data == null)
             {
                 serviceResponse.Successful = false;
@@ -107,7 +150,7 @@ namespace Backend.Services.LostDogService
         public async Task<ServiceResponse<List<LostDogComment>>> GetLostDogComments(int dogId)
         {
             ServiceResponse<List<LostDogComment>> serviceResponse = new ServiceResponse<List<LostDogComment>>();
-            serviceResponse.Data = await _lostDogDataRepository.GetLostDogComments(dogId);
+            serviceResponse.Data = await lostDogDataRepository.GetLostDogComments(dogId);
             if (serviceResponse.Data == null)
             {
                 serviceResponse.Successful = false;
@@ -117,43 +160,20 @@ namespace Backend.Services.LostDogService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LostDog>> GetLostDogDetails(int dogId)
+        public async Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto commentDto)
         {
-            ServiceResponse<LostDog> serviceResponse = new ServiceResponse<LostDog>();
-            serviceResponse.Data = await _lostDogDataRepository.GetLostDogDetails(dogId);
+            ServiceResponse<LostDogComment> serviceResponse = new ServiceResponse<LostDogComment>();
+            LostDogComment comment = mapper.Map<LostDogComment>(commentDto);
+            serviceResponse.Data = await lostDogDataRepository.AddLostDogComment(comment);
             if (serviceResponse.Data == null)
             {
                 serviceResponse.Successful = false;
                 serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                serviceResponse.Message = "Failed to Get Dog!";
+                serviceResponse.Message = "Failed to Add Comment to the Dog!";
             }
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<LostDog>>> GetLostDogs()
-        {
-            ServiceResponse<List<LostDog>> serviceResponse = new ServiceResponse<List<LostDog>>();
-            serviceResponse.Data = await _lostDogDataRepository.GetLostDogs();
-            if (serviceResponse.Data == null)
-            {
-                serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                serviceResponse.Message = "Failed to Get List of Lost Dogs!";
-            }
-            return serviceResponse;
-        }
 
-        public async Task<ServiceResponse<List<LostDog>>> GetUserLostDogs(int ownerId)
-        {
-            ServiceResponse<List<LostDog>> serviceResponse = new ServiceResponse<List<LostDog>>();
-            serviceResponse.Data = await _lostDogDataRepository.GetUserLostDogs(ownerId);
-            if (serviceResponse.Data == null)
-            {
-                serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                serviceResponse.Message = "Failed to Get List of User's LostDogs!";
-            }
-            return serviceResponse;
-        }
     }
 }
