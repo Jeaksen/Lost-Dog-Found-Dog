@@ -29,6 +29,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> AddAccount(AddAccountDto _account)
         {
             var result = await _accountService.AddAccount(_account);
+            result.Data = null;
             return StatusCode(result.StatusCode, result);
         }
 

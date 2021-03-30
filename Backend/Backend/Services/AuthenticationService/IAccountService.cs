@@ -11,7 +11,7 @@ namespace Backend.Services.AuthenticationService
     {
         Task<ServiceResponse<IList<Account>>> GetAllAccountsForRole(string role);
         Task<ServiceResponse<Account>> GetAccountById(int id);
-        Task<ServiceResponse<bool>> AddAccount(AddAccountDto _account);
+        Task<ServiceResponse<Account>> AddAccount(AddAccountDto _account);
         Task<ServiceResponse<AuthenticationResult>> Authenticate(LoginDto loginDto);
     }
 }
