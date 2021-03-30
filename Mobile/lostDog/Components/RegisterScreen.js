@@ -15,7 +15,7 @@ export default class RegisterScreen extends React.Component {
   registerButton = ()=>{
 
     console.log("Register: "+ this.state.email + " password: "+ this.state.password + " password: "+ this.state.Name + " Phone: "+ this.state.Phone);
-    this.props.swtichPage(0);
+    this.props.Navi.swtichPage(0);
   }
 
   render(){
@@ -29,6 +29,7 @@ export default class RegisterScreen extends React.Component {
           <TouchableOpacity style={styles.loginButton} onPress={() => this.registerButton()}>
               <Text style={styles.logintext}>Sign in</Text>
             </TouchableOpacity>
+            
         </View>
   )
   }

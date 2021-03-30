@@ -19,7 +19,7 @@ export default class LoginScreen extends React.Component {
     console.log("login: "+ name + " password: "+ pass);
 
     this.setState({loadingState: true})
-    fetch('http://10.0.2.2:5000/login', {
+    fetch(this.props.Navi.URL + 'login', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
@@ -30,40 +30,27 @@ export default class LoginScreen extends React.Component {
         })
         .then(response => {
           if (response.status == 404 || response.status == 401) {
-              Alert.alert(
-                'Access denied',
-                'Invalid username or password',
-                [
-                  {text: 'OK'},
-                ],
-                {cancelable: true},
-              )
+              /* Wrong input reaction */
+              console.log("Wrong input Reaction");
               return null;
           }
           else if (response.status == 200) {
               return response.json();
             }
           else{
-            Alert.alert(
-              'An error occured',
-              'Error ' + response.status,
-              [
-                {text: 'OK'},
-              ],
-              {cancelable: true},
-            )
+            /* Wrong input reaction */
+            console.log("Wrong input Reaction");
             return null;
           }
           })
           .then(responseData => {
             if (responseData != null) 
             {
-              console.log(responseData.data.token);
-              this.props.swtichPage(0);
+              console.log(" SUCCESS !")
+              this.props.Navi.setToken(responseData.data.token,responseData.data.id);
+              this.props.Navi.swtichPage(0);
             } 
           })
-
-    //this.props.swtichPage(0);
   }
 
   render(){
@@ -125,5 +112,6 @@ Title:{
   fontSize: 20,
   textAlign: 'center',
   fontWeight: 'bold',
-}
+},
+
 });

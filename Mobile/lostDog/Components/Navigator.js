@@ -6,7 +6,8 @@ import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import Header from './Helpers/Header';
 import ExamplePage from './ExamplePage';
-//import DogList from './DogList';
+import DogList from './DogList';
+import RegisterNewDog from './RegisterNewDog';
 
 const {width, height} = Dimensions.get("screen")
 const speed=350;
@@ -16,15 +17,17 @@ var pos_right=delta;
 var moveDirection=1;
 
 const Headers=[
-  /*Example page */[{id: "1",title: "logout",},{id: "0",title: "Main",},{id: "3",title: "DogList",},{id: "0",title: "Page2",}], 
+  /*Example page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}], 
   /*Login page   */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],                                                    
   /*Registe page */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],  
-  /*DogList page */[{id: "1",title: "logout",},{id: "0",title: "Main",},{id: "3",title: "DogList",},{id: "0",title: "Page2",}],
+  /*DogList page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
+  /*Register new dog page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
 ]
 
 export default class Navigator extends React.Component {
   state={
-    Token: "",
+    token: "",
+    id: "",
     switchAnim: new Animated.Value(0),
     fadeAnim: new Animated.Value(1),
     navimMainPanel_pos: 0,
@@ -32,6 +35,12 @@ export default class Navigator extends React.Component {
     currentViewID: 1,
     HeaderVisible: true,
     }
+    NaviData={
+      URL: 'http://10.0.2.2:5000/',
+      swtichPage: (pageID) => this.swtichPage(pageID),
+      setToken: (token,id,mode) => this.setToken(token,id,mode),
+    }
+    
     constructor(props)
     {
       super(props);
@@ -95,10 +104,16 @@ swtichPage= (indx)=>{
   if(indx != this.state.currentViewID)
     this.moveLeft(indx);
 }
-setToken=(newToken)=>{
-if(newToken=="CLEAR"){/*reset token, to be implemented*/}
+setToken=(newToken,id,mode="UPDATE")=>{
+if(mode=="CLEAR"){
+  this.setState({token: ""});
+  this.setState({id: ""});
+}
 else{
-  this.setState({Token: newToken});
+  console.log("Setting new token: "+ newToken);
+  console.log("Setting new ID: "+ id);
+  this.setState({token: newToken});
+  this.setState({id: id});
 }
 }
 
@@ -109,15 +124,19 @@ ViewContent = (indx)=>{
   }
   else if(indx==1)
   {
-    return (<LoginScreen    swtichPage={this.swtichPage} setToken={this.setToken}/>);
+    return (<LoginScreen    Navi={this.NaviData}/>);
   }
   else if(indx==2)
   {
-    return (<RegisterScreen swtichPage={this.swtichPage} setToken={this.setToken}/>);
+    return (<RegisterScreen Navi={this.NaviData}/>);
   }
   else if(indx==3)
   {
-   // return (<DogList        swtichPage={this.swtichPage} setToken={this.setToken}  Token={this.state.Token}/>);
+    return (<DogList        Navi={this.NaviData} token={this.state.token} id={this.state.id}/>);
+  }
+  else if(indx==4)
+  {
+    return (<RegisterNewDog Navi={this.NaviData} token={this.state.token} id={this.state.id}/>);
   }
 }
 render(){

@@ -8,7 +8,7 @@ const ExampleDATA = [{id: "1",title: "Login",},{id: "2",title: "Sign in",}];
 
 export default class Header extends React.Component {
   state={
-    DATA: [{id: "1",title: "Login",},{id: "2",title: "Sign in",}],
+    DATA: [{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],
     SHOW: true,
   }
 
