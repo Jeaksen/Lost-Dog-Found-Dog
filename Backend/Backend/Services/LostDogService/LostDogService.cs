@@ -31,7 +31,7 @@ namespace Backend.Services.LostDogService
             ServiceResponse<LostDog> serviceResponse = new ServiceResponse<LostDog>();
             LostDog lostDog = _mapper.Map<LostDog>(lostDogDto);
             byte[] data;
-            if (picture.Length > 0)
+            if (picture?.Length > 0)
             {
                 using (var ms = new MemoryStream())
                 {
