@@ -54,20 +54,20 @@ namespace Backend.Services.AuthenticationService
             return true;
         }
 
-        public async Task<ServiceResponse<Account>> AddAccount(AddAccountDto _account)
+        public async Task<ServiceResponse<bool>> AddAccount(AddAccountDto _account)
         {
             var userExists = await _userManager.FindByNameAsync(_account.UserName);
             if (userExists != null)
-                return new ServiceResponse<Account>() { Data = null, StatusCode = StatusCodes.Status400BadRequest, Successful = false, Message = "User already exists!" };
+                return new ServiceResponse<bool>() { Data = false, StatusCode = StatusCodes.Status400BadRequest, Successful = false, Message = "User already exists!" };
             Account account = _mapper.Map<Account>(_account);
             account.SecurityStamp = Guid.NewGuid().ToString();
             var result = await _userManager.CreateAsync(account, _account.Password);
             if (!result.Succeeded)
-                return new ServiceResponse<Account>() { Data = null, StatusCode = StatusCodes.Status400BadRequest, Successful = false, Message = "User creation failed! Please check user details and try again." };
+                return new ServiceResponse<bool>() { Data = false, StatusCode = StatusCodes.Status400BadRequest, Successful = false, Message = "User creation failed! Please check user details and try again." };
 
             await _userManager.AddToRoleAsync(account, AccountRoles.User);
 
-            return new ServiceResponse<Account>() { Data = account, StatusCode = StatusCodes.Status201Created, Successful = true, Message = "User created successfully!" };
+            return new ServiceResponse<bool>() { Data = true, StatusCode = StatusCodes.Status201Created, Successful = true, Message = "User created successfully!" };
         }
 
         public async Task<ServiceResponse<Account>> GetAccountById(int id)
