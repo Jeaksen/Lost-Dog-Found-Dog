@@ -5,6 +5,7 @@ export class LostDog extends Dog {
     ownerId: number;
     location: Location;
     dateLost: Date;
+    isFound: boolean;
 
     constructor(name: string, breed: string, age: number, size: string, color: string, specialMark: string, hairLength: string,
         earsType: string, tailLength: string, behaviors: string[], ownerId: number, location: Location, dateLost: Date) 
@@ -13,5 +14,6 @@ export class LostDog extends Dog {
         this.ownerId = ownerId;
         this.location = location;
         this.dateLost = dateLost;
+        this.isFound = false;
     }
 }

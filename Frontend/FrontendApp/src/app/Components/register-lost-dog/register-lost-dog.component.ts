@@ -100,6 +100,7 @@ export class RegisterLostDogComponent implements OnInit {
     this.registerLostDogForm.get(controlName)?.setValue(event.value);
   }
 
+  url!: any;
   processFile(imageInput: any) {
     const file: File = imageInput.files[0];
     const reader = new FileReader();
@@ -107,8 +108,13 @@ export class RegisterLostDogComponent implements OnInit {
     reader.addEventListener('load', (event: any) => {
       this.selectedFile = new ImageSnippet(event.target.result, file);
     });
-
+    
     reader.readAsDataURL(file);
+    console.log("XD");
+    reader.onload = (event:any) => {
+      this.url = reader.result;
+      console.log(this.url);
+    }
   }
 
 }
