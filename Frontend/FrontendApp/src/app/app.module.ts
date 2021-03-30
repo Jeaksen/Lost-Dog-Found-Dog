@@ -24,7 +24,7 @@ import { FooterComponent } from './Components/footer/footer.component';
 
 import { ErrorInterceptor } from './helpers/error-interceptor';
 import { JwtInterceptor } from './helpers/jwt-interceptor';
-import { RegisterUserComponent } from './register-user/register-user.component';
+import { RegisterUserComponent } from './Components/register-user/register-user.component';
 
 @NgModule({
   declarations: [

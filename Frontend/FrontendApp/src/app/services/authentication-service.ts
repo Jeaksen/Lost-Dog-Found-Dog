@@ -2,7 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { LoginRequest } from '../models/login-request';
-import { LoginResponse } from '../models/responses';
+import { RegisterUserRequest } from '../models/register-user-request';
+import { LoginResponse, RegisterUserResponse } from '../models/responses';
 import { environment } from '../environments/environment-dev';
 
 @Injectable({ providedIn: 'root' })
@@ -25,6 +26,7 @@ export class AuthenticationService {
         return this.http.post<LoginResponse>(this.url + 'login', new LoginRequest(name, pass))
             .pipe(map(response => {
                 localStorage.setItem('authToken', response.data.token);
+                localStorage.setItem('userId', response.data.id.toString());
                 console.log(response)
                 return response;
             }));
@@ -32,5 +34,14 @@ export class AuthenticationService {
 
     logout() {
         localStorage.removeItem('authToken');
+    }
+
+    register(request: RegisterUserRequest) {
+        console.log(request)
+        return this.http.post<RegisterUserResponse>(this.url + 'register', request)
+            .pipe(map(response => {
+                console.log(response)
+                return response;
+            }));
     }
 }

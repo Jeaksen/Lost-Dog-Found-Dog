@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LostDog } from '../../models/lost-dog';
 import { LostDogService } from '../../services/lost-dog-service';
+import { AuthenticationService } from '../../services/authentication-service';
 
 @Component({
   selector: 'app-home-page',
@@ -13,7 +14,8 @@ export class HomePageComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private lostDogService: LostDogService) { }
+    private lostDogService: LostDogService,
+    private authenticationService: AuthenticationService) { }
 
   getLostDogs(): void {
     this.lostDogService.getAllLostDogs()
@@ -23,10 +25,21 @@ export class HomePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!this.authenticationService.loggedIn) {
+      this.router.navigate(['/login']);
+    }
     this.getLostDogs();
   }
 
   onClick() {
     this.router.navigate(['/register-lost-dog']);
+  }
+
+  onMarkAsFoundClick(lostDogId: number) {
+    this.lostDogService.MarkLostDogAsFound(lostDogId)
+      .subscribe(response => {
+        console.log(response);
+        this.lostDogs!.find(dog => dog.id === lostDogId)!.isFound = true;
+      });
   }
 }

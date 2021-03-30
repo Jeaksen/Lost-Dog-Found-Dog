@@ -1,13 +1,17 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { LostDogsResponse, PostLostDogResponse } from '../models/responses';
+import { LostDogsResponse, PostLostDogResponse, MarkLostDogAsFoundResponse } from '../models/responses';
 import { environment } from '../environments/environment-dev';
 import { Observable, of } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class LostDogService {
     private url = environment.apiUrl;
+
+    httpOptions = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
 
     constructor(private http: HttpClient) {
     }
@@ -35,6 +39,17 @@ export class LostDogService {
                     console.log(_);
                 }),
                 catchError(this.handleError<PostLostDogResponse>('postLostDog'))
+            );
+    }
+
+    MarkLostDogAsFound(lostDogId: number): Observable<MarkLostDogAsFoundResponse> {
+        return this.http.put<MarkLostDogAsFoundResponse>(this.url + `lostdogs/${lostDogId}/found`, '', this.httpOptions)
+            .pipe(
+                tap(_ => {
+                    this.log('marked a lost dog as found');
+                    console.log(_);
+                }),
+                catchError(this.handleError<MarkLostDogAsFoundResponse>('postLostDog', undefined))
             );
     }
 

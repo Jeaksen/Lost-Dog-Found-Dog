@@ -3,3 +3,6 @@ export interface LoginData {
     id: number;
     token: string;
 }
+
+export interface RegisterUserData {
+}

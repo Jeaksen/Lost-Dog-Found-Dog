@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private authenticationService: AuthenticationService) {
       if (this.authenticationService.loggedIn) { 
-        this.router.navigate(['/']);
+        this.router.navigate(['/home']);
       }
     }
 
@@ -40,5 +40,9 @@ export class LoginComponent implements OnInit {
         error => {
 
         });
+  }
+
+  onSignUpClick() {
+    this.router.navigate(['/register']);
   }
 }
