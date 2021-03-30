@@ -31,7 +31,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile image)
+        public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile picture)
         {
             var addLostDogDto = new AddLostDogDto();
             var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
@@ -40,7 +40,7 @@ namespace Backend.Controllers
             if (!bindingSuccessful)
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to bind AddLostDogDto");
 
-            var serviceResponse = await _lostDogService.AddLostDog(addLostDogDto, image);
+            var serviceResponse = await _lostDogService.AddLostDog(addLostDogDto, picture);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 

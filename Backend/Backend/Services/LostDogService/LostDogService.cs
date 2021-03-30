@@ -26,22 +26,22 @@ namespace Backend.Services.LostDogService
             _logger = logger;
         }
 
-        public async Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDogDto, IFormFile image)
+        public async Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDogDto, IFormFile picture)
         {
             ServiceResponse<LostDog> serviceResponse = new ServiceResponse<LostDog>();
             LostDog lostDog = _mapper.Map<LostDog>(lostDogDto);
             byte[] data;
-            if (image.Length > 0)
+            if (picture.Length > 0)
             {
                 using (var ms = new MemoryStream())
                 {
-                    image.CopyTo(ms);
+                    picture.CopyTo(ms);
                     data = ms.ToArray();
                 }
                 lostDog.Picture = new Picture()
                 {
-                    FileName = image.FileName,
-                    FileType = image.ContentType,
+                    FileName = picture.FileName,
+                    FileType = picture.ContentType,
                     Data = data
                 };
                 serviceResponse.Data = await _lostDogDataRepository.AddLostDog(lostDog);
