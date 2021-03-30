@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LostDog } from '../../models/lost-dog';
 import { LostDogService } from '../../services/lost-dog-service';
 import { AuthenticationService } from '../../services/authentication-service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home-page',
@@ -11,9 +12,11 @@ import { AuthenticationService } from '../../services/authentication-service';
 })
 export class HomePageComponent implements OnInit {
   lostDogs?: LostDog[];
+  imagePath?: string;
 
   constructor(
     private router: Router,
+    private sanitizer: DomSanitizer,
     private lostDogService: LostDogService,
     private authenticationService: AuthenticationService) { }
 
