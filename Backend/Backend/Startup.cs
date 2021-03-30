@@ -89,12 +89,6 @@ namespace Backend
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend v1"));
             }
 
-            app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true)
-                .AllowCredentials());
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
