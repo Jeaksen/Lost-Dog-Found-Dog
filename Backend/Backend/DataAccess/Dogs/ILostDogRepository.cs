@@ -10,17 +10,17 @@ namespace Backend.DataAccess.Dogs
 {
     public interface ILostDogRepository
     {
-        public Task<List<LostDog>> GetLostDogs();
-        public Task<List<LostDog>> GetUserLostDogs(int ownerId);
-        public Task<LostDog> AddLostDog(LostDog lostDog);
-        public Task<LostDog> GetLostDogDetails(int dogId);
-        public Task<bool> DeleteLostDog(int dogId);
-        public Task<bool> MarkDogAsFound(int dogId);
+        public Task<RepositoryResponse<List<LostDog>>> GetLostDogs();
+        public Task<RepositoryResponse<List<LostDog>>> GetUserLostDogs(int ownerId);
+        public Task<RepositoryResponse<LostDog>> AddLostDog(LostDog lostDog);
+        public Task<RepositoryResponse<LostDog>> GetLostDogDetails(int dogId);
+        public Task<RepositoryResponse<bool>> DeleteLostDog(int dogId);
+        public Task<RepositoryResponse<bool>> MarkDogAsFound(int dogId);
 
 
-        public Task<List<LostDogComment>> GetLostDogComments(int dogId);
-        public Task<LostDogComment> AddLostDogComment(LostDogComment comment);
-        public Task<LostDogComment> EditLostDogComment(LostDogComment comment);
+        public Task<RepositoryResponse<List<LostDogComment>>> GetLostDogComments(int dogId);
+        public Task<RepositoryResponse<LostDogComment>> AddLostDogComment(LostDogComment comment);
+        public Task<RepositoryResponse<LostDogComment>> EditLostDogComment(LostDogComment comment);
 
     }
 }

@@ -45,7 +45,7 @@ namespace Backend.Tests.LostDogs
                 Comments = new List<LostDogComment>()
             };
             var result = await lostDogRepository.AddLostDog(saveDog);
-            Assert.NotNull(result);
+            Assert.True(result.Successful);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace Backend.Tests.LostDogs
                 Comments = new List<LostDogComment>()
             };
             var result = await lostDogRepository.AddLostDog(saveDogDog);
-            Assert.Null(result);
+            Assert.False(result.Successful);
         }
 
         [InlineData(1)]
@@ -82,7 +82,7 @@ namespace Backend.Tests.LostDogs
         public async void GettingLostDogsForUserOneSuccessful(int userId)
         {
             var result = await lostDogRepository.GetUserLostDogs(userId);
-            Assert.NotNull(result);
+            Assert.True(result.Successful);
         }
 
         [InlineData(1)]
@@ -90,7 +90,7 @@ namespace Backend.Tests.LostDogs
         public async void GettingLostDogDetailsForDogOneSuccessful(int dogId)
         {
             var result = await lostDogRepository.GetLostDogDetails(dogId);
-            Assert.NotNull(result);
+            Assert.True(result.Successful);
         }
 
         [Fact]
@@ -121,13 +121,13 @@ namespace Backend.Tests.LostDogs
             };
 
             var dog = await lostDogRepository.AddLostDog(saveDog);
-            Assert.NotNull(dog);
+            Assert.True(dog.Successful);
 
-            var result = await lostDogRepository.DeleteLostDog(dog.Id);
-            Assert.True(result);
+            var result = await lostDogRepository.DeleteLostDog(dog.Data.Id);
+            Assert.True(result.Successful);
 
-            dog = await lostDogRepository.GetLostDogDetails(dog.Id);
-            Assert.Null(dog);
+            dog = await lostDogRepository.GetLostDogDetails(dog.Data.Id);
+            Assert.False(dog.Successful);
         }
 
         [Fact]
@@ -135,14 +135,17 @@ namespace Backend.Tests.LostDogs
         {
             var savedDogs = await lostDogRepository.GetLostDogs();
 
-            Assert.NotEmpty(savedDogs);
-            Assert.True(await lostDogRepository.MarkDogAsFound(savedDogs.First().Id));
+            Assert.True(savedDogs.Successful);
+            Assert.NotEmpty(savedDogs.Data);
+            var response = await lostDogRepository.MarkDogAsFound(savedDogs.Data.First().Id);
+            Assert.True(response.Successful);
         }
 
         [Fact]
         public async void MarkingLostDogAsFoundFailsForNonExistingDog()
         {
-            Assert.False(await lostDogRepository.MarkDogAsFound(-1));
+            var response = await lostDogRepository.MarkDogAsFound(-1);
+            Assert.False(response.Successful);
         }
 
         [Fact]
@@ -173,9 +176,10 @@ namespace Backend.Tests.LostDogs
             };
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.NotNull(result);
-
-            Assert.True(await lostDogRepository.MarkDogAsFound(saveDog.Id));
-            Assert.False(await lostDogRepository.MarkDogAsFound(saveDog.Id));
+            var response = await lostDogRepository.MarkDogAsFound(saveDog.Id);
+            Assert.True(response.Successful);
+            response = await lostDogRepository.MarkDogAsFound(saveDog.Id);
+            Assert.False(response.Successful);
         }
     }
 }
