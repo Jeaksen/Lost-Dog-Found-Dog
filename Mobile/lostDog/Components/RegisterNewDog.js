@@ -85,7 +85,7 @@ export default class RegisterNewDog extends React.Component {
     data.append('location.District', this.state.LocationDistinct);
     data.append('dateLost', this.state.dateLost);
     data.append('ownerId', this.props.id);
-    data.append('Image', photo);    
+    data.append('picture', photo);    
     console.log("Data form sended");
     fetch(url, {
         method: "POST",
