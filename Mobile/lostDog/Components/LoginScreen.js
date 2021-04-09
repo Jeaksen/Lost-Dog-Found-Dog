@@ -19,38 +19,45 @@ export default class LoginScreen extends React.Component {
     console.log("login: "+ name + " password: "+ pass);
 
     this.setState({loadingState: true})
-    fetch(this.props.Navi.URL + 'login', {
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*'
-            },
-            body: JSON.stringify({userName: name, password: pass})
+    try{
+      fetch(this.props.Navi.URL + 'login', {
+        method: 'POST', 
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+        },
+        body: JSON.stringify({userName: name, password: pass})
+    })
+    .then(response => {
+      if (response.status == 404 || response.status == 401) {
+          return null;
+      }
+      else if (response.status == 200) {
+          return response.json();
+        }
+      else{
+        return null;
+      }
+      })
+      .then(responseData => {
+        if (responseData != null) 
+        {
+          console.log(" SUCCESS !")
+          this.props.Navi.setToken(responseData.data.token,responseData.data.id);
+          this.props.Navi.swtichPage(0);
+        } 
+        else this.FailedLogin();
+      })
+      .catch(()=> this.FailedLogin())
+      .finally(()=>console.log("LOADING ENDED"))
+    }
+    catch{
+      FailedLogin();
+    }
+  }
 
-        })
-        .then(response => {
-          if (response.status == 404 || response.status == 401) {
-              /* Wrong input reaction */
-              console.log("Wrong input Reaction");
-              return null;
-          }
-          else if (response.status == 200) {
-              return response.json();
-            }
-          else{
-            /* Wrong input reaction */
-            console.log("Wrong input Reaction");
-            return null;
-          }
-          })
-          .then(responseData => {
-            if (responseData != null) 
-            {
-              console.log(" SUCCESS !")
-              this.props.Navi.setToken(responseData.data.token,responseData.data.id);
-              this.props.Navi.swtichPage(0);
-            } 
-          })
+  FailedLogin = () => {
+    console.log("Login Failed");
   }
 
   render(){
