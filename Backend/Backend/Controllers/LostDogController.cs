@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Backend.Controllers
@@ -49,16 +50,30 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile image)
+        public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile picture)
         {
             var addLostDogDto = new AddLostDogDto();
             var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
             var bindingSuccessful = await TryUpdateModelAsync(addLostDogDto, "", formValueProvider);
 
+            if (picture == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    new ServiceResponse<bool>() { Message = "No image was provided!", Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+            }
+            
             if (!bindingSuccessful)
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to bind AddLostDogDto");
+            {
+                var responseBuilder = new StringBuilder("Failed to bind AddLostDogDto: ");
+                foreach (var modelState in ModelState.Values)
+                    foreach (var error in modelState.Errors)
+                        responseBuilder.Append(error.ErrorMessage);
 
-            var serviceResponse = await lostDogService.AddLostDog(addLostDogDto, image);
+                return StatusCode(StatusCodes.Status400BadRequest, 
+                    new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+            }
+
+            var serviceResponse = await lostDogService.AddLostDog(addLostDogDto, picture);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
@@ -80,6 +95,14 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
+
+        //[HttpGet]
+        //[Route]
+        //public async Task<IActionResult> GetUserLostDogs(int ownerId)
+        //{
+        //    var serviceResponse = await _lostDogService.GetUserLostDogs(ownerId);
+        //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
+        //}
         //[HttpPost]
         //[Route("{}/comment")]
         //public async Task<IActionResult> AddLostDogComment(AddLostDogCommentDto commentDto)
@@ -95,13 +118,6 @@ namespace Backend.Controllers
         //public async Task<IActionResult> GetLostDogComments(int dogId)
         //{
         //    var serviceResponse = await _lostDogService.GetLostDogComments(dogId);
-        //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
-        //}
-        //[HttpGet]
-        //[Route]
-        //public async Task<IActionResult> GetUserLostDogs(int ownerId)
-        //{
-        //    var serviceResponse = await _lostDogService.GetUserLostDogs(ownerId);
         //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
         //}
     }
