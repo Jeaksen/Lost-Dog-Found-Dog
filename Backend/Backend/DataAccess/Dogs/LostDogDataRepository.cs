@@ -27,6 +27,7 @@ namespace Backend.DataAccess.Dogs
                 var returningDog = await dbContext.LostDogs.AddAsync(lostDog);
                 await dbContext.SaveChangesAsync();
                 response.Data = returningDog.Entity;
+                response.Message = $"Lost Dog was added with id {returningDog.Entity.Id}";
             }
             catch (Exception e)
             {
@@ -52,6 +53,8 @@ namespace Backend.DataAccess.Dogs
                 {
                     dbContext.LostDogs.Remove(lostDog);
                     dbContext.SaveChanges();
+                    response.Data = true;
+                    response.Message = $"Lost Dog with id {dogId} was deleted";
                 }
             }
             catch (Exception e)
@@ -81,12 +84,14 @@ namespace Backend.DataAccess.Dogs
                 {
                     lostDog.IsFound = true;
                     dbContext.SaveChanges();
+                    response.Data = true;
+                    response.Message = $"Lost Dog with id {dogId} was marked as found";
                 }
             }
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = "Failed to mask dog as found: " + e.Message;
+                response.Message = "Failed to mark dog as found: " + e.Message;
             }
             return response;
         }
@@ -103,7 +108,10 @@ namespace Backend.DataAccess.Dogs
                     response.Message = $"Dog with id {dogId} was not found";
                 }
                 else
+                {
                     response.Data = dog;
+                    response.Message = $"Lost Dog with id {dogId} was found";
+                }
             }
             catch (Exception e)
             {
@@ -125,6 +133,7 @@ namespace Backend.DataAccess.Dogs
                             .Include(dog => dog.Location)
                             .ToListAsync();
                 response.Data = lostDogs;
+                response.Message = $"Found {lostDogs.Count} Lost Dogs";
             }
             catch (Exception e)
             {
@@ -146,6 +155,7 @@ namespace Backend.DataAccess.Dogs
                             .Include(dog => dog.Location)
                             .ToListAsync();
                 response.Data = lostDogs;
+                response.Message = $"Found {lostDogs.Count} Lost Dogs";
             }
             catch (Exception e)
             {
@@ -170,6 +180,9 @@ namespace Backend.DataAccess.Dogs
                 {
                     lostDog.Comments.Add(comment);
                     dbContext.SaveChanges();
+                    // Does the ID change?
+                    response.Data = lostDog.Comments.Last();
+                    response.Message = $"Comment for Lost Dog with id {comment.DogId} was added";
                 }
             }
             catch (Exception e)
@@ -187,8 +200,7 @@ namespace Backend.DataAccess.Dogs
             {
                 var comments =  await dbContext.LostDogComments.Where(c => c.DogId == dogId).ToListAsync();
                 response.Data = comments;
-                if (comments.Count == 0)
-                    response.Message = $"There are no comments for dog {dogId}";
+                response.Message = $"Found {comments.Count} Lost Dogs Comments";
             }
             catch (Exception e)
             {
@@ -222,6 +234,7 @@ namespace Backend.DataAccess.Dogs
                         lostDog.Comments[index] = comment;
                         dbContext.SaveChanges();
                         response.Data = comment;
+                        response.Message = $"Comment for Lost Dog with id {comment.DogId} was edited";
                     }
                 }
             }

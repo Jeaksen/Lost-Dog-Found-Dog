@@ -19,9 +19,7 @@ namespace Backend
             CreateMap<AddLostDogDto, LostDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behvaior = s })));
             CreateMap<AddLocationDto, Location>();
             CreateMap<AddLostDogCommentDto, LostDogComment>();
-            //CreateMap<RepositoryResponse<List<LostDog>>, ServiceResponse<List<LostDog>>>();
             CreateMap(typeof(RepositoryResponse<>), typeof(ServiceResponse<>)).ForMember("StatusCode", s => s.Ignore());
-            CreateMap(typeof(ServiceResponse<>), typeof(RepositoryResponse<>));
         }
     }
 }
