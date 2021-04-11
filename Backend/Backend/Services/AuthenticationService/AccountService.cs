@@ -186,10 +186,10 @@ namespace Backend.Services.AuthenticationService
 
         public async Task<ServiceResponse<GetAccountDto>> UpdateAccount(UpdateAccountDto accountDto, int userId)
         {
-            var serviceResponse = await GetAccountById(userId);
-            if (serviceResponse.Successful)
+            var savedAccount = await userManager.FindByIdAsync(userId.ToString());
+            var serviceResponse = new ServiceResponse<GetAccountDto>();
+            if (savedAccount != null)
             {
-                var savedAccount = mapper.Map<Account>(serviceResponse.Data);
                 savedAccount.UserName = accountDto.UserName;
                 savedAccount.Email = accountDto.Email;
                 savedAccount.PhoneNumber = accountDto.PhoneNumber;
@@ -206,6 +206,12 @@ namespace Backend.Services.AuthenticationService
                     serviceResponse.Successful = false;
                     serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
                 }
+            }
+            else
+            {
+                serviceResponse.Message = $"Failed to update user with id {userId}: Account not found";
+                serviceResponse.Successful = false;
+                serviceResponse.StatusCode = StatusCodes.Status404NotFound;
             }
             return serviceResponse;
         }

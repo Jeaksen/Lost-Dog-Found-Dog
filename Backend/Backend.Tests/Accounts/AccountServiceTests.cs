@@ -4,10 +4,10 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace Backend.Tests.Authentication
+namespace Backend.Tests.Accounts
 {
     [Collection("Database collection")]
-    public class AuthenticationTests
+    public class AccountServiceTests
     {
 
         private static Random random = new Random();
@@ -16,7 +16,7 @@ namespace Backend.Tests.Authentication
         private const int nameLenght = 40;
 
 
-        public AuthenticationTests(DatabaseFixture databaseAuthFixture)
+        public AccountServiceTests(DatabaseFixture databaseAuthFixture)
         {
             this.databaseAuthFixture = databaseAuthFixture;
         }
@@ -123,7 +123,7 @@ namespace Backend.Tests.Authentication
                 PhoneNumber = account.PhoneNumber,
                 Password = password
             };
-            await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True((await databaseAuthFixture.AccountService.AddAccount(addAccountDto)).Successful);
             var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
 
             Assert.False(result.Successful);
@@ -142,7 +142,7 @@ namespace Backend.Tests.Authentication
                 Password = password
             };
 
-            await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True((await databaseAuthFixture.AccountService.AddAccount(addAccountDto)).Successful);
             var loginDto = new LoginDto()
             {
                 UserName = account.UserName,
@@ -166,6 +166,7 @@ namespace Backend.Tests.Authentication
             };
 
             var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True(result.Successful);
 
             Assert.True((await databaseAuthFixture.AccountService.GetAccountById(result.Data.Id)).Successful);
         }
@@ -184,8 +185,120 @@ namespace Backend.Tests.Authentication
             };
 
             var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True(result.Successful);
 
             Assert.True((await databaseAuthFixture.AccountService.GetAllAccountsForRole(AccountRoles.User)).Data.Count > 0);
+        }
+
+        [Fact]
+        public async void UpdateExistingAccountSuccessful()
+        {
+            var account = GetValidAccount();
+            var addAccountDto = new AddAccountDto()
+            {
+                UserName = account.UserName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "Test123456"
+            };
+
+            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True(result.Successful);
+
+            var updateAccountDto = new UpdateAccountDto()
+            {
+                UserName = account.UserName + "a",
+                Email = "ab" + account.Email,
+                PhoneNumber = account.PhoneNumber
+            };
+            Assert.True((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
+        }
+
+        [Fact]
+        public async void UpdateNonExistingAccountFails()
+        {
+            var account = GetValidAccount();
+            var updateAccountDto = new UpdateAccountDto()
+            {
+                UserName = account.UserName + "a",
+                Email = "ab" + account.Email,
+                PhoneNumber = account.PhoneNumber
+            };
+            Assert.False((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, -1)).Successful);
+        }
+
+        [Fact]
+        public async void UpdateExistingAccountForOccupiedUserNameFails()
+        {
+            var account = GetValidAccount();
+            var addAccountDto = new AddAccountDto()
+            {
+                UserName = account.UserName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "Test123456"
+            };
+
+            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True(result.Successful);
+
+            var existingUsername = account.UserName; 
+            account = GetValidAccount();
+            addAccountDto = new AddAccountDto()
+            {
+                UserName = account.UserName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "Test123456"
+            };
+
+            result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True(result.Successful);
+
+            var updateAccountDto = new UpdateAccountDto()
+            {
+                UserName = existingUsername,
+                Email = "ac" + account.Email,
+                PhoneNumber = account.PhoneNumber
+            };
+            Assert.False((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
+        }
+
+        [Fact]
+        public async void UpdateExistingAccountForOccupiedEmailFails()
+        {
+            var account = GetValidAccount();
+            var addAccountDto = new AddAccountDto()
+            {
+                UserName = account.UserName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "Test123456"
+            };
+
+            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True(result.Successful);
+
+            var existingEmail = account.Email;
+            account = GetValidAccount();
+            addAccountDto = new AddAccountDto()
+            {
+                UserName = account.UserName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "Test123456"
+            };
+
+            result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True(result.Successful);
+
+            var updateAccountDto = new UpdateAccountDto()
+            {
+                UserName = "a" + account.UserName,
+                Email = existingEmail,
+                PhoneNumber = account.PhoneNumber
+            };
+            Assert.False((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
         }
     }
 }
