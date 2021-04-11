@@ -18,8 +18,6 @@ export default class RegisterScreen extends React.Component {
     var email = this.state.email;
     var phone = this.state.phone;
     console.log("login: "+ login + " pass: "+ pass+ " email"+email+" phone:"+ phone);
-
-    this.setState({loadingState: true})
     try{
       fetch(this.props.Navi.URL + 'register', {
         method: 'POST', 
@@ -30,10 +28,11 @@ export default class RegisterScreen extends React.Component {
         body: JSON.stringify({userName: login, password: pass, email: email, phoneNumber: phone})
     })
     .then(response => {
+      console.log("response:" + response)
       if (response.status == 404 || response.status == 401) {
           return null;
       }
-      else if (response.status == 200) {
+      else if (response.status == 201) {
           return response.json();
         }
       else{
@@ -41,6 +40,7 @@ export default class RegisterScreen extends React.Component {
       }
       })
       .then(responseData => {
+        console.log("responseData: "+responseData)
         if (responseData != null) 
         {
           console.log(" SUCCESS !")
