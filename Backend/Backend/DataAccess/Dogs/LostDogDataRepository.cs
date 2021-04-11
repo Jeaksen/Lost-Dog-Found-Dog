@@ -121,6 +121,8 @@ namespace Backend.DataAccess.Dogs
                 }
                 else
                 {
+                    // The object is tracked after find, so it has to be detached
+                    dbContext.Entry(dog).State = EntityState.Detached;
                     var updatedDog = dbContext.LostDogs.Update(lostDog);
                     await dbContext.SaveChangesAsync();
                     response.Data = updatedDog.Entity;

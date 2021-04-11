@@ -93,6 +93,7 @@ namespace Backend.Services.LostDogService
         public async Task<ServiceResponse<LostDog>> UpdateLostDog(UpdateLostDogDto lostDogDto, IFormFile picture, int dogId)
         {
             var lostDog = mapper.Map<LostDog>(lostDogDto);
+            lostDog.Id = dogId;
             byte[] data;
 
             if (picture?.Length > 0)
@@ -116,7 +117,7 @@ namespace Backend.Services.LostDogService
                     return getDogResponse;
                 lostDog.Picture = getDogResponse.Data.Picture;
             }
-
+            
             var repoResponse = await lostDogDataRepository.UpdateLostDog(lostDog);
             var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
             if (!serviceResponse.Successful)

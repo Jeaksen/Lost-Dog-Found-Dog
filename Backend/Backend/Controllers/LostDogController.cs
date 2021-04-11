@@ -32,9 +32,14 @@ namespace Backend.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetLostDogs()
+        public async Task<IActionResult> GetLostDogs(int? ownerId)
         {
-            var serviceResponse = await lostDogService.GetLostDogs();
+            ServiceResponse<List<LostDog>> serviceResponse;
+            if (ownerId.HasValue)
+                serviceResponse = await lostDogService.GetUserLostDogs(ownerId.Value);
+            else
+                serviceResponse = await lostDogService.GetLostDogs();
+
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
@@ -50,7 +55,7 @@ namespace Backend.Controllers
         [HttpPut]
         [Route("{dogId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateLostDog(IFormCollection form, IFormFile picture, int dogId)
+        public async Task<IActionResult> UpdateLostDog(IFormCollection form, IFormFile picture, [FromRoute] int dogId)
         {
             var updateLostDogDto = new UpdateLostDogDto();
             var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
