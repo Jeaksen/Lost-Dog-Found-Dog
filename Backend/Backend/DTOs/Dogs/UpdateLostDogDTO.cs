@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend.DTOs.Dogs
 {
-    public class UpdateLostDogDTO
+    public class UpdateLostDogDto : UpdateDogDto
     {
         [Required]
         public int OwnerId { get; set; }
