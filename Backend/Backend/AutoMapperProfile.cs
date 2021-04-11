@@ -20,6 +20,8 @@ namespace Backend
             CreateMap<AddLocationDto, Location>();
             CreateMap<AddLostDogCommentDto, LostDogComment>();
             CreateMap(typeof(RepositoryResponse<>), typeof(ServiceResponse<>)).ForMember("StatusCode", s => s.Ignore());
+            CreateMap<Account, GetAccountDto>();
+            CreateMap<GetAccountDto, Account>();
         }
     }
 }
