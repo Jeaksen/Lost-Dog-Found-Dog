@@ -141,7 +141,7 @@ export default class RegisterNewDog extends React.Component {
                     <View style={styles.row}>
                     {
                         this.state.image!=null? 
-                        <Image source={{uri: this.state.image}} style={styles.dogPic}/>  
+                         <Image source={{uri: this.state.image}} style={styles.dogPic}/> 
                         : <View/>
                     }
                     </View>

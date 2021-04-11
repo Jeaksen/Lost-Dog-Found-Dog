@@ -8,6 +8,7 @@ import Header from './Helpers/Header';
 import ExamplePage from './ExamplePage';
 import DogList from './DogList';
 import RegisterNewDog from './RegisterNewDog';
+import DogDetails from './DogDetails';
 
 const {width, height} = Dimensions.get("screen")
 const speed=350;
@@ -22,6 +23,7 @@ const Headers=[
   /*Registe page */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],  
   /*DogList page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
   /*Register new dog page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
+  /*DogDetailed page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
 ]
 
 export default class Navigator extends React.Component {
@@ -32,12 +34,13 @@ export default class Navigator extends React.Component {
     fadeAnim: new Animated.Value(1),
     navimMainPanel_pos: 0,
 
+    currentViewItem: null,
     currentViewID: 1,
     HeaderVisible: true,
     }
     NaviData={
       URL: 'http://10.0.2.2:5000/',
-      swtichPage: (pageID) => this.swtichPage(pageID),
+      swtichPage: (pageID,item) => this.swtichPage(pageID,item),
       setToken: (token,id,mode) => this.setToken(token,id,mode),
     }
     
@@ -67,7 +70,7 @@ fading =() =>
     ()=>{Animated.timing(this.state.fadeAnim,{toValue:  1,duration: speed,useNativeDriver: true}).start();}
   )
 }
-leftAnim =(newIndx) =>{
+leftAnim =(newIndx,item) =>{
   var pos_1;
   var pos_2;
   if (moveDirection==1)
@@ -86,6 +89,7 @@ leftAnim =(newIndx) =>{
   ()=>{
     //change View
     this.HeaderRef.current.setList(Headers[newIndx]);
+    this.setState({currentViewItem: item})
     this.setState({currentViewID: newIndx})
     Animated.timing(this.state.switchAnim,{toValue:  pos_2,duration: 1,useNativeDriver: true}).start(
       () =>{Animated.timing(this.state.switchAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start();}
@@ -93,16 +97,16 @@ leftAnim =(newIndx) =>{
   })
 }
 
-moveLeft= (indx) =>{
+moveLeft= (indx,item) =>{
   this.fading();
-  this.leftAnim(indx);
+  this.leftAnim(indx,item);
 }
 
 // Functions avaible in every component:
-swtichPage= (indx)=>{
-  console.log("SWITCH PAGE: "+indx)
+swtichPage= (indx,item)=>{
+  console.log("SWITCH PAGE: "+indx + " ITEM: " + item)
   if(indx != this.state.currentViewID)
-    this.moveLeft(indx);
+    this.moveLeft(indx,item);
 }
 setToken=(newToken,id,mode="UPDATE")=>{
 if(mode=="CLEAR"){
@@ -117,7 +121,8 @@ else{
 }
 }
 
-ViewContent = (indx)=>{
+ViewContent = (indx,item)=>{
+  console.log("ITEM: " + item);
   if(indx==0)
   {
     return (<ExamplePage />);
@@ -138,6 +143,10 @@ ViewContent = (indx)=>{
   {
     return (<RegisterNewDog Navi={this.NaviData} token={this.state.token} id={this.state.id}/>);
   }
+  else if(indx==5)
+  {
+    return (<DogDetails Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>);
+  }
 }
 render(){
     const switchAnim={
@@ -154,7 +163,7 @@ render(){
         
         <Animated.View style={[styles.naviMainPanel,switchAnim]}>
           <View style={styles.pageContainer}>
-            {this.ViewContent(this.state.currentViewID)}
+            {this.ViewContent(this.state.currentViewID, this.state.currentViewItem)}
           </View>
         </Animated.View>
         <View style={styles.naviHeaderPanel}>
@@ -173,6 +182,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 80,
     alignContent: 'center',
+    
   },
   naviHeaderPanel: {
     marginTop: '5%',

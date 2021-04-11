@@ -8,27 +8,69 @@ export default class RegisterScreen extends React.Component {
   state={
     email: "",
     password: "",
-    Name: "",
-    Phone: "",
+    login: "",
+    phone: "",
   }
 
   registerButton = ()=>{
+    var login = this.state.login;
+    var pass = this.state.password;
+    var email = this.state.email;
+    var phone = this.state.phone;
+    console.log("login: "+ login + " pass: "+ pass+ " email"+email+" phone:"+ phone);
 
-    console.log("Register: "+ this.state.email + " password: "+ this.state.password + " password: "+ this.state.Name + " Phone: "+ this.state.Phone);
-    this.props.Navi.swtichPage(0);
+    this.setState({loadingState: true})
+    try{
+      fetch(this.props.Navi.URL + 'register', {
+        method: 'POST', 
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+        },
+        body: JSON.stringify({userName: login, password: pass, email: email, phoneNumber: phone})
+    })
+    .then(response => {
+      if (response.status == 404 || response.status == 401) {
+          return null;
+      }
+      else if (response.status == 200) {
+          return response.json();
+        }
+      else{
+        return null;
+      }
+      })
+      .then(responseData => {
+        if (responseData != null) 
+        {
+          console.log(" SUCCESS !")
+          this.props.Navi.swtichPage(0);
+        } 
+        else this.FailedRegister();
+      })
+      .catch(()=> this.FailedRegister())
+      .finally(()=>console.log("LOADING ENDED"))
+    }
+    catch{
+      FailedRegister();
+    }
+  }
+
+  FailedRegister = () => {
+    console.log("Register Failed");
   }
 
   render(){
     return(
         <View style={styles.content}>
           <Text style={styles.Title}>Lost Dog</Text>
-          <TextInput style={styles.inputtext} placeholder="Email" onChangeText={(x) => this.setState({email: x})} />
+          <TextInput style={styles.inputtext} placeholder="Login" onChangeText={(x) => this.setState({login: x})}/>
           <TextInput style={styles.inputtext} placeholder="Password" onChangeText={(x) => this.setState({password: x})}/>
-          <TextInput style={styles.inputtext} placeholder="Name and Surname *" onChangeText={(x) => this.setState({Name: x})}/>
-          <TextInput style={styles.inputtext} placeholder="Phone number *" onChangeText={(x) => this.setState({Phone: x})}/>
+          <TextInput style={styles.inputtext} placeholder="Email" onChangeText={(x) => this.setState({email: x})} />
+          <TextInput style={styles.inputtext} placeholder="Phone number *" onChangeText={(x) => this.setState({phone: x})}/>
           <TouchableOpacity style={styles.loginButton} onPress={() => this.registerButton()}>
               <Text style={styles.logintext}>Sign in</Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
             
         </View>
   )
