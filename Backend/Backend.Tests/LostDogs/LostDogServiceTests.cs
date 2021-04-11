@@ -165,6 +165,7 @@ namespace Backend.Tests.LostDogs
                 };
                 var dogDto = new UpdateLostDogDto();
                 var dog = mapper.Map<LostDog>(dogDto);
+                repo.Setup(o => o.GetLostDogDetails(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Data = new LostDog() }));
                 repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns((LostDog d) => Task.FromResult(new RepositoryResponse<LostDog>() { Data = d }));
                 var service = new LostDogService(repo.Object, mapper, logger);
 
@@ -197,6 +198,7 @@ namespace Backend.Tests.LostDogs
                 };
                 var dogDto = new UpdateLostDogDto();
                 var dog = mapper.Map<LostDog>(dogDto);
+                repo.Setup(o => o.GetLostDogDetails(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Successful = false }));
                 repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Successful = false }));
                 var service = new LostDogService(repo.Object, mapper, logger);
 

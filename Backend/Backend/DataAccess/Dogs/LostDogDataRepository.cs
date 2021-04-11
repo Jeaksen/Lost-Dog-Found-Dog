@@ -33,7 +33,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message} {e.InnerException?.Message}";
             }
 
             return response;
@@ -56,7 +56,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to get lost dogs: {e.Message}";
+                response.Message = $"Failed to get lost dogs: {e.Message} {e.InnerException?.Message}";
             }
             return response;
         }
@@ -78,7 +78,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to get lost dogs for user {ownerId}: {e.Message}";
+                response.Message = $"Failed to get lost dogs for user {ownerId}: {e.Message} {e.InnerException?.Message}";
             }
             return response;
         }
@@ -88,8 +88,14 @@ namespace Backend.DataAccess.Dogs
             var response = new RepositoryResponse<LostDog>();
             try
             {
-                var dog = await dbContext.LostDogs.FindAsync(dogId);
-                if (dog == null)
+                var dog = await dbContext.LostDogs
+                                            .Where(ld => ld.Id == dogId)
+                                            .Include(dog => dog.Behaviors)
+                                            .Include(dog => dog.Picture)
+                                            .Include(dog => dog.Comments)
+                                            .Include(dog => dog.Location)
+                                            .SingleOrDefaultAsync();
+                if (dog == default)
                 {
                     response.Successful = false;
                     response.Message = $"Dog with id {dogId} was not found";
@@ -103,7 +109,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = "Failed to find dog: " + e.Message;
+                response.Message = $"Failed to find dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -133,7 +139,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = "Failed to update dog: " + e.Message;
+                response.Message = $"Failed to update dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -165,7 +171,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = "Failed to mark dog as found: " + e.Message;
+                response.Message = $"Failed to mark dog as found: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -192,7 +198,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -220,7 +226,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -237,7 +243,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -273,7 +279,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }

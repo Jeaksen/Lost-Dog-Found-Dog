@@ -95,6 +95,14 @@ namespace Backend.Services.LostDogService
             var lostDog = mapper.Map<LostDog>(lostDogDto);
             lostDog.Id = dogId;
             byte[] data;
+            var getDogResponse = await GetLostDogDetails(dogId);
+            if (!getDogResponse.Successful)
+                return getDogResponse;
+
+            lostDog.Picture = getDogResponse.Data.Picture;
+            lostDog.Comments = getDogResponse.Data.Comments;
+            //var newBehvaiours = new List<DogBehavior>();
+            //lostDog.Behaviors.Union(getDogResponse.Data.Behaviors, )
 
             if (picture?.Length > 0)
             {
@@ -109,13 +117,6 @@ namespace Backend.Services.LostDogService
                     FileType = picture.ContentType,
                     Data = data
                 };
-            }
-            else
-            {
-                var getDogResponse = await GetLostDogDetails(dogId);
-                if (getDogResponse.Successful == false) 
-                    return getDogResponse;
-                lostDog.Picture = getDogResponse.Data.Picture;
             }
             
             var repoResponse = await lostDogDataRepository.UpdateLostDog(lostDog);
