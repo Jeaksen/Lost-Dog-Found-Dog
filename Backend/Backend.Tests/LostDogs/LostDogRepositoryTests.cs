@@ -181,5 +181,79 @@ namespace Backend.Tests.LostDogs
             response = await lostDogRepository.MarkDogAsFound(saveDog.Id);
             Assert.False(response.Successful);
         }
+    
+        [Fact]
+        public async void UpdatingLostDogSuccessfulForExistingDog()
+        {
+            var lostDog = new LostDog()
+            {
+                Breed = "dogdog",
+                Age = 5,
+                Size = "Large, very large",
+                Color = "Orange but a bit yellow and green dots",
+                SpecialMark = "tattoo of you on the neck",
+                Name = "Cat",
+                Picture = new Picture()
+                {
+                    FileName = "photo",
+                    FileType = "png",
+                    Data = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+                },
+                HairLength = "Long",
+                EarsType = "Short",
+                TailLength = "None",
+                Behaviors = new List<DogBehavior>() { new DogBehavior() { Behvaior = "Angry" } },
+                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                DateLost = new DateTime(2021, 3, 20),
+                OwnerId = 1,
+                Comments = new List<LostDogComment>()
+            };
+            var result = await lostDogRepository.AddLostDog(lostDog);
+            Assert.True(result.Successful);
+            lostDog = result.Data;
+            lostDog.Age = 6;
+            Assert.True((await lostDogRepository.UpdateLostDog(lostDog)).Successful);
+        }
+
+        [Fact]
+        public async void UpdatingLostDogFailsForNonExistingDog()
+        {
+            var lostDog = new LostDog();
+            lostDog.Id = -1;
+            Assert.False((await lostDogRepository.UpdateLostDog(lostDog)).Successful);
+        }
+
+        [Fact]
+        public async void UpdatingLostDogSuccessfulForInvalidData()
+        {
+            var lostDog = new LostDog()
+            {
+                Breed = "dogdog",
+                Age = 5,
+                Size = "Large, very large",
+                Color = "Orange but a bit yellow and green dots",
+                SpecialMark = "tattoo of you on the neck",
+                Name = "Cat",
+                Picture = new Picture()
+                {
+                    FileName = "photo",
+                    FileType = "png",
+                    Data = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+                },
+                HairLength = "Long",
+                EarsType = "Short",
+                TailLength = "None",
+                Behaviors = new List<DogBehavior>() { new DogBehavior() { Behvaior = "Angry" } },
+                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                DateLost = new DateTime(2021, 3, 20),
+                OwnerId = 1,
+                Comments = new List<LostDogComment>()
+            };
+            var result = await lostDogRepository.AddLostDog(lostDog);
+            Assert.True(result.Successful);
+            lostDog = result.Data;
+            lostDog.Breed = null;
+            Assert.False((await lostDogRepository.UpdateLostDog(lostDog)).Successful);
+        }
     }
 }
