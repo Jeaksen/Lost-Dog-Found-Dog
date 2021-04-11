@@ -41,12 +41,19 @@ namespace Backend.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [Authorize(Roles = AccountRoles.Admin)] //temporary
         [HttpGet]
-        [Route("users/{id}")]
-        public async Task<IActionResult> GetAccountById(int id)
+        [Route("users/{userId}")]
+        public async Task<IActionResult> GetAccountById(int userId)
         {
-            var result = await accountService.GetAccountById(id);
+            var result = await accountService.GetAccountById(userId);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpPut]
+        [Route("users/{userId}")]
+        public async Task<IActionResult> UpdateAccountById(UpdateAccountDto updateAccountDto, int userId)
+        {
+            var result = await accountService.UpdateAccount(updateAccountDto, userId);
             return StatusCode(result.StatusCode, result);
         }
 
