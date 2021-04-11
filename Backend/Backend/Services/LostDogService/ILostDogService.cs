@@ -10,15 +10,16 @@ namespace Backend.Services.LostDogService
 {
     public interface ILostDogService
     {
+        public Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDog, IFormFile picture);
         public Task<ServiceResponse<List<LostDog>>> GetLostDogs();
         public Task<ServiceResponse<List<LostDog>>> GetUserLostDogs(int ownerId);
         public Task<ServiceResponse<LostDog>> GetLostDogDetails(int dogId);
-        public Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDog, IFormFile image);
+        public Task<ServiceResponse<LostDog>> UpdateLostDog(UpdateLostDogDto lostDogDto, IFormFile picture, int dogId);
         public Task<ServiceResponse<bool>> MarkLostDogAsFound(int dogId);
         public Task<ServiceResponse<bool>> DeleteLostDog(int dogId);
 
-        public Task<ServiceResponse<List<LostDogComment>>> GetLostDogComments(int dogId);
         public Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto comment);
+        public Task<ServiceResponse<List<LostDogComment>>> GetLostDogComments(int dogId);
         public Task<ServiceResponse<LostDogComment>> EditLostDogComment(LostDogComment comment);
     }
 }

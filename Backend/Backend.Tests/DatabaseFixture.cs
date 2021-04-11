@@ -47,6 +47,7 @@ namespace Backend.Tests
 
             serviceCollection.AddIdentity<Account, IdentityRole<int>>(options =>
             {
+                options.User.RequireUniqueEmail = true;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
