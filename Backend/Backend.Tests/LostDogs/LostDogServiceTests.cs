@@ -96,9 +96,8 @@ namespace Backend.Tests.LostDogs
                 var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", "filename")
                 {
                     Headers = new HeaderDictionary(),
-                    ContentType = "application/pdf"
+                    ContentType = "image/jpeg"
                 };
-                picture.ContentType = "random";
                 var dogDto = new AddLostDogDto();
                 var dog = mapper.Map<LostDog>(dogDto);
                 repo.Setup(o => o.AddLostDog(It.IsAny<LostDog>())).Returns((LostDog d) => Task.FromResult(new RepositoryResponse<LostDog>() {Data = d }));
@@ -132,7 +131,7 @@ namespace Backend.Tests.LostDogs
         }
 
         [Fact]
-        public async void MarkLostDogSuccessfulForInvalidDog()
+        public async void MarkLostDogFailsForInvalidDog()
         {
             var repo = new Mock<ILostDogRepository>();
             repo.Setup(o => o.MarkDogAsFound(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<bool>() { Successful = false }));
@@ -141,6 +140,68 @@ namespace Backend.Tests.LostDogs
             Assert.False((await service.MarkLostDogAsFound(1)).Successful);
         }
 
+        [Fact]
+        public async void UpdatingLostDogSuccessfulForExistingDogNoPicture()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            repo.Setup(o => o.GetLostDogDetails(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Data = new LostDog() }));
+            repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>()));
+            var service = new LostDogService(repo.Object, mapper, logger);
 
+            Assert.True((await service.UpdateLostDog(new UpdateLostDogDto(), null, 1)).Successful);
+        }
+
+        [Fact]
+        public async void UpdatingLostDogSuccessfulForExistingDogNewPicture()
+        {
+            var repo = new Mock<ILostDogRepository>();
+
+            using (var memoryStream = new MemoryStream(new byte[] { 1, 2, 3, 4 }))
+            {
+                var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", "filename")
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = "image/jpeg"
+                };
+                var dogDto = new UpdateLostDogDto();
+                var dog = mapper.Map<LostDog>(dogDto);
+                repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns((LostDog d) => Task.FromResult(new RepositoryResponse<LostDog>() { Data = d }));
+                var service = new LostDogService(repo.Object, mapper, logger);
+
+                Assert.True((await service.UpdateLostDog(dogDto, picture, 1)).Successful);
+            }
+        }
+
+        [Fact]
+        public async void UpdatingLostDogFailsForNonExistingDogNoPicture()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            repo.Setup(o => o.GetLostDogDetails(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Successful = false }));
+            repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>()));
+            var service = new LostDogService(repo.Object, mapper, logger);
+
+            Assert.False((await service.UpdateLostDog(new UpdateLostDogDto(), null, 1)).Successful);
+        }
+
+        [Fact]
+        public async void UpdatingLostDogFailsForNonExistingDogNewPicture()
+        {
+            var repo = new Mock<ILostDogRepository>();
+
+            using (var memoryStream = new MemoryStream(new byte[] { 1, 2, 3, 4 }))
+            {
+                var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", "filename")
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = "image/jpeg"
+                };
+                var dogDto = new UpdateLostDogDto();
+                var dog = mapper.Map<LostDog>(dogDto);
+                repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Successful = false }));
+                var service = new LostDogService(repo.Object, mapper, logger);
+
+                Assert.False((await service.UpdateLostDog(dogDto, picture, 1)).Successful);
+            }
+        }
     }
 }

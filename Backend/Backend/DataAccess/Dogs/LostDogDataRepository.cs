@@ -1,4 +1,5 @@
-﻿using Backend.Models.DogBase.LostDog;
+﻿using Backend.DTOs.Dogs;
+using Backend.Models.DogBase.LostDog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -35,89 +36,6 @@ namespace Backend.DataAccess.Dogs
                 response.Message = $"Failed to delete dog: {e.Message}";
             }
 
-            return response;
-        }
-
-        public async Task<RepositoryResponse<bool>> DeleteLostDog(int dogId)
-        {
-            var response = new RepositoryResponse<bool>();
-            try
-            {
-                var lostDog = await dbContext.LostDogs.FindAsync(dogId);
-                if (lostDog == null)
-                {
-                    response.Successful = false;
-                    response.Message = $"Failed to find dog {dogId}";
-                } 
-                else
-                {
-                    dbContext.LostDogs.Remove(lostDog);
-                    dbContext.SaveChanges();
-                    response.Data = true;
-                    response.Message = $"Lost Dog with id {dogId} was deleted";
-                }
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
-            }
-            return response;
-        }
-
-        public async Task<RepositoryResponse<bool>> MarkDogAsFound(int dogId)
-        {
-            var response = new RepositoryResponse<bool>();
-            try
-            {
-                var lostDog = await dbContext.LostDogs.FindAsync(dogId);
-                if (lostDog == null)
-                {
-                    response.Successful = false;
-                    response.Message = $"Dog with {dogId} was not found";
-                } else if (lostDog.IsFound)
-                {
-                    response.Successful = false;
-                    response.Message = $"Dog with {dogId} is already marked as signed";
-                }
-                else
-                {
-                    lostDog.IsFound = true;
-                    dbContext.SaveChanges();
-                    response.Data = true;
-                    response.Message = $"Lost Dog with id {dogId} was marked as found";
-                }
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = "Failed to mark dog as found: " + e.Message;
-            }
-            return response;
-        }
-
-        public async Task<RepositoryResponse<LostDog>> GetLostDogDetails(int dogId)
-        {
-            var response = new RepositoryResponse<LostDog>();
-            try
-            {
-                var dog = await dbContext.LostDogs.FindAsync(dogId);
-                if (dog == null)
-                {
-                    response.Successful = false;
-                    response.Message = $"Dog with id {dogId} was not found";
-                }
-                else
-                {
-                    response.Data = dog;
-                    response.Message = $"Lost Dog with id {dogId} was found";
-                }
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = "Failed to mask dog as found: " + e.Message;
-            }
             return response;
         }
 
@@ -161,6 +79,120 @@ namespace Backend.DataAccess.Dogs
             {
                 response.Successful = false;
                 response.Message = $"Failed to get lost dogs for user {ownerId}: {e.Message}";
+            }
+            return response;
+        }
+
+        public async Task<RepositoryResponse<LostDog>> GetLostDogDetails(int dogId)
+        {
+            var response = new RepositoryResponse<LostDog>();
+            try
+            {
+                var dog = await dbContext.LostDogs.FindAsync(dogId);
+                if (dog == null)
+                {
+                    response.Successful = false;
+                    response.Message = $"Dog with id {dogId} was not found";
+                }
+                else
+                {
+                    response.Data = dog;
+                    response.Message = $"Lost Dog with id {dogId} was found";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = "Failed to find dog: " + e.Message;
+            }
+            return response;
+        }
+
+        public async Task<RepositoryResponse<LostDog>> UpdateLostDog(LostDog lostDog)
+        {
+            var response = new RepositoryResponse<LostDog>();
+            try
+            {
+                var dog = await dbContext.LostDogs.FindAsync(lostDog.Id);
+                if (dog == null)
+                {
+                    response.Successful = false;
+                    response.Message = $"Dog with id {lostDog.Id} was not found";
+                }
+                else
+                {
+                    // The object is tracked after find, so it has to be detached
+                    dbContext.Entry(dog).State = EntityState.Detached;
+                    var updatedDog = dbContext.LostDogs.Update(lostDog);
+                    await dbContext.SaveChangesAsync();
+                    response.Data = updatedDog.Entity;
+                    response.Successful = true;
+                    response.Message = "Dog updated successfully";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = "Failed to update dog: " + e.Message;
+            }
+            return response;
+        }
+
+        public async Task<RepositoryResponse<bool>> MarkDogAsFound(int dogId)
+        {
+            var response = new RepositoryResponse<bool>();
+            try
+            {
+                var lostDog = await dbContext.LostDogs.FindAsync(dogId);
+                if (lostDog == null)
+                {
+                    response.Successful = false;
+                    response.Message = $"Dog with {dogId} was not found";
+                }
+                else if (lostDog.IsFound)
+                {
+                    response.Successful = false;
+                    response.Message = $"Dog with {dogId} is already marked as signed";
+                }
+                else
+                {
+                    lostDog.IsFound = true;
+                    dbContext.SaveChanges();
+                    response.Data = true;
+                    response.Message = $"Lost Dog with id {dogId} was marked as found";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = "Failed to mark dog as found: " + e.Message;
+            }
+            return response;
+        }
+
+        public async Task<RepositoryResponse<bool>> DeleteLostDog(int dogId)
+        {
+            var response = new RepositoryResponse<bool>();
+            try
+            {
+                var lostDog = await dbContext.LostDogs.FindAsync(dogId);
+                if (lostDog == null)
+                {
+                    response.Successful = false;
+                    response.Message = $"Failed to find dog {dogId}";
+                } 
+                else
+                {
+                    dbContext.LostDogs.Remove(lostDog);
+                    dbContext.SaveChanges();
+                    response.Data = true;
+                    response.Message = $"Lost Dog with id {dogId} was deleted";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to delete dog: {e.Message}";
             }
             return response;
         }
