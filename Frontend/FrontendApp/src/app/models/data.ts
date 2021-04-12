@@ -6,3 +6,10 @@ export interface LoginData {
 
 export interface RegisterUserData {
 }
+
+export interface UserDetailsData {
+    id: number;
+    userName: string;
+    email: string;
+    phoneNumber: string;
+}
