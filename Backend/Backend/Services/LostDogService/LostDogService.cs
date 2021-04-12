@@ -94,10 +94,9 @@ namespace Backend.Services.LostDogService
         {
             var lostDog = mapper.Map<LostDog>(lostDogDto);
             lostDog.Id = dogId;
-            byte[] data;
-
             if (picture?.Length > 0)
             {
+                byte[] data;
                 using (var ms = new MemoryStream())
                 {
                     picture.CopyTo(ms);
@@ -109,13 +108,6 @@ namespace Backend.Services.LostDogService
                     FileType = picture.ContentType,
                     Data = data
                 };
-            }
-            else
-            {
-                var getDogResponse = await GetLostDogDetails(dogId);
-                if (getDogResponse.Successful == false) 
-                    return getDogResponse;
-                lostDog.Picture = getDogResponse.Data.Picture;
             }
             
             var repoResponse = await lostDogDataRepository.UpdateLostDog(lostDog);

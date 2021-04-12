@@ -144,7 +144,6 @@ namespace Backend.Tests.LostDogs
         public async void UpdatingLostDogSuccessfulForExistingDogNoPicture()
         {
             var repo = new Mock<ILostDogRepository>();
-            repo.Setup(o => o.GetLostDogDetails(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Data = new LostDog() }));
             repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>()));
             var service = new LostDogService(repo.Object, mapper, logger);
 
@@ -176,8 +175,7 @@ namespace Backend.Tests.LostDogs
         public async void UpdatingLostDogFailsForNonExistingDogNoPicture()
         {
             var repo = new Mock<ILostDogRepository>();
-            repo.Setup(o => o.GetLostDogDetails(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Successful = false }));
-            repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>()));
+            repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>(){ Successful = false }));
             var service = new LostDogService(repo.Object, mapper, logger);
 
             Assert.False((await service.UpdateLostDog(new UpdateLostDogDto(), null, 1)).Successful);

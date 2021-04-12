@@ -1,4 +1,5 @@
-﻿using Backend.Models.DogBase.LostDog;
+﻿using Backend.Models.DogBase;
+using Backend.Models.DogBase.LostDog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace Backend.DataAccess.Dogs
         public Task<RepositoryResponse<List<LostDog>>> GetLostDogs();
         public Task<RepositoryResponse<List<LostDog>>> GetUserLostDogs(int ownerId);
         public Task<RepositoryResponse<LostDog>> GetLostDogDetails(int dogId);
-        public Task<RepositoryResponse<LostDog>> UpdateLostDog(LostDog lostDog);
+        public Task<RepositoryResponse<LostDog>> UpdateLostDog(LostDog updatedDog);
         public Task<RepositoryResponse<bool>> MarkDogAsFound(int dogId);
         public Task<RepositoryResponse<bool>> DeleteLostDog(int dogId);
 
