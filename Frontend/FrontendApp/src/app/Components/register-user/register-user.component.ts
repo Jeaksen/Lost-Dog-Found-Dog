@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { RegisterUserRequest } from 'src/app/models/register-user-request';
 import { AuthenticationService } from 'src/app/services/authentication-service';
