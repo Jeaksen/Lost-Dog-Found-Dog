@@ -44,7 +44,7 @@ export default class RegisterScreen extends React.Component {
         if (responseData != null) 
         {
           console.log(" SUCCESS !")
-          this.props.Navi.swtichPage(0);
+          this.props.Navi.swtichPage(1);
         } 
         else this.FailedRegister();
       })

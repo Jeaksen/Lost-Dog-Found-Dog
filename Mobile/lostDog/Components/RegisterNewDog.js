@@ -12,7 +12,6 @@ const {width, height} = Dimensions.get("screen")
 export default class RegisterNewDog extends React.Component {
   state={
     image: null,
-    dogName: "MydOG",
     breed: "dogdog",
     age: "5",
     size: "Large",
@@ -112,7 +111,7 @@ export default class RegisterNewDog extends React.Component {
             <SafeAreaView>
                 <ScrollView >
                 {/* String data */}
-                    <TextInput style={styles.inputtext} placeholder="Dog Name"      onChangeText={(x) => this.setState({dogName: x})}/>
+                    <TextInput style={styles.inputtext} placeholder="Dog Name"      onChangeText={(x) => this.setState({name: x})}/>
                     <TextInput style={styles.inputtext} placeholder="Breed"         onChangeText={(x) => this.setState({breed: x})}/>
                     <TextInput style={styles.inputtext} placeholder="Age"           onChangeText={(x) => this.setState({age: x})}/>
                     <TextInput style={styles.inputtext} placeholder="Size"          onChangeText={(x) => this.setState({size: x})}/>

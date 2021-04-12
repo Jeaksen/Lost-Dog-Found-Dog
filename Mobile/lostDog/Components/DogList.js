@@ -16,7 +16,7 @@ export default class DogList extends React.Component {
 
   getDogList = ()=>{
     var token = 'Bearer ' + this.props.token 
-    fetch(this.props.Navi.URL + 'lostdogs', {
+    fetch(this.props.Navi.URL + 'lostdogs?ownerId='+this.props.id, {
         method: 'GET', 
         headers: {
             'Content-Type': 'application/json',
