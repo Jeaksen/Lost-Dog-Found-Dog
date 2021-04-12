@@ -4,6 +4,7 @@ import { RegisterLostDogComponent } from './Components/register-lost-dog/registe
 import { HomePageComponent } from './Components/home-page/home-page.component';
 import { LoginComponent } from './Components/login/login.component';
 import { RegisterUserComponent } from './Components/register-user/register-user.component';
+import { EditContactInfoComponent } from './Components/edit-contact-info/edit-contact-info.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomePageComponent },
   { path: 'register-lost-dog', component: RegisterLostDogComponent },
+  { path: 'edit-contact-info', component: EditContactInfoComponent },
 ];
 
 @NgModule({
