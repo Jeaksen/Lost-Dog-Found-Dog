@@ -22,6 +22,9 @@
                     <button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id)" mat-raised-button class="list-button">
                         Mark as Found
                     </button>
+                    <button mat-raised-button (click)="onEditDetailsClick(lostdog.id)" class="list-button2" [disabled]="lostdog.isFound">
+                        Edit Details
+                    </button>
                 </mat-list-item>
             </mat-list>
         </mat-card>

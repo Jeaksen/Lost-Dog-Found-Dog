@@ -16,10 +16,10 @@ export class HomePageComponent implements OnInit {
   userDetails?: UserDetailsData;
   lostDogs?: LostDog[];
   imagePath?: string;
+  dogID?: number;
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private lostDogService: LostDogService,
     private userService: UserService,
     private authenticationService: AuthenticationService) { }
@@ -47,15 +47,21 @@ export class HomePageComponent implements OnInit {
     this.router.navigate(['/register-lost-dog']);
   }
 
+  onEditDetailsClick(lostDogId: number) {
+    this.router.navigate(['/edit-lost-dog', lostDogId]);
+  }
+  
   onEditContactInfoClick() {
     this.router.navigate(['/edit-contact-info']);
   }
 
   onMarkAsFoundClick(lostDogId: number) {
+    if(confirm("Are you sure you want mark dog as found?")) {
     this.lostDogService.MarkLostDogAsFound(lostDogId)
       .subscribe(response => {
         console.log(response);
         this.lostDogs!.find(dog => dog.id === lostDogId)!.isFound = true;
       });
+    }
   }
 }
