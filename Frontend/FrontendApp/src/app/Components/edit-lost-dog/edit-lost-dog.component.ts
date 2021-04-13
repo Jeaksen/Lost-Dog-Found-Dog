@@ -59,6 +59,7 @@ export class EditLostDogComponent implements OnInit {
     this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
       this.lostDog = response.data;
       this.url = 'data:' + this.lostDog!.picture.fileType + ';base64,' + this.lostDog!.picture.data;
+      this.editLostDogForm.get("behaviour")?.setValue("Deppression");
     });
   }
 
