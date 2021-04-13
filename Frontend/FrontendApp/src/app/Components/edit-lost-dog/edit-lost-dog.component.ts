@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LostDogService } from 'src/app/services/lost-dog-service';
 import { ImageSnippet } from '../../models/image-snippet';
-
+import { LostDog } from '../../models/lost-dog';
+ 
 import { DogColorSelector } from '../../selectors/dog-color-selector';
 import { DogEarsSelector } from '../../selectors/dog-ears-selector';
 import { DogHairSelector } from '../../selectors/dog-hair-selector';
@@ -36,6 +37,8 @@ export class EditLostDogComponent implements OnInit {
 
   selectedFile!: ImageSnippet;
   url!: any;
+  lostDogID!: number;
+  lostDog?: LostDog;
   dogColors: string[] = DogColorSelector;
   dogEars: string[] = DogEarsSelector;
   dogHair: string[] = DogHairSelector;
@@ -44,15 +47,20 @@ export class EditLostDogComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private lostDogService: LostDogService,
     private datepipe: DatePipe) { }
 
   ngOnInit(): void {
+    this.lostDogID = parseInt(this.activatedRoute.snapshot.paramMap.get('dogId')!);
+    this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
+      this.lostDog = response.data;
+    });
   }
 
   onSubmit() {
     console.log(this.editLostDogForm);
-    this.lostDogService.postLostDog(this.constructForm()).subscribe(response => console.log(response));
+    this.lostDogService.putLostDog(this.constructForm(), this.lostDogID).subscribe(response => console.log(response));
     this.router.navigate(['/home']);
   }
 

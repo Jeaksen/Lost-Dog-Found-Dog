@@ -13,10 +13,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class HomePageComponent implements OnInit {
   lostDogs?: LostDog[];
   imagePath?: string;
+  dogID?: number;
 
   constructor(
     private router: Router,
-    private sanitizer: DomSanitizer,
     private lostDogService: LostDogService,
     private authenticationService: AuthenticationService) { }
 
@@ -38,8 +38,8 @@ export class HomePageComponent implements OnInit {
     this.router.navigate(['/register-lost-dog']);
   }
 
-  onEditDetailsClick() {
-    this.router.navigate(['/edit-lost-dog']);
+  onEditDetailsClick(lostDogId: number) {
+    this.router.navigate(['/edit-lost-dog', lostDogId]);
   }
 
   onMarkAsFoundClick(lostDogId: number) {

@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomePageComponent },
   { path: 'register-lost-dog', component: RegisterLostDogComponent },
-  { path: 'edit-lost-dog', component: EditLostDogComponent },
+  { path: 'edit-lost-dog/:dogId', component: EditLostDogComponent },
 ];
 
 @NgModule({
