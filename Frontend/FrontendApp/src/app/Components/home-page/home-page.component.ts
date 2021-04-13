@@ -38,6 +38,10 @@ export class HomePageComponent implements OnInit {
     this.router.navigate(['/register-lost-dog']);
   }
 
+  onEditDetailsClick() {
+    this.router.navigate(['/edit-lost-dog']);
+  }
+
   onMarkAsFoundClick(lostDogId: number) {
     this.lostDogService.MarkLostDogAsFound(lostDogId)
       .subscribe(response => {

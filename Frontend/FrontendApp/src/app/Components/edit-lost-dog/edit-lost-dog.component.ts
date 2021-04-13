@@ -13,12 +13,12 @@ import { DogSizeSelector } from '../../selectors/dog-size-selector';
 import { DogTailSelector } from '../../selectors/dog-tail-selector';
 
 @Component({
-  selector: 'app-register-lost-dog',
-  templateUrl: './register-lost-dog.component.html',
-  styleUrls: ['./register-lost-dog.component.css']
+  selector: 'app-edit-lost-dog',
+  templateUrl: './edit-lost-dog.component.html',
+  styleUrls: ['./edit-lost-dog.component.css']
 })
-export class RegisterLostDogComponent implements OnInit {
-  registerLostDogForm = new FormGroup({
+export class EditLostDogComponent implements OnInit {
+  editLostDogForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     breed: new FormControl('', [Validators.required]),
     age: new FormControl('', [Validators.required]),
@@ -41,7 +41,7 @@ export class RegisterLostDogComponent implements OnInit {
   dogHair: string[] = DogHairSelector;
   dogSizes: string[] = DogSizeSelector;
   dogTails: string[] = DogTailSelector;
-  
+
   constructor(
     private router: Router,
     private lostDogService: LostDogService,
@@ -51,40 +51,40 @@ export class RegisterLostDogComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.registerLostDogForm);
-    this.lostDogService.postLostDog(this.constructLostDogForm()).subscribe(response => console.log(response));
+    console.log(this.editLostDogForm);
+    this.lostDogService.postLostDog(this.constructForm()).subscribe(response => console.log(response));
     this.router.navigate(['/home']);
   }
 
-  private constructLostDogForm(): FormData {
+  private constructForm(): FormData {
     let data = new FormData();
 
     // u better not change the order
-    data.append('breed', this.registerLostDogForm.get('breed')?.value);
+    data.append('breed', this.editLostDogForm.get('breed')?.value);
     //data.append('breed', 'Doo');
-    data.append('age', this.registerLostDogForm.get('age')?.value);
+    data.append('age', this.editLostDogForm.get('age')?.value);
     //data.append('age', '18');
-    data.append('size', this.registerLostDogForm.get('size')?.value);
+    data.append('size', this.editLostDogForm.get('size')?.value);
     //data.append('size', 'Enormous');
-    data.append('color', this.registerLostDogForm.get('color')?.value);
+    data.append('color', this.editLostDogForm.get('color')?.value);
     //data.append('color', 'Black');
     data.append('specialMark', 'costam');
     //data.append('specialMark', 'Lacks one leg');
-    data.append('name', this.registerLostDogForm.get('name')?.value);
+    data.append('name', this.editLostDogForm.get('name')?.value);
     //data.append('name', 'Scooby');
-    data.append('hairLength', this.registerLostDogForm.get('hairLength')?.value);
+    data.append('hairLength', this.editLostDogForm.get('hairLength')?.value);
     //data.append('hairLength', 'Long');
-    data.append('tailLength', this.registerLostDogForm.get('tailLength')?.value);
+    data.append('tailLength', this.editLostDogForm.get('tailLength')?.value);
     //data.append('tailLength', 'Short');
-    data.append('earsType', this.registerLostDogForm.get('earsType')?.value);
+    data.append('earsType', this.editLostDogForm.get('earsType')?.value);
     //data.append('earsType', 'He doesn\'t have'); 
     data.append('behaviors', 'Depression');
     data.append('behaviors', 'Prosze zaakceptuj to');
-    data.append('location.City', this.registerLostDogForm.get('locationCity')?.value);
+    data.append('location.City', this.editLostDogForm.get('locationCity')?.value);
     //data.append('location.City', 'Chrzęszczyszczeborzyce');
-    data.append('location.District', this.registerLostDogForm.get('locationDistrict')?.value);
+    data.append('location.District', this.editLostDogForm.get('locationDistrict')?.value);
     //data.append('location.District', 'Łękoboldy');
-    data.append('dateLost', this.datepipe.transform(this.registerLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
+    data.append('dateLost', this.datepipe.transform(this.editLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
     //data.append('dateLost', '2021-03-23');
     data.append('ownerId', '1');
     data.append('picture', this.selectedFile.file);
@@ -98,7 +98,7 @@ export class RegisterLostDogComponent implements OnInit {
   }
 
   onOptionSetChangedHandler(event: MatSelectChange, controlName: string) {
-    this.registerLostDogForm.get(controlName)?.setValue(event.value);
+    this.editLostDogForm.get(controlName)?.setValue(event.value);
   }
 
   processFile(event: any) {

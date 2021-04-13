@@ -26,6 +26,7 @@ import { FooterComponent } from './Components/footer/footer.component';
 import { ErrorInterceptor } from './helpers/error-interceptor';
 import { JwtInterceptor } from './helpers/jwt-interceptor';
 import { RegisterUserComponent } from './Components/register-user/register-user.component';
+import { EditLostDogComponent } from './Components/edit-lost-dog/edit-lost-dog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { RegisterUserComponent } from './Components/register-user/register-user.
     HeaderComponent,
     NavbarComponent,
     FooterComponent,
-    RegisterUserComponent
+    RegisterUserComponent,
+    EditLostDogComponent
   ],
   imports: [
     BrowserModule,
