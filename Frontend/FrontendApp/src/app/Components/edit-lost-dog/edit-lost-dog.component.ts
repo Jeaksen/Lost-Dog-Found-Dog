@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LostDogService } from 'src/app/services/lost-dog-service';
 import { ImageSnippet } from '../../models/image-snippet';
@@ -47,6 +48,7 @@ export class EditLostDogComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private sanitizer: DomSanitizer,
     private activatedRoute: ActivatedRoute,
     private lostDogService: LostDogService,
     private datepipe: DatePipe) { }
@@ -55,6 +57,8 @@ export class EditLostDogComponent implements OnInit {
     this.lostDogID = parseInt(this.activatedRoute.snapshot.paramMap.get('dogId')!);
     this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
       this.lostDog = response.data;
+      this.url = 'data:' + this.lostDog!.picture.fileType + ';base64,' + this.lostDog!.picture.data;
+      //this.selectedFile = new ImageSnippet(this.lostDog!.picture.data, this.lostDog!.picture.data);
     });
   }
 
@@ -121,6 +125,7 @@ export class EditLostDogComponent implements OnInit {
     reader.readAsDataURL(file);
     reader.onload = (event:any) => {
       this.url = reader.result;
+      console.log(reader.result);
     }
   }
 

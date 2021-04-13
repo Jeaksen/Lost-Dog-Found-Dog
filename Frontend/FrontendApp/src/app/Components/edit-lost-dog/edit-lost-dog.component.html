@@ -2,13 +2,14 @@
 <div style="padding: 3px 19px;" *ngIf="lostDog">
     <mat-card id="card" style="text-align: center;">
         <h1> Edit {{lostDog.name}} Details </h1>
-        <form [formGroup]="editLostDogForm" (ngSubmit)="onSubmit()" class="grid">
+        <form [formGroup]="editLostDogForm" role="form" (ngSubmit)="onSubmit()" class="grid" #editForm="ngForm">
             <div>
                 <div class="container">
                 <label>Dog's name</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.name}}</mat-label>
-                    <input type="text" matInput formControlName="name" placeholder="Name">
+                    <mat-label>Name</mat-label>
+                    <input type="text" matInput formControlName="name" placeholder="Name"
+                        [(ngModel)]="lostDog.name" name="name">
                     <mat-error *ngIf="editLostDogForm.get('name')?.hasError('required')">
                         The name is required
                     </mat-error>
@@ -18,8 +19,9 @@
                 <div class="container">
                 <label>Breed</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.breed}}</mat-label>
-                    <input type="text" matInput formControlName="breed" placeholder="Breed">
+                    <mat-label>Breed</mat-label>
+                    <input type="text" matInput formControlName="breed" placeholder="Breed"
+                        [(ngModel)]="lostDog.breed" name="breed">
                     <mat-error *ngIf="editLostDogForm.get('breed')?.hasError('required')">
                         Breed is required
                     </mat-error>
@@ -29,8 +31,9 @@
                 <div class="container">
                 <label>Age</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.age}}</mat-label>
-                    <input type="number" matInput formControlName="age" placeholder="Age">
+                    <mat-label>Age</mat-label>
+                    <input type="number" matInput formControlName="age" placeholder="Age"
+                    [(ngModel)]="lostDog.age" name="age">
                     <mat-error *ngIf="editLostDogForm.get('age')?.hasError('required')">
                         Age is required
                     </mat-error>
@@ -40,8 +43,9 @@
                 <div class="container">
                 <label>Color</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.color}}</mat-label>
-                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'color')">
+                    <mat-label>Color</mat-label>
+                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'color')" 
+                        [(ngModel)]="lostDog.color" formControlName="color">
                             <mat-option *ngFor="let color of dogColors" [value]="color">
                                 {{color}}
                             </mat-option>
@@ -55,8 +59,9 @@
                 <div class="container">
                 <label>Ears</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.earsType}}</mat-label>
-                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'earsType')">
+                    <mat-label>Ears</mat-label>
+                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'earsType')" 
+                        [(ngModel)]="lostDog.earsType" formControlName="earsType">
                             <mat-option *ngFor="let ears of dogEars" [value]="ears">
                                 {{ears}}
                             </mat-option>
@@ -70,8 +75,9 @@
                 <div class="container">
                 <label>Hair</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.hairLength}}</mat-label>
-                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hairLength')">
+                    <mat-label>Hair length</mat-label>
+                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hairLength')" 
+                        [(ngModel)]="lostDog.hairLength" formControlName="hairLength">
                             <mat-option *ngFor="let hair of dogHair" [value]="hair">
                                 {{hair}}
                             </mat-option>
@@ -85,8 +91,9 @@
                 <div class="container">
                 <label>Size</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.size}}</mat-label>
-                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'size')">
+                    <mat-label>Size</mat-label>
+                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'size')" 
+                        [(ngModel)]="lostDog.size" formControlName="size">
                             <mat-option *ngFor="let size of dogSizes" [value]="size">
                                 {{size}}
                             </mat-option>
@@ -100,8 +107,9 @@
                 <div class="container">
                 <label>Tail</label>
                 <mat-form-field  appearance="standard">
-                    <mat-label>{{lostDog.tailLength}}</mat-label>
-                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tailLength')">
+                    <mat-label>Tail length</mat-label>
+                        <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tailLength')" 
+                        [(ngModel)]="lostDog.tailLength" formControlName="tailLength">
                             <mat-option *ngFor="let tail of dogTails" [value]="tail">
                                 {{tail}}
                             </mat-option>
@@ -117,8 +125,9 @@
                 <div class="container">
                     <label>Date Lost</label>
                     <mat-form-field  appearance="standard">
-                        <mat-label>{{lostDog.dateLost | date:'mediumDate'}}</mat-label>
-                        <input matInput [matDatepicker]="picker" formControlName="dateLost" placeholder="Choose a date">
+                        <mat-label>Choose a date</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="dateLost" placeholder="Choose a date"
+                            [(ngModel)]="lostDog.dateLost" name="dateLost">
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="editLostDogForm.get('dateLost')?.hasError('required')">
@@ -130,16 +139,18 @@
                 <div class="container">
                     <label>Special marks</label>
                     <mat-form-field  appearance="standard">
-                        <mat-label>{{lostDog.specialMark}}</mat-label>
-                        <textarea matInput placeholder="Describe special marks" formControlName="specialMarks"></textarea> 
+                        <mat-label>Special marks</mat-label>
+                        <textarea matInput placeholder="Describe special marks" formControlName="specialMarks"
+                        [(ngModel)]="lostDog.specialMark" name="specialMarks"></textarea> 
                     </mat-form-field><br>
                 </div>
     
                 <div class="container">
                     <label>Behaviour</label>
                     <mat-form-field  appearance="standard">
-                        <mat-label>{{lostDog.behaviors}}</mat-label>
-                        <textarea matInput placeholder="Describe special behaviours" formControlName="behaviour"></textarea> 
+                        <mat-label>Behaviours</mat-label>
+                        <textarea matInput placeholder="Describe special behaviours" formControlName="behaviour"
+                        [(ngModel)]="lostDog.behaviors[0]" name="behaviour"></textarea> 
                     </mat-form-field><br>
                 </div>
     
@@ -147,7 +158,8 @@
                     <label>Location</label>
                     <mat-form-field  appearance="standard">
                         <mat-label>City</mat-label>
-                        <input matInput placeholder="Enter city" formControlName="locationCity"> 
+                        <input matInput placeholder="Enter city" formControlName="locationCity"
+                        [(ngModel)]="lostDog.location.city" name="locationCity"> 
                         <mat-error *ngIf="editLostDogForm.get('locationCity')?.hasError('required')">
                             City is required
                         </mat-error>
@@ -157,7 +169,8 @@
                     <label></label>
                     <mat-form-field  appearance="standard">
                         <mat-label>District</mat-label>
-                        <input matInput placeholder="Enter district" formControlName="locationDistrict"> 
+                        <input matInput placeholder="Enter district" formControlName="locationDistrict"
+                        [(ngModel)]="lostDog.location.district" name="locationDistrict"> 
                         <mat-error *ngIf="editLostDogForm.get('locationDistrict')?.hasError('required')">
                             District is required
                         </mat-error>
@@ -170,7 +183,6 @@
                 <mat-card class="images-list">
                     <h2>Photo</h2>
                     <img [src]="url" id="dog_img" style="position:relative; max-height: 80%; max-width:80%;">
-    
                     <!-- <span>Select Image</span> -->
                     <button #file mat-raised-button class="upload-button">Upload
                         <input type="file" accept="image/*" (change)="processFile($event)" 
@@ -178,7 +190,7 @@
                     </button>
                 </mat-card>
             
-                <button mat-raised-button type="submit" [disabled]="!editLostDogForm.valid">
+                <button mat-raised-button type="submit" [disabled]="!editForm.form.valid">
                     Submit
                 </button>
                 <button mat-raised-button (click)="onCancel()">Cancel</button>
