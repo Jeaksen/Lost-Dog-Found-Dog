@@ -37,6 +37,7 @@ export class EditLostDogComponent implements OnInit {
   });
 
   selectedFile!: ImageSnippet;
+  isNewPictureChosen: boolean = false;
   url!: any;
   lostDogID!: number;
   lostDog?: LostDog;
@@ -58,7 +59,6 @@ export class EditLostDogComponent implements OnInit {
     this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
       this.lostDog = response.data;
       this.url = 'data:' + this.lostDog!.picture.fileType + ';base64,' + this.lostDog!.picture.data;
-      //this.selectedFile = new ImageSnippet(this.lostDog!.picture.data, this.lostDog!.picture.data);
     });
   }
 
@@ -98,8 +98,10 @@ export class EditLostDogComponent implements OnInit {
     //data.append('location.District', 'Łękoboldy');
     data.append('dateLost', this.datepipe.transform(this.editLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
     //data.append('dateLost', '2021-03-23');
-    data.append('ownerId', '1');
-    data.append('picture', this.selectedFile.file);
+    data.append('ownerId', localStorage.getItem('userId')!);
+    if (this.isNewPictureChosen) {
+      data.append('picture', this.selectedFile.file);
+    }
     console.log(data.forEach(val => console.log(val)));
     //console.log(data.get('image'));
     return data;
@@ -120,12 +122,13 @@ export class EditLostDogComponent implements OnInit {
     reader.addEventListener('load', (even: any) => {
       console.log(file);
       this.selectedFile = new ImageSnippet(even.target.result, file);
+      this.isNewPictureChosen = true;
     });
     
     reader.readAsDataURL(file);
     reader.onload = (event:any) => {
       this.url = reader.result;
-      console.log(reader.result);
+      //console.log(reader.result);
     }
   }
 

@@ -86,7 +86,7 @@ export class RegisterLostDogComponent implements OnInit {
     //data.append('location.District', 'Łękoboldy');
     data.append('dateLost', this.datepipe.transform(this.registerLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
     //data.append('dateLost', '2021-03-23');
-    data.append('ownerId', '1');
+    data.append('ownerId', localStorage.getItem('userId')!);
     data.append('picture', this.selectedFile.file);
     console.log(data.forEach(val => console.log(val)));
     //console.log(data.get('image'));
@@ -111,7 +111,7 @@ export class RegisterLostDogComponent implements OnInit {
     });
     
     reader.readAsDataURL(file);
-    reader.onload = (event:any) => {
+    reader.onload = (event: any) => {
       this.url = reader.result;
     }
   }
