@@ -15,46 +15,42 @@ export default class DogList extends React.Component {
   }
 
   getDogList = ()=>{
-    console.log("getDogList Button");
-    console.log('Bearer ' + this.props.token);
     var token = 'Bearer ' + this.props.token 
-    fetch(this.props.Navi.URL + 'lostdogs', {
+    fetch(this.props.Navi.URL + 'lostdogs?ownerId='+this.props.id, {
         method: 'GET', 
         headers: {
             'Content-Type': 'application/json',
             'Accept': '*/*',
             'Authorization': token,
         },
-        //body: JSON.stringify({})
-
     })
     .then(response => {
       if (response.status == 404 || response.status == 401) {
-          /* Wrong input reaction */
-          console.log("Wrong input Reaction");
-          console.log(response.status);
           return null;
       }
       else if (response.status == 200) {
           return response.json();
         }
       else{
-        /* Wrong input reaction */
-        console.log("Wrong input Reaction");
-        console.log(response.status);
         return null;
       }
       })
       .then(responseData => {
         if (responseData != null) 
         {
-          console.log(" SUCCESS !")
-          
-          this.setState({DogList: responseData});
-        } 
+          this.setState({DogList: responseData.data});
+        }
+        else{
+          this.loadingDogListFailed()
+        }
       })
+      .catch(this.loadingDogListFailed())
+      .finally(()=>{ console.log(" Finally !" + this.state.DogList.length)})
   }
 
+  loadingDogListFailed=()=>{
+
+  }
 
   pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -78,7 +74,6 @@ export default class DogList extends React.Component {
       type: "image/jpeg",
       name: "photo.jpg"
     };
-    console.log("V: 3.0");
     const data = new FormData();
     data.append('breed', 'dogdog');
     data.append('age', '5');
@@ -96,7 +91,6 @@ export default class DogList extends React.Component {
     data.append('dateLost', '2021-03-20');
     data.append('ownerId', '1');
     data.append('Image', photo);    
-    console.log("Data created succesfully");
     fetch(url, {
         method: "POST",
         headers: {
@@ -118,29 +112,25 @@ export default class DogList extends React.Component {
   constructor(props) {
     super(props);
     this.getDogList();
-    console.log(this.state.DogList);
-    console.log("LENGTH: " + this.state.DogList.length);
    }
+
+  dogSelected=(item)=>{
+    console.log("Dog is selected " + item.id);
+    this.props.Navi.swtichPage(5,item);
+  }
   render(){
     return(
         <View style={styles.content}>
-            <FlatList style={{marginBottom: 140}}
-            data={this.state.DogList.length > 0 ? this.state.DogList : []}
-            renderItem={({ item }) => <DogListItem id={item.data.id}/>}
-            keyExtractor={(item) => item.data.id.toString()}
-            />
+           <FlatList
+            data={this.state.DogList.length>0 ? this.state.DogList : []}
+            renderItem={({item}) => <DogListItem item={item} dogSelected={this.dogSelected}/>}
+            keyExtractor={(item) => item.id.toString()}
+           />
         </View>
   )
   }
 }
 
-/*
-            <Text style={styles.Title}>{this.state.info}</Text>
-            <Text style={styles.Title}>Id: {this.props.id}</Text>
-            <TouchableOpacity style={styles.loginButton} onPress={() => this.getDogList()}>
-              <Text style={styles.logintext}>get lost dog list</Text>
-            </TouchableOpacity>
-            */
 const styles = StyleSheet.create({
   inputtext: {
     fontSize: 16,
@@ -153,11 +143,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   content: {
-    marginHorizontal: 30,
-    height: '100%',
+    marginTop:30,
+    margin: 15,
+    height: '90%',
     alignSelf: 'center',
     justifyContent: 'center',
-    marginVertical: 'auto',
   },
   loginButton:{
     marginTop: 20,
