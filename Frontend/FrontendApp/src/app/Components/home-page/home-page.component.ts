@@ -56,10 +56,12 @@ export class HomePageComponent implements OnInit {
   }
 
   onMarkAsFoundClick(lostDogId: number) {
+    if(confirm("Are you sure you want mark dog as found?")) {
     this.lostDogService.MarkLostDogAsFound(lostDogId)
       .subscribe(response => {
         console.log(response);
         this.lostDogs!.find(dog => dog.id === lostDogId)!.isFound = true;
       });
+    }
   }
 }
