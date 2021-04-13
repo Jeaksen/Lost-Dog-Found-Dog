@@ -1,10 +1,10 @@
 <app-navbar></app-navbar>
 <div class="home-page"> 
     <div class="container">
-        <h1>Welcome, User!</h1>
+        <h1>Welcome, {{this.userDetails?.userName}}!</h1>
         <div>
-            <button mat-raised-button (click)="onClick()">Register Lost Dog</button>
-            <button mat-raised-button disabled="true">Edit Contact Info</button>
+            <button mat-raised-button (click)="onRegisterLostDogClick()">Register Lost Dog</button>
+            <button mat-raised-button (click)="onEditContactInfoClick()">Edit Contact Info</button>
         </div>
     </div>
     <h2 style="margin-left: 12px;">This site is under development. Your current options are limited.</h2>

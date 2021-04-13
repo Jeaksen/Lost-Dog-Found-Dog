@@ -27,6 +27,7 @@ import { ErrorInterceptor } from './helpers/error-interceptor';
 import { JwtInterceptor } from './helpers/jwt-interceptor';
 import { RegisterUserComponent } from './Components/register-user/register-user.component';
 import { EditLostDogComponent } from './Components/edit-lost-dog/edit-lost-dog.component';
+import { EditContactInfoComponent } from './Components/edit-contact-info/edit-contact-info.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { EditLostDogComponent } from './Components/edit-lost-dog/edit-lost-dog.c
     NavbarComponent,
     FooterComponent,
     RegisterUserComponent,
-    EditLostDogComponent
+    EditLostDogComponent,
+    EditContactInfoComponent
   ],
   imports: [
     BrowserModule,

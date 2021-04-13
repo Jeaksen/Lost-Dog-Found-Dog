@@ -42,6 +42,17 @@ export class LostDogService {
             );
     }
 
+    getUserLostDogs(userId: number): Observable<LostDogsResponse> {
+        return this.http.get<LostDogsResponse>(this.url + `lostdogs?ownerId=${userId}`)
+            .pipe(
+                tap(_ => {
+                    this.log('fetched lost dogs');
+                    console.log(_);
+                }),
+                catchError(this.handleError<LostDogsResponse>('getAllLostDogs', undefined))
+            );
+    }
+
     postLostDog(lostDog: FormData): Observable<PostLostDogResponse> {
         return this.http.post<PostLostDogResponse>(this.url + 'lostdogs', lostDog)
             .pipe(

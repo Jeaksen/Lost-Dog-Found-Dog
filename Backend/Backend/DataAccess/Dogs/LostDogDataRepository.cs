@@ -1,4 +1,5 @@
 ﻿using Backend.DTOs.Dogs;
+using Backend.Models.DogBase;
 using Backend.Models.DogBase.LostDog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Backend.Util;
 
 namespace Backend.DataAccess.Dogs
 {
@@ -33,7 +35,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message} {e.InnerException?.Message}";
             }
 
             return response;
@@ -56,7 +58,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to get lost dogs: {e.Message}";
+                response.Message = $"Failed to get lost dogs: {e.Message} {e.InnerException?.Message}";
             }
             return response;
         }
@@ -78,7 +80,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to get lost dogs for user {ownerId}: {e.Message}";
+                response.Message = $"Failed to get lost dogs for user {ownerId}: {e.Message} {e.InnerException?.Message}";
             }
             return response;
         }
@@ -88,8 +90,14 @@ namespace Backend.DataAccess.Dogs
             var response = new RepositoryResponse<LostDog>();
             try
             {
-                var dog = await dbContext.LostDogs.FindAsync(dogId);
-                if (dog == null)
+                var dog = await dbContext.LostDogs
+                                            .Where(ld => ld.Id == dogId)
+                                            .Include(dog => dog.Behaviors)
+                                            .Include(dog => dog.Picture)
+                                            .Include(dog => dog.Comments)
+                                            .Include(dog => dog.Location)
+                                            .SingleOrDefaultAsync();
+                if (dog == default)
                 {
                     response.Successful = false;
                     response.Message = $"Dog with id {dogId} was not found";
@@ -103,37 +111,57 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = "Failed to find dog: " + e.Message;
+                response.Message = $"Failed to find dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
 
-        public async Task<RepositoryResponse<LostDog>> UpdateLostDog(LostDog lostDog)
+        public async Task<RepositoryResponse<LostDog>> UpdateLostDog(LostDog updatedDog)
         {
             var response = new RepositoryResponse<LostDog>();
             try
             {
-                var dog = await dbContext.LostDogs.FindAsync(lostDog.Id);
-                if (dog == null)
-                {
-                    response.Successful = false;
-                    response.Message = $"Dog with id {lostDog.Id} was not found";
-                }
+                var detailsResponse = await GetLostDogDetails(updatedDog.Id);
+                if (!detailsResponse.Successful)
+                    return detailsResponse;
                 else
                 {
-                    // The object is tracked after find, so it has to be detached
-                    dbContext.Entry(dog).State = EntityState.Detached;
-                    var updatedDog = dbContext.LostDogs.Update(lostDog);
+                    var savedDog = detailsResponse.Data;
+                    if (updatedDog.Picture is not null)
+                    {
+                        dbContext.Pictures.Remove(savedDog.Picture);
+                        savedDog.Picture = updatedDog.Picture;
+                    }
+                    if (!updatedDog.Location.Equals(savedDog.Location))
+                    {
+                        dbContext.Locations.Remove(savedDog.Location);
+                        savedDog.Location = updatedDog.Location;
+                    }
+
+                    var commonBehvaiors = updatedDog.Behaviors.Intersect(savedDog.Behaviors).ToList();
+                    var addBehaviors = updatedDog.Behaviors.Except(commonBehvaiors).ToList();
+                    var removeBehvaiorsIndices = savedDog.Behaviors.Except(commonBehvaiors).Select(b => b.Id).ToList();
+
+                    foreach (int v in removeBehvaiorsIndices)
+                        savedDog.Behaviors.RemoveAll(b => b.Id == v);
+                    savedDog.Behaviors.AddRange(addBehaviors);
+
+                    //all properties are copied from lostDog to savedDog, so these ones must be assigned to lostDog
+                    updatedDog.Behaviors = savedDog.Behaviors;
+                    updatedDog.Comments = savedDog.Comments;
+                    updatedDog.Picture = savedDog.Picture;
+                    updatedDog.Location = savedDog.Location;
+                    updatedDog.CopyProperties(savedDog);
+
                     await dbContext.SaveChangesAsync();
-                    response.Data = updatedDog.Entity;
-                    response.Successful = true;
+                    response.Data = savedDog;
                     response.Message = "Dog updated successfully";
                 }
             }
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = "Failed to update dog: " + e.Message;
+                response.Message = $"Failed to update dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -165,7 +193,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = "Failed to mark dog as found: " + e.Message;
+                response.Message = $"Failed to mark dog as found: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -192,7 +220,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -220,7 +248,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -237,7 +265,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }
@@ -273,7 +301,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message}";
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }

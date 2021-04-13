@@ -17,5 +17,8 @@ namespace Backend.Models.DogBase
 
         [Required]
         public byte[] Data { get; set; }
+
+        public override string ToString() => FileName;
+
     }
 }

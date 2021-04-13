@@ -1,0 +1,87 @@
+<app-navbar></app-navbar>
+<mat-card id="card" style="text-align: center;">
+    <h1>
+        Edit Contact Info
+    </h1>
+    <button mat-raised-button type="button" [disabled]="this.editUsernameMode || this.editPhoneNumberMode || this.editEmailMode"
+            (click)="onEditUsernameClick()">
+        Edit Username
+    </button>
+    <button mat-raised-button type="button" [disabled]="this.editUsernameMode || this.editPhoneNumberMode || this.editEmailMode"
+            (click)="onEditEmailClick()">
+        Edit Email
+    </button>
+    <button mat-raised-button type="button" [disabled]="this.editUsernameMode || this.editPhoneNumberMode || this.editEmailMode"
+            (click)="onEditPhoneNumberClick()">
+        Edit Phone Number
+    </button>
+
+    <div *ngIf="this.editUsernameMode || this.editPhoneNumberMode || this.editEmailMode">
+        <!-- <div *ngIf="this.editUsernameMode">
+
+        </div>
+        <div *ngIf="this.editEmailMode">
+
+        </div>
+        <div *ngIf="this.editPhoneNumberMode">
+
+        </div> -->
+        <form [formGroup]="editContactInfoForm" (ngSubmit)="onSubmit()">
+            <mat-form-field  appearance="standard" *ngIf="this.editUsernameMode">
+                <mat-label>Username</mat-label>
+                <input type="text" matInput formControlName="username">
+                <mat-error *ngIf="editContactInfoForm.get('username')?.hasError('required')">
+                    Username is required
+                </mat-error>
+            </mat-form-field>
+    
+            <mat-form-field  appearance="standard" *ngIf="this.editEmailMode">
+                <mat-label>E-mail</mat-label>
+                <input type="email" matInput formControlName="email">
+                <mat-error *ngIf="editContactInfoForm.get('email')?.hasError('email') && !editContactInfoForm.get('email')?.hasError('required')">
+                    Please enter a valid email address
+                </mat-error>
+                <mat-error *ngIf="editContactInfoForm.get('email')?.hasError('required')">
+                    E-mail is required
+                </mat-error>
+            </mat-form-field>
+    
+            <mat-form-field  appearance="standard" *ngIf="this.editPhoneNumberMode">
+                <mat-label>Phone number</mat-label>
+                <input type="tel" matInput formControlName="phoneNumber">
+                <mat-error *ngIf="editContactInfoForm.get('phoneNumber')?.hasError('pattern') && !editContactInfoForm.get('phoneNumber')?.hasError('required')">
+                    Please enter a valid phone number
+                </mat-error>
+                <mat-error *ngIf="editContactInfoForm.get('phoneNumber')?.hasError('required')">
+                    Phone number is required
+                </mat-error>
+            </mat-form-field>
+    
+            <div formGroupName="passwords">
+                <mat-form-field  appearance="standard">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" formControlName="password" placeholder="Password">
+                    <mat-error *ngIf="editContactInfoForm.get('passwords')?.get('password')?.hasError('required')">
+                        Password is required
+                    </mat-error>
+                </mat-form-field><br>
+        
+                <mat-form-field  appearance="standard">
+                    <mat-label>Confirm Password</mat-label>
+                    <input matInput type="password" formControlName="confirmPassword" placeholder="Confirm Password">
+                    <mat-error *ngIf="editContactInfoForm.get('passwords')?.get('confirmPassword')?.hasError('required')">
+                        Password is required
+                    </mat-error>
+                </mat-form-field><br>
+            </div>
+    
+            <button mat-raised-button type="submit" [disabled]="!editContactInfoForm.valid"
+                (ngSubmit)="onSubmit()">
+                Submit
+            </button>
+            <button mat-raised-button type="button" (click)="onCancelClick()">
+                Cancel
+            </button>
+        </form>
+    </div>
+</mat-card>

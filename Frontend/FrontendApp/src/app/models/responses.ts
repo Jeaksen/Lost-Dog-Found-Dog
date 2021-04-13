@@ -1,4 +1,4 @@
-import { LoginData, RegisterUserData } from './data';
+import { LoginData, RegisterUserData, UserDetailsData } from './data';
 import { LostDog } from './lost-dog';
 
 interface BaseResponse {
@@ -25,4 +25,8 @@ export interface PostLostDogResponse extends BaseResponse {
 
 export interface MarkLostDogAsFoundResponse extends BaseResponse {
     data: boolean;
+}
+
+export interface UserDetailsResponse extends BaseResponse {
+    data: UserDetailsData;
 }
