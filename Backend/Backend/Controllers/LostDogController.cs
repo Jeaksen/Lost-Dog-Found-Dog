@@ -106,7 +106,7 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
-
+        [Authorize(Policy ="Edit")]
         [HttpPut]
         [Route("{dogId}/found")]
         public async Task<IActionResult> MarkLostDogAsFound(int dogId)
