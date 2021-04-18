@@ -30,6 +30,35 @@ namespace Backend.Controllers
             this.lostDogService = lostDogService;
         }
 
+        public class JsonModelBinder : IModelBinder
+        {
+            public Task BindModelAsync(ModelBindingContext bindingContext)
+            {
+                if (bindingContext == null)
+                {
+                    throw new ArgumentNullException(nameof(bindingContext));
+                }
+
+                // Check the value sent in
+                var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
+                if (valueProviderResult != ValueProviderResult.None)
+                {
+                    bindingContext.ModelState.SetModelValue(bindingContext.ModelName, valueProviderResult);
+
+                    // Attempt to convert the input value
+                    var valueAsString = valueProviderResult.FirstValue;
+                    var result = Newtonsoft.Json.JsonConvert.DeserializeObject(valueAsString, bindingContext.ModelType);
+                    if (result != null)
+                    {
+                        bindingContext.Result = ModelBindingResult.Success(result);
+                        return Task.CompletedTask;
+                    }
+                }
+
+                return Task.CompletedTask;
+            }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetLostDogs(int? ownerId)
@@ -55,35 +84,40 @@ namespace Backend.Controllers
         [HttpPut]
         [Route("{dogId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateLostDog(IFormCollection form, IFormFile picture, [FromRoute] int dogId)
+        public async Task<IActionResult> UpdateLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] UpdateLostDogDto dog,
+                                                    IFormFile picture, 
+                                                    [FromRoute] int dogId)
         {
-            var updateLostDogDto = new UpdateLostDogDto();
-            var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
-            var bindingSuccessful = await TryUpdateModelAsync(updateLostDogDto, "", formValueProvider);
+            //var updateLostDogDto = new UpdateLostDogDto();
+            //var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
+            //var bindingSuccessful = await TryUpdateModelAsync(updateLostDogDto, "", formValueProvider);
 
-            if (!bindingSuccessful)
-            {
-                var responseBuilder = new StringBuilder("Failed to bind UpdateLostDogDto: ");
-                foreach (var modelState in ModelState.Values)
-                    foreach (var error in modelState.Errors)
-                        responseBuilder.Append(error.ErrorMessage);
+            //if (!bindingSuccessful)
+            //{
+            //    var responseBuilder = new StringBuilder("Failed to bind UpdateLostDogDto: ");
+            //    foreach (var modelState in ModelState.Values)
+            //        foreach (var error in modelState.Errors)
+            //            responseBuilder.Append(error.ErrorMessage);
 
-                return StatusCode(StatusCodes.Status400BadRequest,
-                    new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
-            }
+            //    return StatusCode(StatusCodes.Status400BadRequest,
+            //        new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+            //}
 
-            var serviceResponse = await lostDogService.UpdateLostDog(updateLostDogDto, picture, dogId);
+            var serviceResponse = await lostDogService.UpdateLostDog(dog, picture, dogId);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
+
+        
 
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile picture)
+        public async Task<IActionResult> AddLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] AddLostDogDto dog,
+                                                    IFormFile picture)
         {
-            var addLostDogDto = new AddLostDogDto();
-            var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
-            var bindingSuccessful = await TryUpdateModelAsync(addLostDogDto, "", formValueProvider);
+            //var addLostDogDto = new AddLostDogDto();
+            //var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
+            //var bindingSuccessful = await TryUpdateModelAsync(addLostDogDto, "", formValueProvider);
 
             if (picture == null)
             {
@@ -91,18 +125,18 @@ namespace Backend.Controllers
                     new ServiceResponse<bool>() { Message = "No image was provided!", Successful = false, StatusCode = StatusCodes.Status400BadRequest });
             }
             
-            if (!bindingSuccessful)
-            {
-                var responseBuilder = new StringBuilder("Failed to bind AddLostDogDto: ");
-                foreach (var modelState in ModelState.Values)
-                    foreach (var error in modelState.Errors)
-                        responseBuilder.Append(error.ErrorMessage);
+            //if (!bindingSuccessful)
+            //{
+            //    var responseBuilder = new StringBuilder("Failed to bind AddLostDogDto: ");
+            //    foreach (var modelState in ModelState.Values)
+            //        foreach (var error in modelState.Errors)
+            //            responseBuilder.Append(error.ErrorMessage);
 
-                return StatusCode(StatusCodes.Status400BadRequest, 
-                    new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
-            }
+            //    return StatusCode(StatusCodes.Status400BadRequest, 
+            //        new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+            //}
 
-            var serviceResponse = await lostDogService.AddLostDog(addLostDogDto, picture);
+            var serviceResponse = await lostDogService.AddLostDog(dog, picture);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
