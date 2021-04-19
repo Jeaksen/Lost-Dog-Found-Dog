@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,23 +58,32 @@ namespace Backend.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateLostDog(IFormCollection form, IFormFile picture, [FromRoute] int dogId)
         {
-            var updateLostDogDto = new UpdateLostDogDto();
-            var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
-            var bindingSuccessful = await TryUpdateModelAsync(updateLostDogDto, "", formValueProvider);
-
-            if (!bindingSuccessful)
+            var dog = await lostDogService.GetLostDogDetails(dogId);
+            if (dog.Data == null)
+                return StatusCode(dog.StatusCode, dog);
+            else if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == dog.Data.OwnerId.ToString())
             {
-                var responseBuilder = new StringBuilder("Failed to bind UpdateLostDogDto: ");
-                foreach (var modelState in ModelState.Values)
-                    foreach (var error in modelState.Errors)
-                        responseBuilder.Append(error.ErrorMessage);
+                var updateLostDogDto = new UpdateLostDogDto();
+                updateLostDogDto.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
+                var bindingSuccessful = await TryUpdateModelAsync(updateLostDogDto, "", formValueProvider);
 
-                return StatusCode(StatusCodes.Status400BadRequest,
-                    new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+                if (!bindingSuccessful)
+                {
+                    var responseBuilder = new StringBuilder("Failed to bind UpdateLostDogDto: ");
+                    foreach (var modelState in ModelState.Values)
+                        foreach (var error in modelState.Errors)
+                            responseBuilder.Append(error.ErrorMessage);
+
+                    return StatusCode(StatusCodes.Status400BadRequest,
+                        new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+                }
+
+                var serviceResponse = await lostDogService.UpdateLostDog(updateLostDogDto, picture, dogId);
+                return StatusCode(serviceResponse.StatusCode, serviceResponse);
             }
-
-            var serviceResponse = await lostDogService.UpdateLostDog(updateLostDogDto, picture, dogId);
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+            else
+                return Unauthorized(new ServiceResponse<bool>() { Message = "You cannot update details of a dog that you do not own!", Successful = false, StatusCode = StatusCodes.Status401Unauthorized });
         }
 
 
@@ -82,6 +92,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile picture)
         {
             var addLostDogDto = new AddLostDogDto();
+            addLostDogDto.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
             var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
             var bindingSuccessful = await TryUpdateModelAsync(addLostDogDto, "", formValueProvider);
 

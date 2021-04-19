@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Backend.Controllers
@@ -41,6 +42,7 @@ namespace Backend.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.User)]
         [HttpGet]
         [Route("users/{userId}")]
         public async Task<IActionResult> GetAccountById(int userId)
@@ -49,12 +51,18 @@ namespace Backend.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.User)]
         [HttpPut]
         [Route("users/{userId}")]
         public async Task<IActionResult> UpdateAccountById(UpdateAccountDto updateAccountDto, int userId)
         {
-            var result = await accountService.UpdateAccount(updateAccountDto, userId);
-            return StatusCode(result.StatusCode, result);
+            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == userId.ToString())
+            {
+                var result = await accountService.UpdateAccount(updateAccountDto, userId);
+                return StatusCode(result.StatusCode, result);
+            }
+            else
+                return Unauthorized(new ServiceResponse<bool>() { Message = "You cannot update details of other users!", Successful = false, StatusCode = StatusCodes.Status401Unauthorized });
         }
 
         [Authorize(Roles = AccountRoles.Admin)]
