@@ -166,7 +166,7 @@ namespace Backend.Services.AuthenticationService
                     {
                         UserType = userRole,
                         Id = user.Id,
-                        Token = new JwtSecurityTokenHandler().WriteToken(token),
+                        Token = "Bearer " + new JwtSecurityTokenHandler().WriteToken(token),
                     };
                 }
                 else
