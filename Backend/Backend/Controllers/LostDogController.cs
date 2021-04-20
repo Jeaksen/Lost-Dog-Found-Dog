@@ -64,9 +64,9 @@ namespace Backend.Controllers
             else if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == dog.Data.OwnerId.ToString())
             {
                 var updateLostDogDto = new UpdateLostDogDto();
-                updateLostDogDto.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
                 var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
                 var bindingSuccessful = await TryUpdateModelAsync(updateLostDogDto, "", formValueProvider);
+                updateLostDogDto.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
                 if (!bindingSuccessful)
                 {
