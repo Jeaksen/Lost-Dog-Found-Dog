@@ -59,7 +59,7 @@ namespace Backend.Services.AuthenticationService
         {
             var serviceResponse = new ServiceResponse<GetAccountDto>();
             
-            var userExists = await userManager.FindByNameAsync(_account.UserName);
+            var userExists = await userManager.FindByNameAsync(_account.Name);
             if (userExists != null)
             {
                 serviceResponse.Message = "User already exists!";
@@ -80,7 +80,7 @@ namespace Backend.Services.AuthenticationService
                 else
                 {
                     result = await userManager.AddToRoleAsync(account, AccountRoles.Regular);
-                    var savedUser = await userManager.FindByNameAsync(_account.UserName);
+                    var savedUser = await userManager.FindByNameAsync(_account.Name);
                     if (!result.Succeeded)
                     {
                         serviceResponse.Message = $"Failed to add user to the role! {string.Join(", ", result.Errors)}";
@@ -105,7 +105,7 @@ namespace Backend.Services.AuthenticationService
             var savedUser = await userManager.FindByIdAsync(id.ToString());
             if (savedUser == null)
             {
-                serviceResponse.StatusCode = StatusCodes.Status404NotFound;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 serviceResponse.Successful = false;
                 serviceResponse.Message = $"Failed to fetch User with id: {id}";
             }
@@ -113,7 +113,6 @@ namespace Backend.Services.AuthenticationService
             {
                 serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
                 serviceResponse.Message = "User found";
-                serviceResponse.StatusCode = StatusCodes.Status200OK;
             }
             return serviceResponse;
         }
@@ -124,7 +123,7 @@ namespace Backend.Services.AuthenticationService
             var savedUsers =  await userManager.GetUsersInRoleAsync(role);
             if (savedUsers == null)
             {
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 serviceResponse.Successful = false;
                 serviceResponse.Message = "Failed to fetch Users";
             } 
@@ -132,7 +131,6 @@ namespace Backend.Services.AuthenticationService
             {
                 serviceResponse.Data = mapper.Map<IList<GetAccountDto>>(savedUsers);
                 serviceResponse.Message = $"{savedUsers.Count} User found";
-                serviceResponse.StatusCode = StatusCodes.Status200OK;
             }
             return serviceResponse;
         }
@@ -179,7 +177,7 @@ namespace Backend.Services.AuthenticationService
             }
             else
             {
-                serviceResponse.StatusCode = StatusCodes.Status404NotFound;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 serviceResponse.Message = "User not defined in the system";
                 serviceResponse.Successful = false;
             }
@@ -192,7 +190,7 @@ namespace Backend.Services.AuthenticationService
             var serviceResponse = new ServiceResponse<GetAccountDto>();
             if (savedAccount != null)
             {
-                savedAccount.UserName = accountDto.UserName;
+                savedAccount.UserName = accountDto.Name;
                 savedAccount.Email = accountDto.Email;
                 savedAccount.PhoneNumber = accountDto.PhoneNumber;
                 var result = await userManager.UpdateAsync(savedAccount);
@@ -200,7 +198,6 @@ namespace Backend.Services.AuthenticationService
                 if (result.Succeeded && serviceResponse.Successful)
                 {
                     serviceResponse.Message = $"User with id {userId} was updated";
-                    serviceResponse.StatusCode = StatusCodes.Status200OK;
                 }
                 else
                 {
@@ -214,14 +211,14 @@ namespace Backend.Services.AuthenticationService
                     }
                     serviceResponse.Message = errorBuilder.ToString();
                     serviceResponse.Successful = false;
-                    serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 }
             }
             else
             {
                 serviceResponse.Message = $"Failed to update user with id {userId}: Account not found";
                 serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status404NotFound;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             }
             return serviceResponse;
         }

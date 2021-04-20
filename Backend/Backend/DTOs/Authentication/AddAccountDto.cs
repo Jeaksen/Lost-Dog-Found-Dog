@@ -10,7 +10,7 @@ namespace Backend.DTOs.Authentication
     {
         [Required(ErrorMessage = "User Name is required")]
         [MaxLength(256)]
-        public string UserName { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         [MinLength(8)] 
