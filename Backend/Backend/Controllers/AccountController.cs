@@ -50,7 +50,7 @@ namespace Backend.Controllers
             return Ok(new ServiceResponse<bool>() { Message = "User logged out", Data = true });
         }
 
-        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.User)]
+        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.Regular)]
         [HttpGet]
         [Route("users/{userId}")]
         public async Task<IActionResult> GetAccountById(int userId)
@@ -59,7 +59,7 @@ namespace Backend.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.User)]
+        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.Regular)]
         [HttpPut]
         [Route("users/{userId}")]
         public async Task<IActionResult> UpdateAccountById(UpdateAccountDto updateAccountDto, int userId)
@@ -78,7 +78,7 @@ namespace Backend.Controllers
         [Route("admin/users")]
         public async Task<IActionResult> GetAllUserAccounts()
         {
-            var result = await accountService.GetAllAccountsForRole(AccountRoles.User);
+            var result = await accountService.GetAllAccountsForRole(AccountRoles.Regular);
             return StatusCode(result.StatusCode, result);
         }
 

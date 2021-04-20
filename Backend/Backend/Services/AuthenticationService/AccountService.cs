@@ -41,8 +41,8 @@ namespace Backend.Services.AuthenticationService
         {
             try
             {
-                if (!await roleManager.RoleExistsAsync(AccountRoles.User))
-                    await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.User));
+                if (!await roleManager.RoleExistsAsync(AccountRoles.Regular))
+                    await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Regular));
                 if (!await roleManager.RoleExistsAsync(AccountRoles.Admin))
                     await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Admin));
                 if (!await roleManager.RoleExistsAsync(AccountRoles.Shelter))
@@ -79,7 +79,7 @@ namespace Backend.Services.AuthenticationService
                 }
                 else
                 {
-                    result = await userManager.AddToRoleAsync(account, AccountRoles.User);
+                    result = await userManager.AddToRoleAsync(account, AccountRoles.Regular);
                     var savedUser = await userManager.FindByNameAsync(_account.UserName);
                     if (!result.Succeeded)
                     {

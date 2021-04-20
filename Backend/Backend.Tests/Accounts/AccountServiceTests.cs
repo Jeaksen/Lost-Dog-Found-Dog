@@ -187,7 +187,7 @@ namespace Backend.Tests.Accounts
             var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
-            Assert.True((await databaseAuthFixture.AccountService.GetAllAccountsForRole(AccountRoles.User)).Data.Count > 0);
+            Assert.True((await databaseAuthFixture.AccountService.GetAllAccountsForRole(AccountRoles.Regular)).Data.Count > 0);
         }
 
         [Fact]

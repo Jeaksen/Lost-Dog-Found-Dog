@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Backend.Controllers
 {
 
-    [Authorize(Roles = AccountRoles.User)]
+    [Authorize(Roles = AccountRoles.Regular)]
     [Route("/lostdogs/")]
     [ApiController]
     public class LostDogController : ControllerBase
