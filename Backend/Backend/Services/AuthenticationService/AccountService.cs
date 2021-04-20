@@ -203,7 +203,15 @@ namespace Backend.Services.AuthenticationService
                 }
                 else
                 {
-                    serviceResponse.Message = $"Failed to update user with id {userId}: {string.Join(", ", result.Errors)}";
+                    StringBuilder errorBuilder = new StringBuilder($"Failed to update user with id { userId }: ");
+                    foreach (var error in result.Errors)
+                    {
+                        errorBuilder.Append(error.Code);
+                        errorBuilder.Append(": ");
+                        errorBuilder.Append(error.Description);
+                        errorBuilder.Append(" ");
+                    }
+                    serviceResponse.Message = errorBuilder.ToString();
                     serviceResponse.Successful = false;
                     serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
                 }
