@@ -42,6 +42,14 @@ namespace Backend.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new ServiceResponse<bool>() { Message = "User logged out", Data = true });
+        }
+
         [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.User)]
         [HttpGet]
         [Route("users/{userId}")]
