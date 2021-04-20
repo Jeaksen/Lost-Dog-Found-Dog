@@ -24,6 +24,7 @@ namespace Backend.Services.AuthenticationService
         private readonly IConfiguration configuration;
         private readonly IMapper mapper;
         private readonly ILogger<AccountService> logger;
+        private readonly string tokenPrefix = "Bearer ";
 
         public AccountService(UserManager<Account> userManager, RoleManager<IdentityRole<int>> roleManager, IConfiguration configuration, IMapper mapper, ILogger<AccountService> logger)
         {
@@ -166,7 +167,7 @@ namespace Backend.Services.AuthenticationService
                     {
                         UserType = userRole,
                         Id = user.Id,
-                        Token = "Bearer " + new JwtSecurityTokenHandler().WriteToken(token),
+                        Token = tokenPrefix + new JwtSecurityTokenHandler().WriteToken(token),
                     };
                 }
                 else
