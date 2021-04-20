@@ -156,7 +156,7 @@ namespace Backend
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                 var exception = exceptionHandlerPathFeature.Error;
 
-                await context.Response.WriteAsJsonAsync(new ServiceResponse<bool> { Message = exception.Message, Successful = false });
+                await context.Response.WriteAsJsonAsync(new ServiceResponse<bool> { Message = exception.Message, Successful = false, StatusCode = StatusCodes.Status400BadRequest });
             }));
 
             app.UseRouting();

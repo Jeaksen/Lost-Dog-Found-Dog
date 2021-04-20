@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Backend.Util
@@ -29,8 +30,10 @@ namespace Backend.Util
                     return Task.CompletedTask;
                 }
             }
+            
+            var message = $"Failed to bind model (argument missing): name: {bindingContext.OriginalModelName} type: {bindingContext.ModelMetadata.ModelType.Name}";
+            return Task.FromException(new ArgumentException(message));
 
-            return Task.CompletedTask;
         }
     }
 }
