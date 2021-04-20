@@ -1,6 +1,4 @@
-﻿using Backend.DTOs.Dogs;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
+﻿using Backend.Models.DogBase.LostDog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -138,11 +136,11 @@ namespace Backend.DataAccess.Dogs
                         savedDog.Location = updatedDog.Location;
                     }
 
-                    var commonBehvaiors = updatedDog.Behaviors.Intersect(savedDog.Behaviors).ToList();
-                    var addBehaviors = updatedDog.Behaviors.Except(commonBehvaiors).ToList();
-                    var removeBehvaiorsIndices = savedDog.Behaviors.Except(commonBehvaiors).Select(b => b.Id).ToList();
+                    var commonBehaviors = updatedDog.Behaviors.Intersect(savedDog.Behaviors).ToList();
+                    var addBehaviors = updatedDog.Behaviors.Except(commonBehaviors).ToList();
+                    var removeBehaviorsIndices = savedDog.Behaviors.Except(commonBehaviors).Select(b => b.Id).ToList();
 
-                    foreach (int v in removeBehvaiorsIndices)
+                    foreach (int v in removeBehaviorsIndices)
                         savedDog.Behaviors.RemoveAll(b => b.Id == v);
                     savedDog.Behaviors.AddRange(addBehaviors);
 
