@@ -91,7 +91,6 @@ namespace Backend.Services.AuthenticationService
                     else
                     {
                         serviceResponse.Message = $"User sucessfully created!";
-                        serviceResponse.StatusCode = StatusCodes.Status201Created;
                         serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
                     }
                 }
