@@ -1,11 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Backend.Util
 {
+    class DocumentationDateTimeConverter : IsoDateTimeConverter
+    {
+        public DocumentationDateTimeConverter()
+        {
+            DateTimeFormat = "yyyy-MM-dd";
+        }
+    }
+
     public class JsonModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
@@ -23,7 +32,7 @@ namespace Backend.Util
 
                 // Attempt to convert the input value
                 var valueAsString = valueProviderResult.FirstValue;
-                var result = JsonConvert.DeserializeObject(valueAsString, bindingContext.ModelType);
+                var result = JsonConvert.DeserializeObject(valueAsString, bindingContext.ModelType, new DocumentationDateTimeConverter());
                 if (result != null)
                 {
                     bindingContext.Result = ModelBindingResult.Success(result);
