@@ -4,6 +4,7 @@ using Backend.DataAccess.Dogs;
 using Backend.DTOs.Dogs;
 using Backend.Models.DogBase;
 using Backend.Models.DogBase.LostDog;
+using Backend.Services.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,12 +18,14 @@ namespace Backend.Services.LostDogService
     public class LostDogService : ILostDogService
     {
         private readonly ILostDogRepository lostDogDataRepository;
+        private readonly ISecurityService securityService;
         private readonly IMapper mapper;
         private readonly ILogger<LostDogService> logger;
 
-        public LostDogService(ILostDogRepository lostDogDataRepository, IMapper mapper, ILogger<LostDogService> logger)
+        public LostDogService(ILostDogRepository lostDogDataRepository, ISecurityService securityService, IMapper mapper, ILogger<LostDogService> logger)
         {
             this.lostDogDataRepository = lostDogDataRepository;
+            this.securityService = securityService;
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -33,31 +36,42 @@ namespace Backend.Services.LostDogService
             LostDog lostDog = mapper.Map<LostDog>(lostDogDto);
             byte[] data;
 
-            if (picture?.Length > 0)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    picture.CopyTo(ms);
-                    data = ms.ToArray();
-                }
-                lostDog.Picture = new Picture()
-                {
-                    FileName = picture.FileName,
-                    FileType = picture.ContentType,
-                    Data = data
-                };
-                var repoResponse = await lostDogDataRepository.AddLostDog(lostDog);
-                serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
-                if (!serviceResponse.Successful)
-                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-                else
-                    serviceResponse.Data.Picture.Data = null;
-            }
-            else
+            if (picture is null)
             {
                 serviceResponse.Successful = false;
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 serviceResponse.Message = "No picture was provided!";
+            }
+            else
+            {
+                var pictureValidationResult = securityService.IsPictureValid(picture);
+
+                if (pictureValidationResult.Successful)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        picture.CopyTo(ms);
+                        data = ms.ToArray();
+                    }
+                    lostDog.Picture = new Picture()
+                    {
+                        FileName = picture.FileName,
+                        FileType = picture.ContentType,
+                        Data = data
+                    };
+                    var repoResponse = await lostDogDataRepository.AddLostDog(lostDog);
+                    serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
+                    if (!serviceResponse.Successful)
+                        serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    else
+                        serviceResponse.Data.Picture.Data = null;
+                }
+                else
+                {
+                    serviceResponse.Successful = false;
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    serviceResponse.Message = pictureValidationResult.Message;
+                }
             }
 
             return serviceResponse;
@@ -94,20 +108,32 @@ namespace Backend.Services.LostDogService
         {
             var lostDog = mapper.Map<LostDog>(lostDogDto);
             lostDog.Id = dogId;
-            if (picture?.Length > 0)
+
+            if (picture is not null)
             {
-                byte[] data;
-                using (var ms = new MemoryStream())
+                var pictureValidationResult = securityService.IsPictureValid(picture);
+
+                if (pictureValidationResult.Successful)
                 {
-                    picture.CopyTo(ms);
-                    data = ms.ToArray();
+                    byte[] data;
+                    using (var ms = new MemoryStream())
+                    {
+                        picture.CopyTo(ms);
+                        data = ms.ToArray();
+                    }
+                    lostDog.Picture = new Picture()
+                    {
+                        FileName = picture.FileName,
+                        FileType = picture.ContentType,
+                        Data = data
+                    };
                 }
-                lostDog.Picture = new Picture()
-                {
-                    FileName = picture.FileName,
-                    FileType = picture.ContentType,
-                    Data = data
-                };
+                else return new ServiceResponse<LostDog>()
+                            {
+                                Successful = false,
+                                StatusCode = StatusCodes.Status400BadRequest,
+                                Message = pictureValidationResult.Message,
+                            };
             }
             
             var repoResponse = await lostDogDataRepository.UpdateLostDog(lostDog);

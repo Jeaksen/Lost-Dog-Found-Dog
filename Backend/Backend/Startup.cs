@@ -22,6 +22,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
+using Backend.Services.Security;
 
 namespace Backend
 {
@@ -80,6 +81,7 @@ namespace Backend
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ILostDogRepository, LostDogDataRepository>();
             services.AddScoped<ILostDogService, LostDogService>();
+            services.AddScoped<ISecurityService, SecurityService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>(options =>
             {
@@ -172,7 +174,7 @@ namespace Backend
             {
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                 var exception = exceptionHandlerPathFeature.Error;
-
+                context.Response.StatusCode = 400;
                 await context.Response.WriteAsJsonAsync(new ServiceResponse<bool> { Message = exception.Message, Successful = false, StatusCode = StatusCodes.Status400BadRequest });
             }));
 
