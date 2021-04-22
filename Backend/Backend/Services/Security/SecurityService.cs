@@ -13,7 +13,7 @@ namespace Backend.Services.Security
             { "image/png", new List<string>() { "png"} },
             { "image/jpeg", new List<string>() { "jpg", "jpeg" } }
         };
-        private int MinimalPictureSize = 64;
+        private int MinimalPictureSize = 65;
 
         public (bool Successful, string Message) IsPictureValid(IFormFile picture)
         {
