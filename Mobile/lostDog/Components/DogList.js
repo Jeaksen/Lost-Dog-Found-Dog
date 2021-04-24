@@ -15,6 +15,17 @@ export default class DogList extends React.Component {
   }
 
   getDogList = ()=>{
+
+    this.props.Navi.RunOnBackend("getDogList",null).then((responseData)=>{
+      console.log(responseData)
+      this.setState({DogList: responseData});
+      console.log("succes list of dogs is ready")
+    }).catch((x)=>
+        console.log("Login Error" + (x))
+      )
+
+
+    return 0;
     var token = 'Bearer ' + this.props.token 
     fetch(this.props.Navi.URL + 'lostdogs?ownerId='+this.props.id, {
         method: 'GET', 
@@ -66,6 +77,7 @@ export default class DogList extends React.Component {
     }
   };
 
+  /*
   commitNewDog = ()=>{    
     var token = 'Bearer ' + this.props.token 
     var  url = this.props.Navi.URL + 'lostdogs';
@@ -94,7 +106,7 @@ export default class DogList extends React.Component {
     fetch(url, {
         method: "POST",
         headers: {
-          'Accept': '*/*',
+          'Accept': '**',
           'Authorization': token,
         },
           body: data
@@ -104,7 +116,7 @@ export default class DogList extends React.Component {
         .catch((error) => console.error(error))
         .finally(() => setTimeout(() => console.log("TIMEOUT")));
   }
-
+*/
   getDogInfo = ()=>{
     console.log("getDogInfo Button");
   }
@@ -123,6 +135,7 @@ export default class DogList extends React.Component {
         <View style={styles.content}>
            <FlatList
             data={this.state.DogList.length>0 ? this.state.DogList : []}
+        
             renderItem={({item}) => <DogListItem item={item} dogSelected={this.dogSelected}/>}
             keyExtractor={(item) => item.id.toString()}
            />

@@ -7,13 +7,25 @@ const {width, height} = Dimensions.get("screen")
 
 export default class RegisterScreen extends React.Component {
   state={
-    email: "",
-    password: "",
-    login: "",
-    phone: "",
+    email: "szy@mon.pl",
+    password: "SZYmon123",
+    login: "szymon",
+    phone: "111222333",
   }
 
   registerButton = ()=>{
+    const data = new FormData();
+    data.append('username', this.state.login);
+    data.append('password', this.state.password);
+    data.append('phone_number', this.state.phone);
+    data.append('email', this.state.email);
+
+    this.props.Navi.RunOnBackend("register",data).then((responseData)=>{
+      console.log("Register success")
+      this.props.Navi.swtichPage(1);
+    }).catch(()=> this.FailedRegister())
+    return 0;
+
     var login = this.state.login;
     var pass = this.state.password;
     var email = this.state.email;

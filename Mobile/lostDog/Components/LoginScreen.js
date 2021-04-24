@@ -15,6 +15,19 @@ export default class LoginScreen extends React.Component {
 
 
   loginButton = ()=>{
+    const data = new FormData();
+    data.append('username', this.state.login);
+    data.append('password', this.state.password);
+
+    this.props.Navi.RunOnBackend("login",data).then((responseData)=>{
+      console.log(responseData)
+      this.props.Navi.setToken(responseData.token,responseData.id);
+      this.props.Navi.swtichPage(6);
+    }).catch((x)=>
+        console.log("Login Error" + (x))
+      )
+    return 0;
+
     var name = this.state.login;
     var pass = this.state.password;
     console.log("login: "+ name + " password: "+ pass);

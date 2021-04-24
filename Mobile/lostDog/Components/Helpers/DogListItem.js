@@ -29,6 +29,7 @@ export default class DogListItem extends React.Component {
 
 
   render(){
+    console.log(this.props.item)
     return(
         <TouchableOpacity  style={styles.content} onPress={() => this.props.dogSelected(this.props.item)}>
           <View style={{marginHorizontal: 5}}>

@@ -70,24 +70,40 @@ export default class RegisterNewDog extends React.Component {
       name: "photo.jpg"
     };
 
+    var dog={
+      breed: "dogdog",
+      age: "5",
+      size: "Large, very large",
+      color: "Orange but a bit yellow and green dots",
+      specialMark: "tattoo of you on the neck",
+      name: "Cat",
+      hairLength: "Long",
+      tailLength: "None",
+      earsType: "Big",
+      behaviors: ["Angry","Sad"],
+      location: {
+        city:"Biała",
+        district:"Small"
+      },
+      dateLost: "2021-03-20",
+      ownerId: "1"
+    }
     const data = new FormData();
-    data.append('breed', this.state.breed);
-    data.append('age', this.state.age);
-    data.append('size', this.state.size);
-    data.append('color', this.state.color);
-    data.append('specialMark', this.state.specialMark);
-    data.append('name', this.state.name);
-    data.append('hairLength', this.state.hairLength);
-    data.append('tailLength', this.state.tailLength);
-    data.append('earsType', this.state.earsType);
-    data.append('behaviors', this.state.behaviour1);
-    data.append('behaviors', this.state.behaviour2);
-    data.append('location.City', this.state.LocationCity);
-    data.append('location.District', this.state.LocationDistinct);
-    data.append('dateLost', this.state.dateLost);
-    data.append('ownerId', this.props.id);
+    data.append("dog",JSON.stringify(dog));
     data.append('picture', photo);    
     console.log("Data form sended");
+
+    this.props.Navi.RunOnBackend("registerNewDog",data).then((responseData)=>{
+      //console.log(responseData)
+      console.log("succes new dog added !")
+    }).catch((x)=>
+        console.log("Login Error" + (x))
+      )
+    return 0;
+
+
+
+
     fetch(url, {
         method: "POST",
         headers: {

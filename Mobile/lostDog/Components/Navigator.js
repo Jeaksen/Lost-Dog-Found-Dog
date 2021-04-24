@@ -11,6 +11,8 @@ import RegisterNewDog from './RegisterNewDog';
 import DogDetails from './DogDetails';
 import UserHome from './UserHome'
 import FoundDog from './FoundDog';
+import {Backend_Switch} from './Helpers/Backend'
+import LoadingPage from './Helpers/LoadingPage'
 
 const {width, height} = Dimensions.get("screen")
 const speed=350;
@@ -34,8 +36,10 @@ export default class Navigator extends React.Component {
   state={
     token: "",
     id: "",
+    BackendAvaible: true,
     switchAnim: new Animated.Value(0),
     fadeAnim: new Animated.Value(1),
+    loadAnim: new Animated.Value(0),
     navimMainPanel_pos: 0,
 
     currentViewItem: null,
@@ -46,6 +50,7 @@ export default class Navigator extends React.Component {
       URL: 'http://10.0.2.2:5000/',
       swtichPage: (pageID,item) => this.swtichPage(pageID,item),
       setToken: (token,id,mode) => this.setToken(token,id,mode),
+      RunOnBackend: (fun,data) => this.RunOnBackend(fun,data),
     }
     
     constructor(props)
@@ -68,12 +73,26 @@ export default class Navigator extends React.Component {
       this.HeaderRef.current.show()
     }
 
+
 fading =() =>
 {
   Animated.timing(this.state.fadeAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start(
     ()=>{Animated.timing(this.state.fadeAnim,{toValue:  1,duration: speed,useNativeDriver: true}).start();}
   )
 }
+
+loadingSwitch =(mode) =>
+{
+  if (mode==true)
+  {
+    Animated.timing(this.state.loadAnim,{toValue:  1,duration: speed,useNativeDriver: true}).start()
+  }
+  else
+  {
+    Animated.timing(this.state.loadAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start()
+  }
+}
+
 leftAnim =(newIndx,item) =>{
   var pos_1;
   var pos_2;
@@ -108,7 +127,7 @@ moveLeft= (indx,item) =>{
 
 // Functions avaible in every component:
 swtichPage= (indx,item)=>{
-  console.log("SWITCH PAGE: "+indx + " ITEM: " + item)
+  //console.log("SWITCH PAGE: "+indx + " ITEM: " + item)
   if(indx != this.state.currentViewID)
     this.moveLeft(indx,item);
 }
@@ -125,8 +144,36 @@ else{
 }
 }
 
+
+RunOnBackend = (fun,data)=>
+{
+  if(this.state.BackendAvaible==false) return new Promise((resolve,reject)=>{reject("Backend is busy")})
+  this.setState({BackendAvaible: true});
+  console.log("------------- RunOnBackend started")
+  this.loadingSwitch(true)
+  return new Promise((resolve,reject)=>
+    {
+      Backend_Switch(fun,data,this.state.token,this.state.id).then(
+        (x)=>{
+          console.log("RunOnBackend Finished")
+          this.loadingSwitch(false)
+          this.setState({BackendAvaible: true});
+          resolve(x);
+          }
+        )
+        .catch(
+          (x)=>{
+            console.log("RunOnBackend Rejected")
+            this.loadingSwitch(false)
+            this.setState({BackendAvaible: true});
+            reject(x)
+          }
+        )
+    });
+}
+
 ViewContent = (indx,item)=>{
-  console.log("ITEM: " + item);
+  //console.log("ITEM: " + item);
   if(indx==0)
   {
     return (<ExamplePage />);
@@ -169,6 +216,9 @@ render(){
       ],
       opacity: this.state.fadeAnim,
   };
+  const loadAnim={
+    opacity: this.state.loadAnim,
+  }
     var _headerHeight = 3*height/20;
     return(
       <View>
@@ -176,6 +226,9 @@ render(){
         <Animated.View style={[styles.naviMainPanel,switchAnim]}>
           <View style={styles.pageContainer}>
             {this.ViewContent(this.state.currentViewID, this.state.currentViewItem)}
+            <Animated.View style={[{marginTop: -0.8*width},loadAnim]}>
+                <LoadingPage/>
+            </Animated.View>
           </View>
         </Animated.View>
         <View style={styles.naviHeaderPanel}>
@@ -187,6 +240,7 @@ render(){
 }
 
 const styles = StyleSheet.create({
+
   pageContainer: {
     backgroundColor: 'white',
     height: '100%', 
