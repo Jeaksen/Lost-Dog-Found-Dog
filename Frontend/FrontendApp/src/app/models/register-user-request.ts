@@ -1,13 +1,13 @@
 export class RegisterUserRequest {
-    userName: string;
+    username: string;
     password: string;
     email: string;
-    phoneNumber: string;
+    phone_number: string;
 
     constructor(name: string, pass: string, email: string, phone: string) {
-        this.userName = name;
+        this.username = name;
         this.password = pass;
         this.email = email;
-        this.phoneNumber = phone;
+        this.phone_number = phone;
     }
 }

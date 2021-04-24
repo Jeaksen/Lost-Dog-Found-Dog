@@ -32,14 +32,17 @@ export class RegisterUserComponent implements OnInit {
     });
   }
 
+  private constructRegisterForm(): FormData {
+    let data = new FormData();
+    data.append('username', this.registerUserForm.get('username')?.value);
+    data.append('password', this.registerUserForm.get('passwords')?.get('password')?.value);
+    data.append('phone_number', this.registerUserForm.get('phoneNumber')?.value);
+    data.append('email', this.registerUserForm.get('email')?.value);
+    return data;
+  }
+
   onSubmit() {
-    const RegisterRequest: RegisterUserRequest = new RegisterUserRequest(
-      this.registerUserForm.get('username')?.value,
-      this.registerUserForm.get('passwords')?.get('password')?.value,
-      this.registerUserForm.get('email')?.value,
-      this.registerUserForm.get('phoneNumber')?.value
-    );
-    this.authenticationService.register(RegisterRequest)
+    this.authenticationService.register(this.constructRegisterForm())
       .pipe(first())
       .subscribe(
         data => {

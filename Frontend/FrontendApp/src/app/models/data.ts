@@ -9,7 +9,7 @@ export interface RegisterUserData {
 
 export interface UserDetailsData {
     id: number;
-    userName: string;
+    name: string;
     email: string;
     phoneNumber: string;
 }

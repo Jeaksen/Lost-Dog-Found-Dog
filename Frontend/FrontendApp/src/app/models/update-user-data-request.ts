@@ -1,10 +1,10 @@
 export class UpdateUserDataRequest {
-    userName: string;
-    email: string;
+    name: string;
     phoneNumber: string;
+    email: string;
 
-    constructor(name: string, email: string, phone: string) {
-        this.userName = name;
+    constructor(name: string, phone: string, email: string) {
+        this.name = name;
         this.email = email;
         this.phoneNumber = phone;
     }

@@ -1,5 +1,6 @@
 import { LoginData, RegisterUserData, UserDetailsData } from './data';
 import { LostDog } from './lost-dog';
+import { LostDogFromBackend } from './lost-dog-from-backend';
 
 interface BaseResponse {
     statusCode: number;
@@ -16,11 +17,11 @@ export interface RegisterUserResponse extends BaseResponse {
 }
 
 export interface LostDogsResponse extends BaseResponse {
-    data: LostDog[];
+    data: LostDogFromBackend[];
 }
 
 export interface PostLostDogResponse extends BaseResponse {
-    data: LostDog;
+    data: LostDogFromBackend;
 }
 
 export interface MarkLostDogAsFoundResponse extends BaseResponse {
