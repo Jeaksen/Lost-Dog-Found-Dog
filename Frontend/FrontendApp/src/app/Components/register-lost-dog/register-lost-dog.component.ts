@@ -54,8 +54,10 @@ export class RegisterLostDogComponent implements OnInit {
 
   onSubmit() {
     console.log(this.registerLostDogForm);
-    this.lostDogService.postLostDog(this.constructLostDogForm()).subscribe(response => console.log(response));
-    this.router.navigate(['/home']);
+    this.lostDogService.postLostDog(this.constructLostDogForm()).subscribe(response => {
+      console.log(response)
+      this.router.navigate(['/home']);
+    });
   }
 
   private constructLostDogForm(): FormData {
@@ -67,7 +69,6 @@ export class RegisterLostDogComponent implements OnInit {
       this.registerLostDogForm.get('earsType')?.value, this.registerLostDogForm.get('tailLength')?.value,
       ['behav1', 'behav2'], location, this.datepipe.transform(this.registerLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
     let data = new FormData();
-
     // u better not change the order
     //data.append('breed', this.registerLostDogForm.get('breed')?.value);
     //data.append('breed', 'Doo');
@@ -96,6 +97,7 @@ export class RegisterLostDogComponent implements OnInit {
     //data.append('dateLost', this.datepipe.transform(this.registerLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
     //data.append('dateLost', '2021-03-23');
     //data.append('ownerId', localStorage.getItem('userId')!);
+    data.append('dog', JSON.stringify(lostDog));
     data.append('picture', this.selectedFile.file);
     console.log(data.forEach(val => console.log(val)));
     //console.log(data.get('image'));

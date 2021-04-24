@@ -16,13 +16,13 @@
             <h2 style="text-align: center;">Lost Dogs registered by me</h2>
             <mat-list dense class="mat-list">
                 <mat-list-item *ngFor="let lostdog of lostDogs">
-                    <img [src]="'data:' + lostdog.picture.fileType + ';base64,' + lostdog.picture.data" width=60 max-height=50>
+                    <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=60 max-height=50>
                     <mat-label class="item-label">{{lostdog.name}} ({{lostdog.breed}}),</mat-label>
                     <mat-label class="item-label">Lost on {{lostdog.dateLost | date:'longDate'}}</mat-label>
-                    <button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id)" mat-raised-button class="list-button">
+                    <button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id!)" mat-raised-button class="list-button">
                         Mark as Found
                     </button>
-                    <button mat-raised-button (click)="onEditDetailsClick(lostdog.id)" class="list-button2" [disabled]="lostdog.isFound">
+                    <button mat-raised-button (click)="onEditDetailsClick(lostdog.id!)" class="list-button2" [disabled]="lostdog.isFound">
                         Edit Details
                     </button>
                 </mat-list-item>

@@ -3,7 +3,7 @@ import { Location } from './location'
 import { Picture } from './picture'
 
 export class LostDog extends Dog {
-    ownerId?: number;
+    ownerId?: string;
     location: Location;
     dateLost: string;
     picture?: Picture;

@@ -19,8 +19,10 @@ export class EditContactInfoComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     phoneNumber: ['', [Validators.required, Validators.pattern('^\\d{9}$')]],
     passwords: this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required, CustomValidators.matchValues('password')]]
+      // password: ['', [Validators.required, Validators.minLength(8)]],
+      // confirmPassword: ['', [Validators.required, CustomValidators.matchValues('password')]]
+      password: [''],
+      confirmPassword: ['']
     })
   });
 
@@ -76,22 +78,16 @@ export class EditContactInfoComponent implements OnInit {
   }
 
   private constructEditInfoForm(): FormData {
+    // data.append('username', this.editContactInfoForm.get('username')?.value);
+    // data.append('phoneNumber', this.editContactInfoForm.get('phoneNumber')?.value);
+    // data.append('email', this.editContactInfoForm.get('email')?.value);
     let data = new FormData();
     const userDetails = new UpdateUserDataRequest(
       this.editContactInfoForm.get('username')?.value,
       this.editContactInfoForm.get('phoneNumber')?.value,
       this.editContactInfoForm.get('email')?.value
-    )
-    //data.append('username', this.editContactInfoForm.get('username')?.value);
-    //data.append('phoneNumber', this.editContactInfoForm.get('phoneNumber')?.value);
-    //data.append('email', this.editContactInfoForm.get('email')?.value);
-    data.append('userdata', new Blob([JSON.stringify({
-      name: this.editContactInfoForm.get('username')?.value,
-	    phoneNumber: this.editContactInfoForm.get('phoneNumber')?.value,
-	    email: this.editContactInfoForm.get('email')?.value
-    })], {
-      type: "application/json"
-    }));
+    );
+    data.append('userdata', JSON.stringify(userDetails));
     return data;
   }
 
