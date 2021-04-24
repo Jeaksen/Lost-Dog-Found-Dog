@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { UserDetailsResponse } from '../models/responses';
 import { environment } from '../environments/environment-dev';
-import { Observable, of } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 import { UserDetailsData } from "../models/data";
 import { UpdateUserDataRequest } from "../models/update-user-data-request";
 
@@ -23,7 +23,7 @@ export class UserService {
     }
 
     getUserDetails(userId: number): Observable<UserDetailsResponse> {
-        return this.http.get<UserDetailsResponse>(this.url + `users/${userId}`)
+        return this.http.get<UserDetailsResponse>(this.url + `user/${userId}`)
             .pipe(
                 tap(_ => {
                     this.log('fetched user details');
@@ -35,7 +35,7 @@ export class UserService {
 
     updateUserDetails(userName: string, email: string, number: string, userId: number): Observable<UserDetailsResponse> {
         const userDetails: UpdateUserDataRequest = new UpdateUserDataRequest(userName, email, number);
-        return this.http.put<UserDetailsResponse>(this.url + `users/${userId}`, userDetails, this.httpOptions)
+        return this.http.put<UserDetailsResponse>(this.url + `user/${userId}`, userDetails, this.httpOptions)
             .pipe(
                 tap(_ => {
                     this.log('fetched user details');

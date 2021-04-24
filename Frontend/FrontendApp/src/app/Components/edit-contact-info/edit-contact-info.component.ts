@@ -95,7 +95,7 @@ export class EditContactInfoComponent implements OnInit {
   }
 
   mapUserDataIntoForm() {
-    this.editContactInfoForm.get('username')?.setValue(this.userDetails!.userName);
+    this.editContactInfoForm.get('username')?.setValue(this.userDetails!.name);
     this.editContactInfoForm.get('email')?.setValue(this.userDetails!.email);
     this.editContactInfoForm.get('phoneNumber')?.setValue(this.userDetails!.phoneNumber);
   }
