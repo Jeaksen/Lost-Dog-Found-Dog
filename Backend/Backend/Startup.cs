@@ -18,10 +18,22 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using System.Threading.Tasks;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Globalization;
+using Backend.Services.Security;
 
 namespace Backend
 {
+    class JsonDateConverter : JsonConverter<DateTime>
+    {
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => DateTime.ParseExact(reader.GetString(),"yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -59,10 +71,17 @@ namespace Backend
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers().ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context => MakeMessage(context));
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context => MakeMessage(context))
+                .AddJsonOptions(o => 
+                {
+                    o.JsonSerializerOptions.Converters.Add(new JsonDateConverter());
+                });
+
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ILostDogRepository, LostDogDataRepository>();
             services.AddScoped<ILostDogService, LostDogService>();
+            services.AddScoped<ISecurityService, SecurityService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>(options =>
             {
@@ -155,8 +174,8 @@ namespace Backend
             {
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                 var exception = exceptionHandlerPathFeature.Error;
-
-                await context.Response.WriteAsJsonAsync(new ServiceResponse<bool> { Message = exception.Message, Successful = false });
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(new ServiceResponse<bool> { Message = exception.Message, Successful = false, StatusCode = StatusCodes.Status400BadRequest });
             }));
 
             app.UseRouting();

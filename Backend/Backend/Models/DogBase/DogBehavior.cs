@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -13,25 +12,25 @@ namespace Backend.Models.DogBase
 
         [Required]
         [MaxLength(50)]
-        public string Behvaior { get; set; }
+        public string Behavior { get; set; }
 
         [Required]
         public int DogId { get; set; }
 
         public bool Equals(DogBehavior other)
         {
-            return Behvaior == other.Behvaior;
+            return Behavior == other.Behavior;
         }
 
         public override bool Equals(object obj) => Equals(obj as DogBehavior);
-        public override int GetHashCode() => Behvaior.GetHashCode();
-        public override string ToString() => Behvaior;
+        public override int GetHashCode() => Behavior.GetHashCode();
+        public override string ToString() => Behavior;
     }
 
     public class DogBehaviorComparer : IEqualityComparer<DogBehavior>
     {
-        public bool Equals(DogBehavior x, DogBehavior y) => x.Behvaior == y.Behvaior;
+        public bool Equals(DogBehavior x, DogBehavior y) => x.Behavior == y.Behavior;
 
-        public int GetHashCode([DisallowNull] DogBehavior obj) => obj.Behvaior.GetHashCode();
+        public int GetHashCode([DisallowNull] DogBehavior obj) => obj.Behavior.GetHashCode();
     }
 }

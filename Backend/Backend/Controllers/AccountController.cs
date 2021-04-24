@@ -2,12 +2,11 @@
 using Backend.Models.Authentication;
 using Backend.Services;
 using Backend.Services.AuthenticationService;
+using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -27,8 +26,19 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> AddAccount(AddAccountDto _account)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddAccount([FromForm][Required] string username,
+                                                    [FromForm][Required] string password,
+                                                    [FromForm][Required] string phone_number,
+                                                    [FromForm][Required] string email)
         {
+            var _account = new AddAccountDto()
+            {
+                Name = username,
+                Password = password,
+                PhoneNumber = phone_number,
+                Email = email
+            };
             var result = await accountService.AddAccount(_account);
             result.Data = null;
             return StatusCode(result.StatusCode, result);
@@ -36,25 +46,37 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Authenticate(LoginDto _account)
+        public async Task<IActionResult> Authenticate([FromForm][Required] string username,
+                                                      [FromForm][Required] string password)
         {
+            var _account = new LoginDto() { UserName = username, Password = password };
             var result = await accountService.Authenticate(_account);
             return StatusCode(result.StatusCode, result);
         }
 
-        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.User)]
+        [Authorize]
+        [HttpPost]
+        [Route("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new ServiceResponse<bool>() { Message = "User logged out", Data = true });
+        }
+
+        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.Regular)]
         [HttpGet]
-        [Route("users/{userId}")]
+        [Route("user/{userId}")]
         public async Task<IActionResult> GetAccountById(int userId)
         {
             var result = await accountService.GetAccountById(userId);
             return StatusCode(result.StatusCode, result);
         }
 
-        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.User)]
+        [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.Regular)]
         [HttpPut]
-        [Route("users/{userId}")]
-        public async Task<IActionResult> UpdateAccountById(UpdateAccountDto updateAccountDto, int userId)
+        [Consumes("multipart/form-data")]
+        [Route("user/{userId}")]
+        public async Task<IActionResult> UpdateAccountById([ModelBinder(BinderType = typeof(JsonModelBinder))][Required][FromForm(Name = "userdata")] UpdateAccountDto updateAccountDto, 
+                                                          [FromRoute] int userId)
         {
             if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == userId.ToString())
             {
@@ -70,7 +92,7 @@ namespace Backend.Controllers
         [Route("admin/users")]
         public async Task<IActionResult> GetAllUserAccounts()
         {
-            var result = await accountService.GetAllAccountsForRole(AccountRoles.User);
+            var result = await accountService.GetAllAccountsForRole(AccountRoles.Regular);
             return StatusCode(result.StatusCode, result);
         }
 
