@@ -70,6 +70,7 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
 
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context => MakeMessage(context))
@@ -163,6 +164,11 @@ namespace Backend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true)
+                .AllowCredentials());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -181,12 +187,6 @@ namespace Backend
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true)
-                .AllowCredentials());
 
             app.UseEndpoints(endpoints =>
             {
