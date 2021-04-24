@@ -22,7 +22,6 @@ export class AuthenticationService {
     }
 
     login(loginData: FormData) {
-        //console.log(new LoginRequest(name, pass))
         return this.http.post<LoginResponse>(this.url + 'login', loginData)
             .pipe(map(response => {
                 localStorage.setItem('authToken', response.data.token);
@@ -36,9 +35,9 @@ export class AuthenticationService {
         localStorage.removeItem('authToken');
     }
 
-    register(request: RegisterUserRequest) {
-        console.log(request)
-        return this.http.post<RegisterUserResponse>(this.url + 'register', request)
+    register(registerData: FormData) {
+        //console.log(request)
+        return this.http.post<RegisterUserResponse>(this.url + 'register', registerData)
             .pipe(map(response => {
                 console.log(response)
                 return response;

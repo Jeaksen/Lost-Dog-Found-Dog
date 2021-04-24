@@ -33,9 +33,9 @@ export class UserService {
             );
     }
 
-    updateUserDetails(userName: string, email: string, number: string, userId: number): Observable<UserDetailsResponse> {
-        const userDetails: UpdateUserDataRequest = new UpdateUserDataRequest(userName, email, number);
-        return this.http.put<UserDetailsResponse>(this.url + `user/${userId}`, userDetails, this.httpOptions)
+    updateUserDetails(editInfoForm: FormData, userId: number): Observable<UserDetailsResponse> {
+        //const userDetails: UpdateUserDataRequest = new UpdateUserDataRequest(userName, email, number);
+        return this.http.put<UserDetailsResponse>(this.url + `user/${userId}`, editInfoForm, this.httpOptions)
             .pipe(
                 tap(_ => {
                     this.log('fetched user details');

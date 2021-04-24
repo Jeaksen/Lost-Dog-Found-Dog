@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { CustomValidators } from 'src/app/helpers/custom-validators';
 import { UserDetailsData } from 'src/app/models/data';
+import { UpdateUserDataRequest } from 'src/app/models/update-user-data-request';
 import { AuthenticationService } from 'src/app/services/authentication-service';
 import { UserService } from 'src/app/services/user-service';
 
@@ -74,11 +75,29 @@ export class EditContactInfoComponent implements OnInit {
     this.mapUserDataIntoForm();
   }
 
+  private constructEditInfoForm(): FormData {
+    let data = new FormData();
+    const userDetails = new UpdateUserDataRequest(
+      this.editContactInfoForm.get('username')?.value,
+      this.editContactInfoForm.get('phoneNumber')?.value,
+      this.editContactInfoForm.get('email')?.value
+    )
+    //data.append('username', this.editContactInfoForm.get('username')?.value);
+    //data.append('phoneNumber', this.editContactInfoForm.get('phoneNumber')?.value);
+    //data.append('email', this.editContactInfoForm.get('email')?.value);
+    data.append('userdata', new Blob([JSON.stringify({
+      name: this.editContactInfoForm.get('username')?.value,
+	    phoneNumber: this.editContactInfoForm.get('phoneNumber')?.value,
+	    email: this.editContactInfoForm.get('email')?.value
+    })], {
+      type: "application/json"
+    }));
+    return data;
+  }
+
   onSubmit() {
     this.userService.updateUserDetails(
-      this.editContactInfoForm.get('username')?.value,
-      this.editContactInfoForm.get('email')?.value,
-      this.editContactInfoForm.get('phoneNumber')?.value,
+      this.constructEditInfoForm(),
       this.userDetails!.id)
       .pipe(first())
       .subscribe(
