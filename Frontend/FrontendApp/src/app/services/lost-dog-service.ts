@@ -31,6 +31,28 @@ export class LostDogService {
             );
     }
 
+    getLostDogByID(lostDogId: number): Observable<PostLostDogResponse> {
+        return this.http.get<PostLostDogResponse>(this.url + 'lostdogs/' + lostDogId)
+            .pipe(
+                tap(_ => {
+                    this.log('fetched a lost dog');
+                    console.log(_);
+                }),
+                catchError(this.handleError<PostLostDogResponse>('getLostDogByID', undefined))
+            );
+    }
+
+    getUserLostDogs(userId: number): Observable<LostDogsResponse> {
+        return this.http.get<LostDogsResponse>(this.url + `lostdogs?ownerId=${userId}`)
+            .pipe(
+                tap(_ => {
+                    this.log('fetched lost dogs');
+                    console.log(_);
+                }),
+                catchError(this.handleError<LostDogsResponse>('getAllLostDogs', undefined))
+            );
+    }
+
     postLostDog(lostDog: FormData): Observable<PostLostDogResponse> {
         return this.http.post<PostLostDogResponse>(this.url + 'lostdogs', lostDog)
             .pipe(
@@ -39,6 +61,17 @@ export class LostDogService {
                     console.log(_);
                 }),
                 catchError(this.handleError<PostLostDogResponse>('postLostDog'))
+            );
+    }
+
+    putLostDog(lostDog: FormData, lostDogId: number): Observable<PostLostDogResponse> {
+        return this.http.put<PostLostDogResponse>(this.url + 'lostdogs/' + lostDogId, lostDog)
+            .pipe(
+                tap(_ => {
+                    this.log('put a lost dog');
+                    console.log(_);
+                }),
+                catchError(this.handleError<PostLostDogResponse>('putLostDog'))
             );
     }
 

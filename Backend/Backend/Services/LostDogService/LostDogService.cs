@@ -4,6 +4,7 @@ using Backend.DataAccess.Dogs;
 using Backend.DTOs.Dogs;
 using Backend.Models.DogBase;
 using Backend.Models.DogBase.LostDog;
+using Backend.Services.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,12 +18,14 @@ namespace Backend.Services.LostDogService
     public class LostDogService : ILostDogService
     {
         private readonly ILostDogRepository lostDogDataRepository;
+        private readonly ISecurityService securityService;
         private readonly IMapper mapper;
         private readonly ILogger<LostDogService> logger;
 
-        public LostDogService(ILostDogRepository lostDogDataRepository, IMapper mapper, ILogger<LostDogService> logger)
+        public LostDogService(ILostDogRepository lostDogDataRepository, ISecurityService securityService, IMapper mapper, ILogger<LostDogService> logger)
         {
             this.lostDogDataRepository = lostDogDataRepository;
+            this.securityService = securityService;
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -33,31 +36,42 @@ namespace Backend.Services.LostDogService
             LostDog lostDog = mapper.Map<LostDog>(lostDogDto);
             byte[] data;
 
-            if (picture?.Length > 0)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    picture.CopyTo(ms);
-                    data = ms.ToArray();
-                }
-                lostDog.Picture = new Picture()
-                {
-                    FileName = picture.FileName,
-                    FileType = picture.ContentType,
-                    Data = data
-                };
-                var repoResponse = await lostDogDataRepository.AddLostDog(lostDog);
-                serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
-                if (!serviceResponse.Successful)
-                    serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                else
-                    serviceResponse.Data.Picture.Data = null;
-            }
-            else
+            if (picture is null)
             {
                 serviceResponse.Successful = false;
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 serviceResponse.Message = "No picture was provided!";
+            }
+            else
+            {
+                var pictureValidationResult = securityService.IsPictureValid(picture);
+
+                if (pictureValidationResult.Successful)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        picture.CopyTo(ms);
+                        data = ms.ToArray();
+                    }
+                    lostDog.Picture = new Picture()
+                    {
+                        FileName = picture.FileName,
+                        FileType = picture.ContentType,
+                        Data = data
+                    };
+                    var repoResponse = await lostDogDataRepository.AddLostDog(lostDog);
+                    serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
+                    if (!serviceResponse.Successful)
+                        serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    else
+                        serviceResponse.Data.Picture.Data = null;
+                }
+                else
+                {
+                    serviceResponse.Successful = false;
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    serviceResponse.Message = pictureValidationResult.Message;
+                }
             }
 
             return serviceResponse;
@@ -68,7 +82,7 @@ namespace Backend.Services.LostDogService
             var repoResponse =  await lostDogDataRepository.GetLostDogs();
             var serviceResponse = mapper.Map<RepositoryResponse<List<LostDog>>, ServiceResponse<List<LostDog>>>(repoResponse); 
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
@@ -77,7 +91,7 @@ namespace Backend.Services.LostDogService
             var repoResponse = await lostDogDataRepository.GetUserLostDogs(ownerId);
             var serviceResponse = mapper.Map<RepositoryResponse<List<LostDog>>, ServiceResponse<List<LostDog>>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
@@ -86,7 +100,7 @@ namespace Backend.Services.LostDogService
             var repoResponse = await lostDogDataRepository.GetLostDogDetails(dogId);
             var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
@@ -94,34 +108,38 @@ namespace Backend.Services.LostDogService
         {
             var lostDog = mapper.Map<LostDog>(lostDogDto);
             lostDog.Id = dogId;
-            byte[] data;
 
-            if (picture?.Length > 0)
+            if (picture is not null)
             {
-                using (var ms = new MemoryStream())
+                var pictureValidationResult = securityService.IsPictureValid(picture);
+
+                if (pictureValidationResult.Successful)
                 {
-                    picture.CopyTo(ms);
-                    data = ms.ToArray();
+                    byte[] data;
+                    using (var ms = new MemoryStream())
+                    {
+                        picture.CopyTo(ms);
+                        data = ms.ToArray();
+                    }
+                    lostDog.Picture = new Picture()
+                    {
+                        FileName = picture.FileName,
+                        FileType = picture.ContentType,
+                        Data = data
+                    };
                 }
-                lostDog.Picture = new Picture()
-                {
-                    FileName = picture.FileName,
-                    FileType = picture.ContentType,
-                    Data = data
-                };
-            }
-            else
-            {
-                var getDogResponse = await GetLostDogDetails(dogId);
-                if (getDogResponse.Successful == false) 
-                    return getDogResponse;
-                lostDog.Picture = getDogResponse.Data.Picture;
+                else return new ServiceResponse<LostDog>()
+                            {
+                                Successful = false,
+                                StatusCode = StatusCodes.Status400BadRequest,
+                                Message = pictureValidationResult.Message,
+                            };
             }
             
             var repoResponse = await lostDogDataRepository.UpdateLostDog(lostDog);
             var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
 
             return serviceResponse;
         }
@@ -131,7 +149,7 @@ namespace Backend.Services.LostDogService
             var repoResponse = await lostDogDataRepository.MarkDogAsFound(dogId);
             var serviceResponse = mapper.Map<RepositoryResponse<bool>, ServiceResponse<bool>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
@@ -140,7 +158,7 @@ namespace Backend.Services.LostDogService
             var repoResponse = await lostDogDataRepository.DeleteLostDog(dogId);
             var serviceResponse = mapper.Map<RepositoryResponse<bool>, ServiceResponse<bool>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
         
@@ -151,7 +169,7 @@ namespace Backend.Services.LostDogService
             var repoResponse = await lostDogDataRepository.AddLostDogComment(comment);
             var serviceResponse = mapper.Map<RepositoryResponse<LostDogComment>, ServiceResponse<LostDogComment>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
@@ -160,7 +178,7 @@ namespace Backend.Services.LostDogService
             var repoResponse = await lostDogDataRepository.GetLostDogComments(dogId);
             var serviceResponse = mapper.Map<RepositoryResponse<List<LostDogComment>>, ServiceResponse<List<LostDogComment>>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
@@ -170,7 +188,7 @@ namespace Backend.Services.LostDogService
             var repoResponse = await lostDogDataRepository.EditLostDogComment(comment);
             var serviceResponse = mapper.Map<RepositoryResponse<LostDogComment>, ServiceResponse<LostDogComment>>(repoResponse);
             if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
     }

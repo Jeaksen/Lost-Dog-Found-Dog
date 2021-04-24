@@ -38,7 +38,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -54,7 +54,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -70,7 +70,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -86,7 +86,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -102,7 +102,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -118,7 +118,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -136,7 +136,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -159,7 +159,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -178,7 +178,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = password
@@ -187,7 +187,7 @@ namespace Backend.Tests.Accounts
             var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
-            Assert.True((await databaseAuthFixture.AccountService.GetAllAccountsForRole(AccountRoles.User)).Data.Count > 0);
+            Assert.True((await databaseAuthFixture.AccountService.GetAllAccountsForRole(AccountRoles.Regular)).Data.Count > 0);
         }
 
         [Fact]
@@ -196,7 +196,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = "Test123456"
@@ -207,7 +207,7 @@ namespace Backend.Tests.Accounts
 
             var updateAccountDto = new UpdateAccountDto()
             {
-                UserName = account.UserName + "a",
+                Name = account.UserName + "a",
                 Email = "ab" + account.Email,
                 PhoneNumber = account.PhoneNumber
             };
@@ -220,7 +220,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var updateAccountDto = new UpdateAccountDto()
             {
-                UserName = account.UserName + "a",
+                Name = account.UserName + "a",
                 Email = "ab" + account.Email,
                 PhoneNumber = account.PhoneNumber
             };
@@ -233,7 +233,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = "Test123456"
@@ -246,7 +246,7 @@ namespace Backend.Tests.Accounts
             account = GetValidAccount();
             addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = "Test123456"
@@ -257,7 +257,7 @@ namespace Backend.Tests.Accounts
 
             var updateAccountDto = new UpdateAccountDto()
             {
-                UserName = existingUsername,
+                Name = existingUsername,
                 Email = "ac" + account.Email,
                 PhoneNumber = account.PhoneNumber
             };
@@ -270,7 +270,7 @@ namespace Backend.Tests.Accounts
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = "Test123456"
@@ -283,7 +283,7 @@ namespace Backend.Tests.Accounts
             account = GetValidAccount();
             addAccountDto = new AddAccountDto()
             {
-                UserName = account.UserName,
+                Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Password = "Test123456"
@@ -294,7 +294,7 @@ namespace Backend.Tests.Accounts
 
             var updateAccountDto = new UpdateAccountDto()
             {
-                UserName = "a" + account.UserName,
+                Name = "a" + account.UserName,
                 Email = existingEmail,
                 PhoneNumber = account.PhoneNumber
             };

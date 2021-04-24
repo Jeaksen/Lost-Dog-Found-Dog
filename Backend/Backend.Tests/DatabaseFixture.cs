@@ -105,7 +105,7 @@ namespace Backend.Tests
         {
             var account =  new AddAccountDto()
             {
-                UserName = "bob",
+                Name = "bob",
                 Email = "bob@gmail.com",
                 PhoneNumber = "222333444",
                 Password = "SafePass66"
@@ -130,7 +130,7 @@ namespace Backend.Tests
                 HairLength = "Long",
                 EarsType = "Short",
                 TailLength = "None",
-                Behaviors = new List<DogBehavior>() { new DogBehavior() { Behvaior = "Angry" } },
+                Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
                 Location = new Location() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,

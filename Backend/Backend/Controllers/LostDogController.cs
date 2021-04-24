@@ -3,22 +3,19 @@ using Backend.Models.Authentication;
 using Backend.Models.DogBase.LostDog;
 using Backend.Services;
 using Backend.Services.LostDogService;
+using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
-    
-    [Authorize(Roles = AccountRoles.User)]
+
+    [Authorize(Roles = AccountRoles.Regular)]
     [Route("/lostdogs/")]
     [ApiController]
     public class LostDogController : ControllerBase
@@ -55,54 +52,45 @@ namespace Backend.Controllers
         [HttpPut]
         [Route("{dogId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateLostDog(IFormCollection form, IFormFile picture, [FromRoute] int dogId)
+        public async Task<IActionResult> UpdateLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] [FromForm] UpdateLostDogDto dog,
+                                                       IFormFile picture,
+                                                       [FromRoute] int dogId)
         {
-            var updateLostDogDto = new UpdateLostDogDto();
-            var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
-            var bindingSuccessful = await TryUpdateModelAsync(updateLostDogDto, "", formValueProvider);
+            var response = await lostDogService.GetLostDogDetails(dogId);
+            if (!response.Successful)
+                return StatusCode(response.StatusCode, response);
 
-            if (!bindingSuccessful)
-            {
-                var responseBuilder = new StringBuilder("Failed to bind UpdateLostDogDto: ");
-                foreach (var modelState in ModelState.Values)
-                    foreach (var error in modelState.Errors)
-                        responseBuilder.Append(error.ErrorMessage);
-
-                return StatusCode(StatusCodes.Status400BadRequest,
-                    new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == response.Data.OwnerId.ToString())
+            { 
+                var serviceResponse = await lostDogService.UpdateLostDog(dog, picture, dogId);
+                return StatusCode(serviceResponse.StatusCode, serviceResponse);
             }
 
-            var serviceResponse = await lostDogService.UpdateLostDog(updateLostDogDto, picture, dogId);
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+
+            return Unauthorized(new ServiceResponse<bool>() 
+                    { 
+                        Message = "Attempted to update a dog which is not owned by the user!", 
+                        Successful = false, 
+                        StatusCode = StatusCodes.Status401Unauthorized 
+                    });
         }
 
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddLostDog(IFormCollection form, IFormFile picture)
+        public async Task<IActionResult> AddLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] AddLostDogDto dog,
+                                                    IFormFile picture)
         {
-            var addLostDogDto = new AddLostDogDto();
-            var formValueProvider = new FormValueProvider(BindingSource.Form, form, CultureInfo.CurrentCulture);
-            var bindingSuccessful = await TryUpdateModelAsync(addLostDogDto, "", formValueProvider);
+            if (picture is null)
+                return BadRequest( new ServiceResponse<bool>() 
+                    { 
+                        Message = "No image was provided!", 
+                        Successful = false, 
+                        StatusCode = StatusCodes.Status400BadRequest 
+                    });
+            dog.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
-            if (picture == null)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest,
-                    new ServiceResponse<bool>() { Message = "No image was provided!", Successful = false, StatusCode = StatusCodes.Status400BadRequest });
-            }
-            
-            if (!bindingSuccessful)
-            {
-                var responseBuilder = new StringBuilder("Failed to bind AddLostDogDto: ");
-                foreach (var modelState in ModelState.Values)
-                    foreach (var error in modelState.Errors)
-                        responseBuilder.Append(error.ErrorMessage);
-
-                return StatusCode(StatusCodes.Status400BadRequest, 
-                    new ServiceResponse<bool>() { Message = responseBuilder.ToString(), Successful = false, StatusCode = StatusCodes.Status400BadRequest });
-            }
-
-            var serviceResponse = await lostDogService.AddLostDog(addLostDogDto, picture);
+            var serviceResponse = await lostDogService.AddLostDog(dog, picture);
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }
 
