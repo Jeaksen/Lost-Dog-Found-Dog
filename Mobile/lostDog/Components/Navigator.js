@@ -9,6 +9,8 @@ import ExamplePage from './ExamplePage';
 import DogList from './DogList';
 import RegisterNewDog from './RegisterNewDog';
 import DogDetails from './DogDetails';
+import UserHome from './UserHome'
+import FoundDog from './FoundDog';
 
 const {width, height} = Dimensions.get("screen")
 const speed=350;
@@ -18,12 +20,14 @@ var pos_right=delta;
 var moveDirection=1;
 
 const Headers=[
-  /*Example page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}], 
-  /*Login page   */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],                                                    
-  /*Registe page */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],  
-  /*DogList page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
-  /*Register new dog page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
-  /*DogDetailed page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
+  /*0 Example page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}], 
+  /*1 Login page   */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],                                                    
+  /*2 Registe page */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],  
+  /*3 DogList page */[{id: "1",title: "logout",},{id: "6",title: "User",},{id: "4",title: "Add Dog",}],
+  /*4 Register new dog page */[{id: "1",title: "logout",},{id: "6",title: "User",},{id: "7",title: "FoundDog",}],
+  /*5 DogDetailed page */[{id: "1",title: "logout",},{id: "6",title: "User",},{id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*6 User Home page */[{id: "1",title: "logout",},{id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*7 Found Dog Page */[{id: "1",title: "logout",},{id: "6",title: "User",},{id: "7",title: "FoundDog",}],
 ]
 
 export default class Navigator extends React.Component {
@@ -147,6 +151,14 @@ ViewContent = (indx,item)=>{
   {
     return (<DogDetails Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>);
   }
+  else if(indx==6)
+  {
+    return (<UserHome Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==7)
+  {
+    return (<FoundDog Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
 }
 render(){
     const switchAnim={
@@ -182,16 +194,14 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 80,
     alignContent: 'center',
-    
   },
   naviHeaderPanel: {
     marginTop: '5%',
     height: '10%',
     alignContent: 'center',
-    //backgroundColor: 'black',
   },
   naviMainPanel: {
-    marginTop: '5%',
+    marginTop: '13%',
     height: '80%',
     alignContent: 'center',
   }

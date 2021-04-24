@@ -4,6 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import addDogIcon from '../Assets/addDogIcon.png';
 import camera from '../Assets/camera.png';
 import gallery from '../Assets/gallery.png';
+import AppIcon from '../Assets/AppIcon.png'
+import newDog from '../Assets/newdog.png'
 
 
 const {width, height} = Dimensions.get("screen")
@@ -104,12 +106,12 @@ export default class RegisterNewDog extends React.Component {
     return(
         <View style={styles.content}>
         {/* Icon */}
-        <View style={[styles.row, {margin: 5}]}>
-            <Image source={addDogIcon} style={styles.icon} tintColor='black'/>
+        <View style={[{flexDirection: 'row', width: 300, margin: 30}]}>
+                <Image source={newDog} style={[styles.Icon,{width: 150,height:150}]}/>
+                <Text  style={[{ width: 200,fontSize: 30, fontWeight: 'bold', textAlignVertical: 'center'}]}>What kind of dog have you lost?</Text>
         </View>
-        
-            <SafeAreaView>
-                <ScrollView >
+            <SafeAreaView style={[{height: '66%',width: 230}, styles.Center]}>
+                <ScrollView>
                 {/* String data */}
                     <TextInput style={styles.inputtext} placeholder="Dog Name"      onChangeText={(x) => this.setState({name: x})}/>
                     <TextInput style={styles.inputtext} placeholder="Breed"         onChangeText={(x) => this.setState({breed: x})}/>
@@ -156,7 +158,12 @@ export default class RegisterNewDog extends React.Component {
 
 
 const styles = StyleSheet.create({
-    
+  Center:{
+    marginLeft: 'auto', 
+    marginRight: 'auto',
+    alignSelf: 'center',
+    textAlignVertical: 'center',
+    },
   content: {
     height: '80%',
     alignSelf: 'center',

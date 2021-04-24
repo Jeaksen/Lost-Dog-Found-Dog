@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity } from 'react-native';
+import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity,Image } from 'react-native';
+import AppIcon from '../Assets/AppIcon.png'
 
 const {width, height} = Dimensions.get("screen")
 
@@ -44,7 +45,7 @@ export default class LoginScreen extends React.Component {
         {
           console.log(" SUCCESS !")
           this.props.Navi.setToken(responseData.data.token,responseData.data.id);
-          this.props.Navi.swtichPage(0);
+          this.props.Navi.swtichPage(6);
         } 
         else this.FailedLogin();
       })
@@ -63,7 +64,8 @@ export default class LoginScreen extends React.Component {
   render(){
     return(
         <View style={styles.content}>
-          <Text style={styles.Title}>Lost Dog</Text>
+          <Image source={AppIcon} style={styles.AppIcon}/>
+          <Text style={styles.Title}>Sign in</Text>
           <TextInput style={styles.inputtext} placeholder="Login" onChangeText={(x) => this.setState({login: x})}/>
           <TextInput style={styles.inputtext} placeholder="Password" onChangeText={(x) => this.setState({password: x})}/>
           {this.state.loadingState==false ?
@@ -82,6 +84,15 @@ export default class LoginScreen extends React.Component {
 
 
 const styles = StyleSheet.create({
+  AppIcon:{
+    resizeMode: 'contain',
+    aspectRatio: 1, 
+    opacity: 0.8,
+    width: 70,
+    height: 70,
+    alignSelf: 'center',
+    marginBottom: 50,
+  },
   inputtext: {
     fontSize: 16,
     height: 30,
@@ -115,7 +126,7 @@ logintext:{
     textAlign: 'center',
 },
 Title:{
-  marginBottom: 50,
+  marginBottom: 5,
   fontSize: 20,
   textAlign: 'center',
   fontWeight: 'bold',
