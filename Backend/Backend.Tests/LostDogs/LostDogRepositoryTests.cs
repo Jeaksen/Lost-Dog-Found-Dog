@@ -258,21 +258,8 @@ namespace Backend.Tests.LostDogs
 
 
         [Fact]
-        public async void GetLostDogFilterCreatesPredicateProperly()
+        public async void GetLostDogSortsProperly()
         {
-            //var filter = new LostDogFilter()
-            //{
-            //    OwnerId = 4,
-            //    Breed = "hehe",
-            //    AgeFrom = 2,
-            //    AgeTo = 3,
-            //    Size = "heh",
-            //    Color = "heeh",
-            //    Name = "ffrr",
-            //    Location = new LocationFilter() { City = "Waw", District = "Pop" },
-            //    DateLostBefore = DateTime.Today,
-            //    DateLostAfter = DateTime.Today,
-            //};
             var saveDog = new LostDog()
             {
                 Breed = "dogdog",
@@ -319,22 +306,14 @@ namespace Backend.Tests.LostDogs
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
             };
-            var result = await lostDogRepository.AddLostDog(saveDog);
-            var result2 = await lostDogRepository.AddLostDog(saveDog2);
-            Assert.True(result.Successful);
-            Assert.True(result2.Successful);
-            var filter = new LostDogFilter()
-            {
-                OwnerId = 1,
-                AgeFrom = 1,
-                AgeTo = 6,
-            };
+            Assert.True((await lostDogRepository.AddLostDog(saveDog)).Successful);
+            Assert.True((await lostDogRepository.AddLostDog(saveDog2)).Successful);
 
-            var filteringResult  = await lostDogRepository.GetLostDogs(filter, "location.city");
-            var filteringResult2 = await lostDogRepository.GetLostDogs(filter, "Location.City,ASC");
-            var filteringResult3 = await lostDogRepository.GetLostDogs(filter, "location.city,DESC");
-            var filteringResult4 = await lostDogRepository.GetLostDogs(filter, "location.city,deSc");
-            var filteringResult5 = await lostDogRepository.GetLostDogs(filter, "notexsitant,DESC");
+            var filteringResult  = await lostDogRepository.GetLostDogs(new LostDogFilter(), "location.city", 0, 50);
+            var filteringResult2 = await lostDogRepository.GetLostDogs(new LostDogFilter(), "Location.City,ASC", 0, 50);
+            var filteringResult3 = await lostDogRepository.GetLostDogs(new LostDogFilter(), "location.city,DESC", 0, 50);
+            var filteringResult4 = await lostDogRepository.GetLostDogs(new LostDogFilter(), "location.city,deSc", 0, 50);
+            var filteringResult5 = await lostDogRepository.GetLostDogs(new LostDogFilter(), "notexsitant,DESC", 0, 50);
 
             Assert.True(filteringResult.Successful && filteringResult2.Successful && filteringResult3.Successful && filteringResult4.Successful && !filteringResult5.Successful);
             Assert.True(filteringResult.Data[0].Id == filteringResult2.Data[0].Id && filteringResult.Data[^1].Id == filteringResult3.Data[0].Id && filteringResult3.Data[0].Id == filteringResult4.Data[0].Id);

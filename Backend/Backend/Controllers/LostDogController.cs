@@ -29,7 +29,8 @@ namespace Backend.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetLostDogs([FromQuery] LostDogFilter filter, [FromQuery] string sort)
+        public async Task<IActionResult> GetLostDogs([FromQuery(Name = "filter")] LostDogFilter filter, [FromQuery] string sort, 
+                                                     [FromQuery] int page = 0, [FromQuery] int size = 10)
         {
             ServiceResponse<List<LostDog>> serviceResponse;
             if (filter.OwnerId.HasValue)

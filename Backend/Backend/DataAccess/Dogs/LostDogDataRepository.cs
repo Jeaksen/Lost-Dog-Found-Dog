@@ -9,6 +9,7 @@ using Backend.Util;
 using DynamicExpressions;
 using System.Text;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace Backend.DataAccess.Dogs
 {
@@ -94,7 +95,7 @@ namespace Backend.DataAccess.Dogs
             return response;
         }
 
-        public async Task<RepositoryResponse<List<LostDog>>> GetLostDogs(LostDogFilter filter, string sort)
+        public async Task<RepositoryResponse<List<LostDog>>> GetLostDogs(LostDogFilter filter, string sort, int page, int size)
         {
             var response = new RepositoryResponse<List<LostDog>>();
             try
@@ -109,8 +110,15 @@ namespace Backend.DataAccess.Dogs
                 foreach (var result in filterProperties)
                     predicateBuilder.And(lostDogPropertyForFilterProperty[result.Name], filterOperatorsForProperties[result.Name], result.GetValue(filter));
 
+                Expression<Func<LostDog, bool>> predicate = (LostDog l) => true;
+                try
+                {
+                    predicate = predicateBuilder.Build();
+                }
+                catch (Exception) {}
+
                 var query = dbContext.LostDogs
-                            .Where(predicateBuilder.Build())
+                            .Where(predicate)
                             .Include(dog => dog.Behaviors)
                             .Include(dog => dog.Picture)
                             .Include(dog => dog.Comments)
@@ -130,9 +138,9 @@ namespace Backend.DataAccess.Dogs
                         response.Data = await ordered.ToListAsync();
                     }
                     else ordered = query.OrderBy(propertyGetter);
-                    response.Data = await ordered.ToListAsync();
+                    response.Data = await ordered.Skip(size * page).Take(size).ToListAsync();
                 }
-                else response.Data = await query.ToListAsync();
+                else response.Data = await query.Skip(size * page).Take(size).ToListAsync();
 
                 response.Message = $"Found {response.Data.Count} Lost Dogs";
             }
