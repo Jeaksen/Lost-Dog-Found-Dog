@@ -29,11 +29,11 @@ namespace Backend.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetLostDogs(int? ownerId)
+        public async Task<IActionResult> GetLostDogs([FromQuery] LostDogFilter filter)
         {
             ServiceResponse<List<LostDog>> serviceResponse;
-            if (ownerId.HasValue)
-                serviceResponse = await lostDogService.GetUserLostDogs(ownerId.Value);
+            if (filter.OwnerId.HasValue)
+                serviceResponse = await lostDogService.GetUserLostDogs(filter.OwnerId.Value);
             else
                 serviceResponse = await lostDogService.GetLostDogs();
 
