@@ -296,8 +296,33 @@ namespace Backend.Tests.LostDogs
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
             };
+            var saveDog2 = new LostDog()
+            {
+                Breed = "dogdog",
+                Age = 6,
+                Size = "Large, very large",
+                Color = "Orange but a bit yellow and green dots",
+                SpecialMark = "tattoo of you on the neck",
+                Name = "Cat",
+                Picture = new Picture()
+                {
+                    FileName = "photo",
+                    FileType = "png",
+                    Data = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+                },
+                HairLength = "Long",
+                EarsType = "Short",
+                TailLength = "None",
+                Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
+                Location = new Location() { City = "Czarna", District = "Lol ther's none" },
+                DateLost = new DateTime(2021, 3, 20),
+                OwnerId = 1,
+                Comments = new List<LostDogComment>()
+            };
             var result = await lostDogRepository.AddLostDog(saveDog);
+            var result2 = await lostDogRepository.AddLostDog(saveDog2);
             Assert.True(result.Successful);
+            Assert.True(result2.Successful);
             var filter = new LostDogFilter()
             {
                 OwnerId = 1,
@@ -305,7 +330,14 @@ namespace Backend.Tests.LostDogs
                 AgeTo = 6,
             };
 
-            await lostDogRepository.GetLostDogs(filter);
+            var filteringResult  = await lostDogRepository.GetLostDogs(filter, "location.city");
+            var filteringResult2 = await lostDogRepository.GetLostDogs(filter, "Location.City,ASC");
+            var filteringResult3 = await lostDogRepository.GetLostDogs(filter, "location.city,DESC");
+            var filteringResult4 = await lostDogRepository.GetLostDogs(filter, "location.city,deSc");
+            var filteringResult5 = await lostDogRepository.GetLostDogs(filter, "notexsitant,DESC");
+
+            Assert.True(filteringResult.Successful && filteringResult2.Successful && filteringResult3.Successful && filteringResult4.Successful && !filteringResult5.Successful);
+            Assert.True(filteringResult.Data[0].Id == filteringResult2.Data[0].Id && filteringResult.Data[^1].Id == filteringResult3.Data[0].Id && filteringResult3.Data[0].Id == filteringResult4.Data[0].Id);
         }
     }
 }

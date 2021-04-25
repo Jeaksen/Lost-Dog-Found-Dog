@@ -94,9 +94,8 @@ namespace Backend.DataAccess.Dogs
             return response;
         }
 
-        public async Task<RepositoryResponse<List<LostDog>>> GetLostDogs(LostDogFilter filter)
+        public async Task<RepositoryResponse<List<LostDog>>> GetLostDogs(LostDogFilter filter, string sort)
         {
-
             var response = new RepositoryResponse<List<LostDog>>();
             try
             {
@@ -110,13 +109,31 @@ namespace Backend.DataAccess.Dogs
                 foreach (var result in filterProperties)
                     predicateBuilder.And(lostDogPropertyForFilterProperty[result.Name], filterOperatorsForProperties[result.Name], result.GetValue(filter));
 
-                response.Data = await dbContext.LostDogs
-                                .Where(predicateBuilder.Build())
-                                .Include(dog => dog.Behaviors)
-                                .Include(dog => dog.Picture)
-                                .Include(dog => dog.Comments)
-                                .Include(dog => dog.Location)
-                                .ToListAsync();
+                var query = dbContext.LostDogs
+                            .Where(predicateBuilder.Build())
+                            .Include(dog => dog.Behaviors)
+                            .Include(dog => dog.Picture)
+                            .Include(dog => dog.Comments)
+                            .Include(dog => dog.Location);
+
+                if (!string.IsNullOrEmpty(sort))
+                {
+                    var split = sort.Split(',');
+                    var propertyGetter = DynamicExpressions.DynamicExpressions.GetPropertyGetter<LostDog>(split[0]);
+                    IOrderedQueryable<LostDog> ordered = null;
+                    if (split.Length > 1)
+                    {
+                        if (string.Equals(split[1], "ASC", StringComparison.InvariantCultureIgnoreCase))
+                            ordered = query.OrderBy(propertyGetter);
+                        else if (string.Equals(split[1], "DESC", StringComparison.InvariantCultureIgnoreCase))
+                            ordered = query.OrderByDescending(propertyGetter);
+                        response.Data = await ordered.ToListAsync();
+                    }
+                    else ordered = query.OrderBy(propertyGetter);
+                    response.Data = await ordered.ToListAsync();
+                }
+                else response.Data = await query.ToListAsync();
+
                 response.Message = $"Found {response.Data.Count} Lost Dogs";
             }
             catch (Exception e)
