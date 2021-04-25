@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Backend.Util;
+using DynamicExpressions;
+using System.Text;
+using System.Reflection;
 
 namespace Backend.DataAccess.Dogs
 {
@@ -13,6 +16,36 @@ namespace Backend.DataAccess.Dogs
     {
         private readonly ApplicationDbContext dbContext;
         private readonly ILogger<LostDogDataRepository> logger;
+
+        private static readonly Dictionary<string, FilterOperator> filterOperatorsForProperties = new Dictionary<string, FilterOperator>()
+        {
+            { "Breed", FilterOperator.Equals },
+            { "AgeFrom", FilterOperator.GreaterThanOrEqual },
+            { "AgeTo", FilterOperator.LessThanOrEqual },
+            { "Size", FilterOperator.Equals },
+            { "Color", FilterOperator.Equals },
+            { "Name", FilterOperator.Equals },
+            { "OwnerId", FilterOperator.Equals },
+            { "City", FilterOperator.Equals },
+            { "District", FilterOperator.Equals },
+            { "DateLostBefore", FilterOperator.LessThanOrEqual },
+            { "DateLostAfter", FilterOperator.GreaterThanOrEqual }
+        };
+
+        private static readonly Dictionary<string, string> lostDogPropertyForFilterProperty = new Dictionary<string, string>()
+        {
+            { "Breed", "Breed" },
+            { "AgeFrom", "Age" },
+            { "AgeTo", "Age" },
+            { "Size", "Size" },
+            { "Color", "Color" },
+            { "Name", "Name" },
+            { "City", "Location.City" },
+            { "District", "Location.District" },
+            { "DateLostBefore", "DateLost" },
+            { "DateLostAfter", "DateLost" },
+            { "OwnerId", "OwnerId" }
+        };
 
         public LostDogDataRepository(ApplicationDbContext dbContext, ILogger<LostDogDataRepository> logger)
         {
@@ -60,6 +93,41 @@ namespace Backend.DataAccess.Dogs
             }
             return response;
         }
+
+        public async Task<RepositoryResponse<List<LostDog>>> GetLostDogs(LostDogFilter filter)
+        {
+
+            var response = new RepositoryResponse<List<LostDog>>();
+            try
+            {
+                var predicateBuilder = new DynamicFilterBuilder<LostDog>();
+                var filterProperties = GetNotNullProperties(filter);
+
+                if (filterProperties.Remove(filter.GetType().GetProperty("Location")))
+                    foreach (var result in GetNotNullProperties(filter.Location))
+                        predicateBuilder.And(lostDogPropertyForFilterProperty[result.Name], filterOperatorsForProperties[result.Name], result.GetValue(filter.Location));
+                
+                foreach (var result in filterProperties)
+                    predicateBuilder.And(lostDogPropertyForFilterProperty[result.Name], filterOperatorsForProperties[result.Name], result.GetValue(filter));
+
+                response.Data = await dbContext.LostDogs
+                                .Where(predicateBuilder.Build())
+                                .Include(dog => dog.Behaviors)
+                                .Include(dog => dog.Picture)
+                                .Include(dog => dog.Comments)
+                                .Include(dog => dog.Location)
+                                .ToListAsync();
+                response.Message = $"Found {response.Data.Count} Lost Dogs";
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to get lost dogs: {e.Message} {e.InnerException?.Message}";
+            }
+            return response;
+        }
+
+        private List<PropertyInfo> GetNotNullProperties<T>(T obj) => obj.GetType().GetProperties().Where(p => p.GetValue(obj) != null).ToList();
 
         public async Task<RepositoryResponse<List<LostDog>>> GetUserLostDogs(int ownerId)
         {
@@ -303,5 +371,6 @@ namespace Backend.DataAccess.Dogs
             }
             return response;
         }
+
     }
 }

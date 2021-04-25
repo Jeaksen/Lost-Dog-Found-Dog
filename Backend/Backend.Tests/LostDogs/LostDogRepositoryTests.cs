@@ -255,5 +255,57 @@ namespace Backend.Tests.LostDogs
             lostDog.Breed = null;
             Assert.False((await lostDogRepository.UpdateLostDog(lostDog)).Successful);
         }
+
+
+        [Fact]
+        public async void GetLostDogFilterCreatesPredicateProperly()
+        {
+            //var filter = new LostDogFilter()
+            //{
+            //    OwnerId = 4,
+            //    Breed = "hehe",
+            //    AgeFrom = 2,
+            //    AgeTo = 3,
+            //    Size = "heh",
+            //    Color = "heeh",
+            //    Name = "ffrr",
+            //    Location = new LocationFilter() { City = "Waw", District = "Pop" },
+            //    DateLostBefore = DateTime.Today,
+            //    DateLostAfter = DateTime.Today,
+            //};
+            var saveDog = new LostDog()
+            {
+                Breed = "dogdog",
+                Age = 5,
+                Size = "Large, very large",
+                Color = "Orange but a bit yellow and green dots",
+                SpecialMark = "tattoo of you on the neck",
+                Name = "Cat",
+                Picture = new Picture()
+                {
+                    FileName = "photo",
+                    FileType = "png",
+                    Data = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+                },
+                HairLength = "Long",
+                EarsType = "Short",
+                TailLength = "None",
+                Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
+                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                DateLost = new DateTime(2021, 3, 20),
+                OwnerId = 1,
+                Comments = new List<LostDogComment>()
+            };
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var filter = new LostDogFilter()
+            {
+                OwnerId = 1,
+                AgeFrom = 1,
+                AgeTo = 6,
+            };
+
+            await lostDogRepository.GetLostDogs(filter);
+        }
     }
 }

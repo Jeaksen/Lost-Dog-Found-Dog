@@ -9,6 +9,7 @@ namespace Backend.DataAccess.Dogs
     {
         public Task<RepositoryResponse<LostDog>> AddLostDog(LostDog lostDog);
         public Task<RepositoryResponse<List<LostDog>>> GetLostDogs();
+        public Task<RepositoryResponse<List<LostDog>>> GetLostDogs(LostDogFilter filter);
         public Task<RepositoryResponse<List<LostDog>>> GetUserLostDogs(int ownerId);
         public Task<RepositoryResponse<LostDog>> GetLostDogDetails(int dogId);
         public Task<RepositoryResponse<LostDog>> UpdateLostDog(LostDog updatedDog);
