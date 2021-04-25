@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Backend.DTOs.Dogs
+namespace Backend.Models.DogBase.LostDog
 {
     public class LostDogFilter
     {
@@ -27,9 +27,9 @@ namespace Backend.DTOs.Dogs
 
         public LocationFilter Location { get; set; }
 
-        public DateTime DateLostBefore { get; set; }
+        public DateTime? DateLostBefore { get; set; }
 
-        public DateTime DateLostAfter { get; set; }
+        public DateTime? DateLostAfter { get; set; }
 
     }
 
