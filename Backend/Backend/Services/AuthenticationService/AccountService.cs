@@ -59,7 +59,7 @@ namespace Backend.Services.AuthenticationService
 
             if (!result.Succeeded)
             {
-                StringBuilder errorBuilder = new StringBuilder($"User creation failed: ");
+                var errorBuilder = new StringBuilder($"User creation failed: ");
                 foreach (var error in result.Errors)
                 {
                     errorBuilder.Append(error.Code);
@@ -194,7 +194,7 @@ namespace Backend.Services.AuthenticationService
                 }
                 else
                 {
-                    StringBuilder errorBuilder = new StringBuilder($"Failed to update user with id { userId }: ");
+                    var errorBuilder = new StringBuilder($"Failed to update user with id { userId }: ");
                     foreach (var error in result.Errors)
                     {
                         errorBuilder.Append(error.Code);

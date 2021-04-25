@@ -47,7 +47,7 @@ namespace Backend
         private IActionResult MakeMessage (ActionContext context)
         {
             var x = new ValidationProblemDetails(context.ModelState);
-            StringBuilder errorMessageBuilder = new StringBuilder();
+            var errorMessageBuilder = new StringBuilder();
             errorMessageBuilder.Append("Model Validation error! ");
             foreach (var error in x.Errors)
             {
@@ -127,7 +127,7 @@ namespace Backend
                     {
                         context.HandleResponse();
 
-                        StringBuilder responseBuilder = new StringBuilder("Unauthorised! ");
+                        var responseBuilder = new StringBuilder("Unauthorised! ");
 
                         if (!context.Request.Headers.ContainsKey("Authorization"))
                             responseBuilder.Append("Authorization header is missing in the request");

@@ -18,7 +18,7 @@ namespace Backend.DataAccess.Dogs
         private readonly ApplicationDbContext dbContext;
         private readonly ILogger<LostDogDataRepository> logger;
 
-        private static readonly Dictionary<string, FilterOperator> filterOperatorsForProperties = new Dictionary<string, FilterOperator>()
+        private static readonly Dictionary<string, FilterOperator> filterOperatorsForProperties = new()
         {
             { "Breed", FilterOperator.Equals },
             { "AgeFrom", FilterOperator.GreaterThanOrEqual },
@@ -33,7 +33,7 @@ namespace Backend.DataAccess.Dogs
             { "DateLostAfter", FilterOperator.GreaterThanOrEqual }
         };
 
-        private static readonly Dictionary<string, string> lostDogPropertyForFilterProperty = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> lostDogPropertyForFilterProperty = new()
         {
             { "Breed", "Breed" },
             { "AgeFrom", "Age" },
@@ -70,28 +70,6 @@ namespace Backend.DataAccess.Dogs
                 response.Message = $"Failed to delete dog: {e.Message} {e.InnerException?.Message}";
             }
 
-            return response;
-        }
-
-        public async Task<RepositoryResponse<List<LostDog>>> GetLostDogs()
-        {
-            var response = new RepositoryResponse<List<LostDog>>();
-            try
-            {
-                var lostDogs = await dbContext.LostDogs
-                            .Include(dog => dog.Behaviors)
-                            .Include(dog => dog.Picture)
-                            .Include(dog => dog.Comments)
-                            .Include(dog => dog.Location)
-                            .ToListAsync();
-                response.Data = lostDogs;
-                response.Message = $"Found {lostDogs.Count} Lost Dogs";
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = $"Failed to get lost dogs: {e.Message} {e.InnerException?.Message}";
-            }
             return response;
         }
 
@@ -150,30 +128,6 @@ namespace Backend.DataAccess.Dogs
             {
                 response.Successful = false;
                 response.Message = $"Failed to get lost dogs: {e.Message} {e.InnerException?.Message}";
-            }
-            return response;
-        }
-
-        private List<PropertyInfo> GetNotNullProperties<T>(T obj) => obj.GetType().GetProperties().Where(p => p.GetValue(obj) != null).ToList();
-
-        public async Task<RepositoryResponse<List<LostDog>>> GetUserLostDogs(int ownerId)
-        {
-            var response = new RepositoryResponse<List<LostDog>>();
-            try
-            {
-                var lostDogs = await dbContext.LostDogs.Where(ld => ld.OwnerId == ownerId)
-                            .Include(dog => dog.Behaviors)
-                            .Include(dog => dog.Picture)
-                            .Include(dog => dog.Comments)
-                            .Include(dog => dog.Location)
-                            .ToListAsync();
-                response.Data = lostDogs;
-                response.Message = $"Found {lostDogs.Count} Lost Dogs";
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = $"Failed to get lost dogs for user {ownerId}: {e.Message} {e.InnerException?.Message}";
             }
             return response;
         }
@@ -396,6 +350,9 @@ namespace Backend.DataAccess.Dogs
             }
             return response;
         }
+
+
+        private List<PropertyInfo> GetNotNullProperties<T>(T obj) => obj.GetType().GetProperties().Where(p => p.GetValue(obj) != null).ToList();
 
     }
 }

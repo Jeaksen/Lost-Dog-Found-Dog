@@ -81,7 +81,8 @@ namespace Backend.Tests.LostDogs
         [Theory]
         public async void GettingLostDogsForUserOneSuccessful(int userId)
         {
-            var result = await lostDogRepository.GetUserLostDogs(userId);
+            var filter = new LostDogFilter() { OwnerId = userId };
+            var result = await lostDogRepository.GetLostDogs(filter, null, 0, 10);
             Assert.True(result.Successful);
         }
 
@@ -133,7 +134,7 @@ namespace Backend.Tests.LostDogs
         [Fact]
         public async void MarkingLostDogAsFoundSuccessfulForExistingDog()
         {
-            var savedDogs = await lostDogRepository.GetLostDogs();
+            var savedDogs = await lostDogRepository.GetLostDogs(new LostDogFilter(), null, 0, 10);
 
             Assert.True(savedDogs.Successful);
             Assert.NotEmpty(savedDogs.Data);
@@ -218,8 +219,7 @@ namespace Backend.Tests.LostDogs
         [Fact]
         public async void UpdatingLostDogFailsForNonExistingDog()
         {
-            var lostDog = new LostDog();
-            lostDog.Id = -1;
+            var lostDog = new LostDog { Id = -1 };
             Assert.False((await lostDogRepository.UpdateLostDog(lostDog)).Successful);
         }
 

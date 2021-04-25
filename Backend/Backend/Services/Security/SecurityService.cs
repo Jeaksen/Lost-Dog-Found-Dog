@@ -8,9 +8,9 @@ namespace Backend.Services.Security
 {
     public class SecurityService : ISecurityService
     {
-        private int MinimalPictureSize = 65;
-        private List<string> AllowedPictureMimeTypes = new List<string>() { "image/png", "image/jpeg" };
-        private Dictionary<string, List<string>> ExtensionsForMimeType = new Dictionary<string, List<string>>()
+        private readonly int MinimalPictureSize = 65;
+        private readonly List<string> AllowedPictureMimeTypes = new() { "image/png", "image/jpeg" };
+        private readonly Dictionary<string, List<string>> ExtensionsForMimeType = new()
         {
             { "image/png", new List<string>() { "png"} },
             { "image/jpeg", new List<string>() { "jpg", "jpeg" } }
