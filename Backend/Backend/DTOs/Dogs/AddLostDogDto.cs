@@ -5,7 +5,6 @@ namespace Backend.DTOs.Dogs
 {
     public class AddLostDogDto : AddDogDto
     {
-        [Required]
         public int OwnerId { get; set; }
 
         [Required]

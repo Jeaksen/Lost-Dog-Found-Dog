@@ -59,13 +59,13 @@ namespace Backend.Controllers
             var response = await lostDogService.GetLostDogDetails(dogId);
             if (!response.Successful)
                 return StatusCode(response.StatusCode, response);
-
+             
             if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == response.Data.OwnerId.ToString())
-            { 
+            {
+                dog.OwnerId = response.Data.OwnerId;
                 var serviceResponse = await lostDogService.UpdateLostDog(dog, picture, dogId);
                 return StatusCode(serviceResponse.StatusCode, serviceResponse);
             }
-
 
             return Unauthorized(new ServiceResponse<bool>() 
                     { 
