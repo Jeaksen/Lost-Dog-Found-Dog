@@ -73,7 +73,15 @@ namespace Backend.Services.AuthenticationService
                 var result = await userManager.CreateAsync(account, _account.Password);
                 if (!result.Succeeded)
                 {
-                    serviceResponse.Message = $"User creation failed! {string.Join(", ", result.Errors)}";
+                    StringBuilder errorBuilder = new StringBuilder($"User creation failed: ");
+                    foreach (var error in result.Errors)
+                    {
+                        errorBuilder.Append(error.Code);
+                        errorBuilder.Append(": ");
+                        errorBuilder.Append(error.Description);
+                        errorBuilder.Append(" ");
+                    }
+                    serviceResponse.Message = errorBuilder.ToString();
                     serviceResponse.Successful = false;
                     serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 }
