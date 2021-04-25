@@ -1,4 +1,5 @@
-﻿using Backend.DTOs.Authentication;
+﻿using AutoMapper;
+using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
 using Backend.Models.Response;
 using Backend.Services.AuthenticationService;
@@ -6,6 +7,7 @@ using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -18,10 +20,12 @@ namespace Backend.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService accountService;
+        private readonly IMapper mapper;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IMapper mapper)
         {
             this.accountService = accountService;
+            this.mapper = mapper;
         }
 
         [HttpPost]
@@ -39,9 +43,9 @@ namespace Backend.Controllers
                 PhoneNumber = phone_number,
                 Email = email
             };
-            var result = await accountService.AddAccount(_account);
-            result.Data = null;
-            return StatusCode(result.StatusCode, result);
+            var serviceResponse = await accountService.AddAccount(_account);
+            var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
         [HttpPost]
@@ -50,8 +54,10 @@ namespace Backend.Controllers
                                                       [FromForm][Required] string password)
         {
             var _account = new LoginDto() { UserName = username, Password = password };
-            var result = await accountService.Authenticate(_account);
-            return StatusCode(result.StatusCode, result);
+            var serviceResponse = await accountService.Authenticate(_account);
+            var controllerResponse = mapper.Map<ServiceResponse<AuthenticationResult>, ControllerResponse<AuthenticationResult>>(serviceResponse);
+
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
         [Authorize]
@@ -59,7 +65,7 @@ namespace Backend.Controllers
         [Route("logout")]
         public IActionResult Logout()
         {
-            return Ok(new ServiceResponse<bool>() { Message = "User logged out", Data = true });
+            return Ok(new ControllerResponse() { Message = "User logged out" });
         }
 
         [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.Regular)]
@@ -67,8 +73,9 @@ namespace Backend.Controllers
         [Route("user/{userId}")]
         public async Task<IActionResult> GetAccountById(int userId)
         {
-            var result = await accountService.GetAccountById(userId);
-            return StatusCode(result.StatusCode, result);
+            var serviceResponse = await accountService.GetAccountById(userId);
+            var controllerResponse = mapper.Map<ServiceResponse<GetAccountDto>, ControllerResponse<GetAccountDto>>(serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
         [Authorize(Roles = AccountRoles.Admin + "," + AccountRoles.Regular)]
@@ -80,11 +87,13 @@ namespace Backend.Controllers
         {
             if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == userId.ToString())
             {
-                var result = await accountService.UpdateAccount(updateAccountDto, userId);
-                return StatusCode(result.StatusCode, result);
+                var serviceResponse = await accountService.UpdateAccount(updateAccountDto, userId);
+                var controllerResponse = mapper.Map<ServiceResponse<GetAccountDto>, ControllerResponse<GetAccountDto>>(serviceResponse);
+
+                return StatusCode(serviceResponse.StatusCode, controllerResponse);
             }
             else
-                return Unauthorized(new ServiceResponse<bool>() { Message = "You cannot update details of other users!", Successful = false, StatusCode = StatusCodes.Status401Unauthorized });
+                return Unauthorized(new ControllerResponse() { Message = "You cannot update details of other users!", Successful = false});
         }
 
         [Authorize(Roles = AccountRoles.Admin)]
@@ -92,8 +101,10 @@ namespace Backend.Controllers
         [Route("admin/users")]
         public async Task<IActionResult> GetAllUserAccounts()
         {
-            var result = await accountService.GetAllAccountsForRole(AccountRoles.Regular);
-            return StatusCode(result.StatusCode, result);
+            var serviceResponse = await accountService.GetAllAccountsForRole(AccountRoles.Regular);
+            var controllerResponse = mapper.Map<ServiceResponse<IList<GetAccountDto>>, ControllerResponse<IList<GetAccountDto>>>(serviceResponse);
+
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
     }

@@ -13,13 +13,12 @@ namespace Backend.DataAccess.Dogs
         public Task<RepositoryResponse<List<LostDog>>> GetUserLostDogs(int ownerId);
         public Task<RepositoryResponse<LostDog>> GetLostDogDetails(int dogId);
         public Task<RepositoryResponse<LostDog>> UpdateLostDog(LostDog updatedDog);
-        public Task<RepositoryResponse<bool>> MarkDogAsFound(int dogId);
-        public Task<RepositoryResponse<bool>> DeleteLostDog(int dogId);
+        public Task<RepositoryResponse> MarkDogAsFound(int dogId);
+        public Task<RepositoryResponse> DeleteLostDog(int dogId);
 
 
         public Task<RepositoryResponse<LostDogComment>> AddLostDogComment(LostDogComment comment);
         public Task<RepositoryResponse<List<LostDogComment>>> GetLostDogComments(int dogId);
         public Task<RepositoryResponse<LostDogComment>> EditLostDogComment(LostDogComment comment);
-
     }
 }

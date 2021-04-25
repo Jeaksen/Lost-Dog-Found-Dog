@@ -92,8 +92,7 @@ namespace Backend.Services.LostDogService
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
-
-
+        
         public async Task<ServiceResponse<List<LostDog>>> GetUserLostDogs(int ownerId)
         {
             var repoResponse = await lostDogDataRepository.GetUserLostDogs(ownerId);
@@ -152,24 +151,25 @@ namespace Backend.Services.LostDogService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<bool>> MarkLostDogAsFound(int dogId)
+        public async Task<ServiceResponse> MarkLostDogAsFound(int dogId)
         {
             var repoResponse = await lostDogDataRepository.MarkDogAsFound(dogId);
-            var serviceResponse = mapper.Map<RepositoryResponse<bool>, ServiceResponse<bool>>(repoResponse);
+            var serviceResponse = mapper.Map<RepositoryResponse, ServiceResponse>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<bool>> DeleteLostDog(int dogId)
+        public async Task<ServiceResponse> DeleteLostDog(int dogId)
         {
             var repoResponse = await lostDogDataRepository.DeleteLostDog(dogId);
-            var serviceResponse = mapper.Map<RepositoryResponse<bool>, ServiceResponse<bool>>(repoResponse);
+            var serviceResponse = mapper.Map<RepositoryResponse, ServiceResponse>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
         
+
         // Image has to be posted as well
         public async Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto commentDto)
         {

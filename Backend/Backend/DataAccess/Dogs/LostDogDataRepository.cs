@@ -259,9 +259,9 @@ namespace Backend.DataAccess.Dogs
             return response;
         }
 
-        public async Task<RepositoryResponse<bool>> MarkDogAsFound(int dogId)
+        public async Task<RepositoryResponse> MarkDogAsFound(int dogId)
         {
-            var response = new RepositoryResponse<bool>();
+            var response = new RepositoryResponse();
             try
             {
                 var lostDog = await dbContext.LostDogs.FindAsync(dogId);
@@ -279,7 +279,6 @@ namespace Backend.DataAccess.Dogs
                 {
                     lostDog.IsFound = true;
                     dbContext.SaveChanges();
-                    response.Data = true;
                     response.Message = $"Lost Dog with id {dogId} was marked as found";
                 }
             }
@@ -291,9 +290,9 @@ namespace Backend.DataAccess.Dogs
             return response;
         }
 
-        public async Task<RepositoryResponse<bool>> DeleteLostDog(int dogId)
+        public async Task<RepositoryResponse> DeleteLostDog(int dogId)
         {
-            var response = new RepositoryResponse<bool>();
+            var response = new RepositoryResponse();
             try
             {
                 var lostDog = await dbContext.LostDogs.FindAsync(dogId);
@@ -306,7 +305,6 @@ namespace Backend.DataAccess.Dogs
                 {
                     dbContext.LostDogs.Remove(lostDog);
                     dbContext.SaveChanges();
-                    response.Data = true;
                     response.Message = $"Lost Dog with id {dogId} was deleted";
                 }
             }

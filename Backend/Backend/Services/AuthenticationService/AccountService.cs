@@ -38,72 +38,57 @@ namespace Backend.Services.AuthenticationService
             ConfigureRoles().Wait();
         }
 
-        private async Task<bool> ConfigureRoles()
+        private async Task ConfigureRoles()
         {
-            try
-            {
-                if (!await roleManager.RoleExistsAsync(AccountRoles.Regular))
-                    await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Regular));
-                if (!await roleManager.RoleExistsAsync(AccountRoles.Admin))
-                    await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Admin));
-                if (!await roleManager.RoleExistsAsync(AccountRoles.Shelter))
-                    await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Shelter));
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
+            if (!await roleManager.RoleExistsAsync(AccountRoles.Regular))
+                await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Regular));
+            if (!await roleManager.RoleExistsAsync(AccountRoles.Admin))
+                await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Admin));
+            if (!await roleManager.RoleExistsAsync(AccountRoles.Shelter))
+                await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Shelter));
         }
 
         public async Task<ServiceResponse<GetAccountDto>> AddAccount(AddAccountDto _account)
         {
             var serviceResponse = new ServiceResponse<GetAccountDto>();
             
-            var userExists = await userManager.FindByNameAsync(_account.Name);
-            if (userExists != null)
+
+            Account account = mapper.Map<Account>(_account);
+            account.SecurityStamp = Guid.NewGuid().ToString();
+            var result = await userManager.CreateAsync(account, _account.Password);
+
+            if (!result.Succeeded)
             {
-                serviceResponse.Message = "User already exists!";
+                StringBuilder errorBuilder = new StringBuilder($"User creation failed: ");
+                foreach (var error in result.Errors)
+                {
+                    errorBuilder.Append(error.Code);
+                    errorBuilder.Append(": ");
+                    errorBuilder.Append(error.Description);
+                    errorBuilder.Append(" ");
+                }
+                serviceResponse.Message = errorBuilder.ToString();
                 serviceResponse.Successful = false;
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             }
             else
             {
-                Account account = mapper.Map<Account>(_account);
-                account.SecurityStamp = Guid.NewGuid().ToString();
-                var result = await userManager.CreateAsync(account, _account.Password);
+                result = await userManager.AddToRoleAsync(account, AccountRoles.Regular);
+                var savedUser = await userManager.FindByNameAsync(_account.Name);
                 if (!result.Succeeded)
                 {
-                    StringBuilder errorBuilder = new StringBuilder($"User creation failed: ");
-                    foreach (var error in result.Errors)
-                    {
-                        errorBuilder.Append(error.Code);
-                        errorBuilder.Append(": ");
-                        errorBuilder.Append(error.Description);
-                        errorBuilder.Append(" ");
-                    }
-                    serviceResponse.Message = errorBuilder.ToString();
+                    serviceResponse.Message = $"Failed to add user to the role! {string.Join(", ", result.Errors)}";
                     serviceResponse.Successful = false;
                     serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    await userManager.DeleteAsync(savedUser);
                 }
                 else
                 {
-                    result = await userManager.AddToRoleAsync(account, AccountRoles.Regular);
-                    var savedUser = await userManager.FindByNameAsync(_account.Name);
-                    if (!result.Succeeded)
-                    {
-                        serviceResponse.Message = $"Failed to add user to the role! {string.Join(", ", result.Errors)}";
-                        serviceResponse.Successful = false;
-                        serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-                        await userManager.DeleteAsync(savedUser);
-                    }
-                    else
-                    {
-                        serviceResponse.Message = $"User sucessfully created!";
-                        serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
-                    }
+                    serviceResponse.Message = $"User sucessfully created!";
+                    serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
                 }
             }
+
             return serviceResponse;
         }
 

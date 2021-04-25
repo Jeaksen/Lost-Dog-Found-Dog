@@ -109,7 +109,7 @@ namespace Backend.Tests.LostDogs
                 var dogDto = new AddLostDogDto();
                 var dog = mapper.Map<LostDog>(dogDto);
                 repo.Setup(o => o.AddLostDog(It.IsAny<LostDog>())).Returns((LostDog d) => Task.FromResult(new RepositoryResponse<LostDog>() {Data = d }));
-                security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => (true, "ok"));
+                security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => new ServiceResponse());
                 var service = new LostDogService(repo.Object, security.Object, mapper, logger);
                 
 
@@ -126,7 +126,7 @@ namespace Backend.Tests.LostDogs
             var dogDto = new AddLostDogDto();
             var dog = mapper.Map<LostDog>(dogDto);
             repo.Setup(o => o.AddLostDog(dog)).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Data = dog }));
-            security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => (false, "not ok"));
+            security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => new ServiceResponse() { Successful = false});
             var service = new LostDogService(repo.Object, security.Object, mapper, logger);
 
             Assert.False((await service.AddLostDog(dogDto, null)).Successful);
@@ -137,7 +137,7 @@ namespace Backend.Tests.LostDogs
         {
             var security = new Mock<ISecurityService>();
             var repo = new Mock<ILostDogRepository>();
-            repo.Setup(o => o.MarkDogAsFound(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<bool>()));
+            repo.Setup(o => o.MarkDogAsFound(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             var service = new LostDogService(repo.Object, security.Object, mapper, logger);
 
             Assert.True((await service.MarkLostDogAsFound(1)).Successful);
@@ -148,7 +148,7 @@ namespace Backend.Tests.LostDogs
         {
             var security = new Mock<ISecurityService>();
             var repo = new Mock<ILostDogRepository>();
-            repo.Setup(o => o.MarkDogAsFound(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<bool>() { Successful = false }));
+            repo.Setup(o => o.MarkDogAsFound(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
             var service = new LostDogService(repo.Object, security.Object, mapper, logger);
 
             Assert.False((await service.MarkLostDogAsFound(1)).Successful);
@@ -181,7 +181,7 @@ namespace Backend.Tests.LostDogs
                 var dogDto = new UpdateLostDogDto();
                 var dog = mapper.Map<LostDog>(dogDto);
                 repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns((LostDog d) => Task.FromResult(new RepositoryResponse<LostDog>() { Data = d }));
-                security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => (true, "ok"));
+                security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => new ServiceResponse());
                 var service = new LostDogService(repo.Object, security.Object, mapper, logger);
 
                 Assert.True((await service.UpdateLostDog(dogDto, picture, 1)).Successful);
@@ -215,7 +215,7 @@ namespace Backend.Tests.LostDogs
                 var dogDto = new UpdateLostDogDto();
                 var dog = mapper.Map<LostDog>(dogDto);
                 repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Successful = false }));
-                security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => (true, "ok"));
+                security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => new ServiceResponse());
                 var service = new LostDogService(repo.Object, security.Object, mapper, logger);
 
                 Assert.False((await service.UpdateLostDog(dogDto, picture, 1)).Successful);
