@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 using Backend.Models.DogBase.LostDog;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-using System.Threading;
 using Backend.DTOs.Dogs;
-using Backend.DataAccess;
 using Backend.Services.Security;
+using Backend.Models.Response;
 
 namespace Backend.Tests.LostDogs
 {

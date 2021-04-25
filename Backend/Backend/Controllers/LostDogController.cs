@@ -1,7 +1,8 @@
-﻿using Backend.DTOs.Dogs;
+﻿using AutoMapper;
+using Backend.DTOs.Dogs;
 using Backend.Models.Authentication;
 using Backend.Models.DogBase.LostDog;
-using Backend.Services;
+using Backend.Models.Response;
 using Backend.Services.LostDogService;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
@@ -21,22 +22,23 @@ namespace Backend.Controllers
     public class LostDogController : ControllerBase
     {
         private readonly ILostDogService lostDogService;
+        private readonly IMapper mapper;
 
-        public LostDogController(ILostDogService lostDogService)
+        public LostDogController(ILostDogService lostDogService, IMapper mapper)
         {
             this.lostDogService = lostDogService;
+            this.mapper = mapper;
         }
 
 
         [HttpGet]
         public async Task<IActionResult> GetLostDogs([FromQuery(Name = "filter")] LostDogFilter filter, [FromQuery] string sort, 
-                                                     [FromQuery] int page = 0, [FromQuery] int size = 10)
+                                                     [FromQuery] int page = 1, [FromQuery] int size = 10)
         {
-            ServiceResponse<List<LostDog>> serviceResponse;
-            if (filter.OwnerId.HasValue)
-                serviceResponse = await lostDogService.GetUserLostDogs(filter.OwnerId.Value);
-            else
-                serviceResponse = await lostDogService.GetLostDogs();
+            var serviceResponse = await lostDogService.GetLostDogs(filter, sort, page, size);
+            var response = mapper.Map<ServiceResponse<List<LostDog>, int>, ControllerResponse<List<LostDog>, int>>(serviceResponse);
+            foreach (var dog in serviceResponse.Data)
+                dog.Picture.Data = null;
 
             return StatusCode(serviceResponse.StatusCode, serviceResponse);
         }

@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
-using Backend.DataAccess;
 using Backend.DataAccess.Dogs;
 using Backend.DTOs.Dogs;
 using Backend.Models.DogBase;
 using Backend.Models.DogBase.LostDog;
+using Backend.Models.Response;
 using Backend.Services.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Backend.Services.LostDogService
@@ -85,6 +83,16 @@ namespace Backend.Services.LostDogService
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<List<LostDog>, int>> GetLostDogs(LostDogFilter filter, string sort, int page, int size)
+        {
+            var repoResponse = await lostDogDataRepository.GetLostDogs(filter, sort, page, size);
+            var serviceResponse = mapper.Map<RepositoryResponse<List<LostDog>, int>, ServiceResponse<List<LostDog>, int>>(repoResponse);
+            if (!serviceResponse.Successful)
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            return serviceResponse;
+        }
+
 
         public async Task<ServiceResponse<List<LostDog>>> GetUserLostDogs(int ownerId)
         {

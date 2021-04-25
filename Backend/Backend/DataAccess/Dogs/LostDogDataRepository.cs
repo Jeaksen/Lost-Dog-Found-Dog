@@ -7,9 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Backend.Util;
 using DynamicExpressions;
-using System.Text;
 using System.Reflection;
 using System.Linq.Expressions;
+using Backend.Models.Response;
 
 namespace Backend.DataAccess.Dogs
 {
@@ -95,9 +95,9 @@ namespace Backend.DataAccess.Dogs
             return response;
         }
 
-        public async Task<RepositoryResponse<List<LostDog>>> GetLostDogs(LostDogFilter filter, string sort, int page, int size)
+        public async Task<RepositoryResponse<List<LostDog>, int>> GetLostDogs(LostDogFilter filter, string sort, int page, int size)
         {
-            var response = new RepositoryResponse<List<LostDog>>();
+            var response = new RepositoryResponse<List<LostDog>, int>();
             try
             {
                 var predicateBuilder = new DynamicFilterBuilder<LostDog>();
@@ -111,10 +111,7 @@ namespace Backend.DataAccess.Dogs
                     predicateBuilder.And(lostDogPropertyForFilterProperty[result.Name], filterOperatorsForProperties[result.Name], result.GetValue(filter));
 
                 Expression<Func<LostDog, bool>> predicate = (LostDog l) => true;
-                try
-                {
-                    predicate = predicateBuilder.Build();
-                }
+                try { predicate = predicateBuilder.Build(); }
                 catch (Exception) {}
 
                 var query = dbContext.LostDogs
@@ -124,24 +121,29 @@ namespace Backend.DataAccess.Dogs
                             .Include(dog => dog.Comments)
                             .Include(dog => dog.Location);
 
+                IOrderedQueryable<LostDog> ordered = null;
+
                 if (!string.IsNullOrEmpty(sort))
                 {
                     var split = sort.Split(',');
                     var propertyGetter = DynamicExpressions.DynamicExpressions.GetPropertyGetter<LostDog>(split[0]);
-                    IOrderedQueryable<LostDog> ordered = null;
                     if (split.Length > 1)
                     {
                         if (string.Equals(split[1], "ASC", StringComparison.InvariantCultureIgnoreCase))
                             ordered = query.OrderBy(propertyGetter);
                         else if (string.Equals(split[1], "DESC", StringComparison.InvariantCultureIgnoreCase))
                             ordered = query.OrderByDescending(propertyGetter);
-                        response.Data = await ordered.ToListAsync();
+                        else
+                            throw new ArgumentException($"Invalid ordering type: {split[1]} for parameter {split[0]}");
                     }
-                    else ordered = query.OrderBy(propertyGetter);
-                    response.Data = await ordered.Skip(size * page).Take(size).ToListAsync();
+                    else    
+                        ordered = query.OrderBy(propertyGetter);
                 }
-                else response.Data = await query.Skip(size * page).Take(size).ToListAsync();
+                else
+                    ordered = query.OrderByDescending(d => d.DateLost);
 
+                response.Data = await ordered.Skip((page - 1) * size).Take(size).ToListAsync();
+                response.Metadata = await ordered.CountAsync();
                 response.Message = $"Found {response.Data.Count} Lost Dogs";
             }
             catch (Exception e)

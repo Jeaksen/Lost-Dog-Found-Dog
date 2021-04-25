@@ -1,7 +1,6 @@
 using Backend.DataAccess;
 using Backend.DataAccess.Dogs;
 using Backend.Models.Authentication;
-using Backend.Services;
 using Backend.Services.AuthenticationService;
 using Backend.Services.LostDogService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,6 +22,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
 using Backend.Services.Security;
+using Backend.Models.Response;
 
 namespace Backend
 {
