@@ -37,8 +37,6 @@ namespace Backend.Controllers
         {
             var serviceResponse = await lostDogService.GetLostDogs(filter, sort, page, size);
             var controllerResponse = mapper.Map<ServiceResponse<List<LostDog>, int>, ControllerResponse<List<LostDog>, int>>(serviceResponse);
-            //foreach (var dog in response.Data)
-            //    dog.Picture.Data = null;
 
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
@@ -119,7 +117,6 @@ namespace Backend.Controllers
             var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
-
 
         //[HttpGet]
         //[Route]
