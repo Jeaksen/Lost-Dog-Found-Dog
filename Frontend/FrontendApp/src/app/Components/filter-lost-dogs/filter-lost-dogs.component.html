@@ -1,0 +1,105 @@
+<app-navbar></app-navbar>
+<div class="filter-page">
+    <h2>This is the list of all dogs registered in our system. If you have seen any of the pups from the list, 
+        please leave a comment with the location you spotted the dog at. This way you can notify the owner
+        and help them find their lost pupils!</h2>
+
+    <div class="grid">
+        <mat-card>
+            <h1 style="text-align: center;">Filters</h1>
+            <form [formGroup]="filterForm" (ngSubmit)="onSubmit()" class="filter-grid">
+                <div class="filter-row">
+                    <Label>Name</Label>
+                    <mat-form-field  appearance="outline">
+                        <input type="text" matInput formControlName="name" placeholder="Name">
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>Breed</Label>
+                    <mat-form-field  appearance="outline">
+                        <input type="text" matInput formControlName="breed" placeholder="Breed">
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>Age</Label>
+                    <mat-form-field  appearance="outline">
+                        <input type="number" matInput formControlName="ageFrom" placeholder="From">
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>Age</Label>
+                    <mat-form-field  appearance="outline">
+                        <input type="number" matInput formControlName="ageTo" placeholder="To">
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>Size</Label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName="size" (selectionChange)="onOptionSetChangedHandler($event, 'size')" placeholder="Size">
+                            <mat-option *ngFor="let size of dogSizes" [value]="size">
+                                {{size}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>Color</Label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName="color" (selectionChange)="onOptionSetChangedHandler($event, 'color')" placeholder="Color">
+                            <mat-option *ngFor="let color of dogColors" [value]="color">
+                                {{color}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>City</Label>
+                    <mat-form-field  appearance="outline">
+                        <input type="text" matInput formControlName="locationCity" placeholder="City">
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>District</Label>
+                    <mat-form-field  appearance="outline">
+                        <input type="text" matInput formControlName="locationDistrict" placeholder="District">
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>Lost before</Label>
+                    <mat-form-field  appearance="outline" style="width:200px;">
+                        <input matInput [matDatepicker]="picker" formControlName="dateLostBefore" placeholder="Date before">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <Label>Lost after</Label>
+                    <mat-form-field  appearance="outline" style="width:200px;">
+                        <input matInput [matDatepicker]="picker" formControlName="dateLostAfter" placeholder="Date after">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="filter-row">
+                    <button mat-raised-button class="filter-button" type="submit">Apply</button>
+                    <button mat-raised-button class="filter-button" (click)="onClearForm()">Clear</button>
+                </div>
+            </form>
+        </mat-card>
+
+        <mat-card style="margin-left: 15px;">
+            <h1 style="text-align: center;">Lost Dogs registered in the system</h1>
+            <mat-list dense class="mat-list">
+                <mat-list-item *ngFor="let lostdog of lostDogs">
+                    <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=100 max-height=150
+                    style="margin-top: 60px;">
+                    <mat-label class="item-label">{{lostdog.name}} ({{lostdog.breed}}),</mat-label>
+                    <mat-label class="item-label">Lost on {{lostdog.dateLost | date:'longDate'}}</mat-label>
+                    <button mat-raised-button class="list-button" disabled="True">
+                        Comment
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </mat-card>
+    </div>
+</div>

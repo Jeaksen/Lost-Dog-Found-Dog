@@ -43,7 +43,7 @@
             <label>Color</label>
             <mat-form-field  appearance="standard">
                 <mat-label>Color</mat-label>
-                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'color')">
+                    <mat-select formControlName="color" (selectionChange)="onOptionSetChangedHandler($event, 'color')">
                         <mat-option *ngFor="let color of dogColors" [value]="color">
                             {{color}}
                         </mat-option>
@@ -58,7 +58,7 @@
             <label>Ears</label>
             <mat-form-field  appearance="standard">
                 <mat-label>Ears</mat-label>
-                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'earsType')">
+                    <mat-select formControlName="earsType" (selectionChange)="onOptionSetChangedHandler($event, 'earsType')">
                         <mat-option *ngFor="let ears of dogEars" [value]="ears">
                             {{ears}}
                         </mat-option>
@@ -73,7 +73,7 @@
             <label>Hair</label>
             <mat-form-field  appearance="standard">
                 <mat-label>Hair</mat-label>
-                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'hairLength')">
+                    <mat-select formControlName="hairLength" (selectionChange)="onOptionSetChangedHandler($event, 'hairLength')">
                         <mat-option *ngFor="let hair of dogHair" [value]="hair">
                             {{hair}}
                         </mat-option>
@@ -88,7 +88,7 @@
             <label>Size</label>
             <mat-form-field  appearance="standard">
                 <mat-label>Size</mat-label>
-                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'size')">
+                    <mat-select  formControlName="size" (selectionChange)="onOptionSetChangedHandler($event, 'size')">
                         <mat-option *ngFor="let size of dogSizes" [value]="size">
                             {{size}}
                         </mat-option>
@@ -103,7 +103,7 @@
             <label>Tail</label>
             <mat-form-field  appearance="standard">
                 <mat-label>Tail</mat-label>
-                    <mat-select (selectionChange)="onOptionSetChangedHandler($event, 'tailLength')">
+                    <mat-select formControlName="tailLength" (selectionChange)="onOptionSetChangedHandler($event, 'tailLength')">
                         <mat-option *ngFor="let tail of dogTails" [value]="tail">
                             {{tail}}
                         </mat-option>
