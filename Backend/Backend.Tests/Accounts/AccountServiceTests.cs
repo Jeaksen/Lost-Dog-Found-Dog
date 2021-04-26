@@ -10,7 +10,7 @@ namespace Backend.Tests.Accounts
     public class AccountServiceTests
     {
 
-        private static Random random = new Random();
+        private static readonly Random random = new ();
         private readonly DatabaseFixture databaseAuthFixture;
         private const string chars = "abcdefghijklmnoprstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private const int nameLenght = 40;

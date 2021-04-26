@@ -1,8 +1,7 @@
 ﻿using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
-using System;
+using Backend.Models.Response;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Backend.Services.AuthenticationService
