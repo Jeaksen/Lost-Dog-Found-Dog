@@ -18,7 +18,7 @@
                 <mat-list-item *ngFor="let lostdog of lostDogs">
                     <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=60 max-height=50>
                     <mat-label class="item-label">{{lostdog.name}} ({{lostdog.breed}}),</mat-label>
-                    <mat-label class="item-label">Lost on {{lostdog.dateLost | date:'longDate'}}</mat-label>
+                    <mat-label class="item-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</mat-label>
                     <button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id!)" mat-raised-button class="list-button">
                         Mark as Found
                     </button>

@@ -31,6 +31,17 @@ export class LostDogService {
             );
     }
 
+    getFilteredLostDogs(filter: string): Observable<LostDogsResponse> {
+        return this.http.get<LostDogsResponse>(this.url + 'lostdogs?' + filter)
+            .pipe(
+                tap(_ => {
+                    this.log('fetched lost dogs');
+                    console.log(_);
+                }),
+                catchError(this.handleError<LostDogsResponse>('getAllLostDogs', undefined))
+            );
+    }
+
     getLostDogByID(lostDogId: number): Observable<PostLostDogResponse> {
         return this.http.get<PostLostDogResponse>(this.url + 'lostdogs/' + lostDogId)
             .pipe(
