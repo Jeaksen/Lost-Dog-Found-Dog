@@ -3,21 +3,18 @@ import { Location } from './location'
 import { Picture } from './picture'
 
 export class LostDog extends Dog {
-    ownerId: number;
+    ownerId?: string;
     location: Location;
-    dateLost: Date;
-    picture: Picture;
+    dateLost: string;
+    picture?: Picture;
     isFound: boolean;
 
-    constructor(id: number, name: string, breed: string, age: number, size: string, color: string, specialMark: string,
-        hairLength: string, earsType: string, tailLength: string, behaviors: string[], ownerId: number, location: Location,
-        dateLost: Date, picture: Picture) 
+    constructor(name: string, breed: string, age: number, size: string, color: string, specialMark: string,
+        hairLength: string, earsType: string, tailLength: string, behaviors: string[], location: Location, dateLost: string) 
     {
-        super(id, name, breed, age, size, color, specialMark, hairLength, earsType, tailLength, behaviors);
-        this.ownerId = ownerId;
+        super(name, breed, age, size, color, specialMark, hairLength, earsType, tailLength, behaviors);
         this.location = location;
         this.dateLost = dateLost;
-        this.picture = picture;
         this.isFound = false;
     }
 }

@@ -1,7 +1,6 @@
 using Backend.DataAccess;
 using Backend.DataAccess.Dogs;
 using Backend.Models.Authentication;
-using Backend.Services;
 using Backend.Services.AuthenticationService;
 using Backend.Services.LostDogService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,6 +22,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
 using Backend.Services.Security;
+using Backend.Models.Response;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend
 {
@@ -46,7 +47,7 @@ namespace Backend
         private IActionResult MakeMessage (ActionContext context)
         {
             var x = new ValidationProblemDetails(context.ModelState);
-            StringBuilder errorMessageBuilder = new StringBuilder();
+            var errorMessageBuilder = new StringBuilder();
             errorMessageBuilder.Append("Model Validation error! ");
             foreach (var error in x.Errors)
             {
@@ -59,10 +60,9 @@ namespace Backend
                 }
             }
 
-            var result = new ServiceResponse<bool>() { 
+            var result = new ControllerResponse() { 
                 Successful = false, 
-                Message = errorMessageBuilder.ToString(),
-                StatusCode = StatusCodes.Status400BadRequest
+                Message = errorMessageBuilder.ToString()
             };
             return new BadRequestObjectResult(result);
         }
@@ -70,6 +70,7 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
 
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = context => MakeMessage(context))
@@ -126,7 +127,7 @@ namespace Backend
                     {
                         context.HandleResponse();
 
-                        StringBuilder responseBuilder = new StringBuilder("Unauthorised! ");
+                        var responseBuilder = new StringBuilder("Unauthorised! ");
 
                         if (!context.Request.Headers.ContainsKey("Authorization"))
                             responseBuilder.Append("Authorization header is missing in the request");
@@ -143,16 +144,15 @@ namespace Backend
 
                         context.Response.StatusCode = 401;
 
-                        await context.Response.WriteAsJsonAsync(new ServiceResponse<bool>()
+                        await context.Response.WriteAsJsonAsync(new ControllerResponse()
                         {
                             Successful = false,
-                            Message = responseBuilder.ToString(),
-                            StatusCode = StatusCodes.Status401Unauthorized
+                            Message = responseBuilder.ToString()
                         });
                     }
                 };
                    
-                });
+            });
             
             services.AddSwaggerGen(c =>
             {
@@ -163,6 +163,12 @@ namespace Backend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true)
+                .AllowCredentials());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -175,18 +181,12 @@ namespace Backend
                 var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                 var exception = exceptionHandlerPathFeature.Error;
                 context.Response.StatusCode = 400;
-                await context.Response.WriteAsJsonAsync(new ServiceResponse<bool> { Message = exception.Message, Successful = false, StatusCode = StatusCodes.Status400BadRequest });
+                await context.Response.WriteAsJsonAsync(new ControllerResponse { Message = exception.Message, Successful = false });
             }));
 
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true)
-                .AllowCredentials());
 
             app.UseEndpoints(endpoints =>
             {

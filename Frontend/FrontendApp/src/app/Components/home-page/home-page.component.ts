@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LostDog } from '../../models/lost-dog';
+import { LostDogFromBackend } from '../../models/lost-dog-from-backend';
 import { LostDogService } from '../../services/lost-dog-service';
 import { AuthenticationService } from '../../services/authentication-service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -14,7 +14,7 @@ import { UserDetailsData } from 'src/app/models/data';
 })
 export class HomePageComponent implements OnInit {
   userDetails?: UserDetailsData;
-  lostDogs?: LostDog[];
+  lostDogs?: LostDogFromBackend[];
   imagePath?: string;
   dogID?: number;
 

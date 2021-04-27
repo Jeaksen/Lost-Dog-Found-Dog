@@ -6,7 +6,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LostDogService } from 'src/app/services/lost-dog-service';
 import { ImageSnippet } from '../../models/image-snippet';
-import { LostDog } from '../../models/lost-dog';
+import { LostDog } from 'src/app/models/lost-dog';
+import { LostDogFromBackend } from '../../models/lost-dog-from-backend';
+import { Location } from 'src/app/models/location';
  
 import { DogColorSelector } from '../../selectors/dog-color-selector';
 import { DogEarsSelector } from '../../selectors/dog-ears-selector';
@@ -40,7 +42,7 @@ export class EditLostDogComponent implements OnInit {
   isNewPictureChosen: boolean = false;
   url!: any;
   lostDogID!: number;
-  lostDog?: LostDog;
+  lostDog?: LostDogFromBackend;
   dogColors: string[] = DogColorSelector;
   dogEars: string[] = DogEarsSelector;
   dogHair: string[] = DogHairSelector;
@@ -58,53 +60,36 @@ export class EditLostDogComponent implements OnInit {
     this.lostDogID = parseInt(this.activatedRoute.snapshot.paramMap.get('dogId')!);
     this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
       this.lostDog = response.data;
-      this.url = 'data:' + this.lostDog!.picture.fileType + ';base64,' + this.lostDog!.picture.data;
+      this.url = 'data:' + this.lostDog!.picture!.fileType + ';base64,' + this.lostDog!.picture!.data;
       this.editLostDogForm.get("behaviour")?.setValue("Deppression");
+      this.mapLostDogDataIntoForm();
     });
   }
 
   onSubmit() {
     console.log(this.editLostDogForm);
-    this.lostDogService.putLostDog(this.constructForm(), this.lostDogID).subscribe(response => console.log(response));
-    this.router.navigate(['/home']);
+    this.lostDogService.putLostDog(this.constructForm(), this.lostDogID).subscribe(response => {
+      console.log(response)
+      this.router.navigate(['/home']);
+    });
   }
 
   private constructForm(): FormData {
+    const location = new Location(this.editLostDogForm.get('locationCity')?.value,
+      this.editLostDogForm.get('locationDistrict')?.value);
+    const lostDog = new LostDog(this.editLostDogForm.get('name')?.value, this.editLostDogForm.get('breed')?.value,
+      this.editLostDogForm.get('age')?.value, this.editLostDogForm.get('size')?.value,
+      this.editLostDogForm.get('color')?.value, 'costam', this.editLostDogForm.get('hairLength')?.value,
+      this.editLostDogForm.get('earsType')?.value, this.editLostDogForm.get('tailLength')?.value,
+      ['behav1', 'behav2'], location, this.datepipe.transform(this.editLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
+      
     let data = new FormData();
-
-    // u better not change the order
-    data.append('breed', this.editLostDogForm.get('breed')?.value);
-    //data.append('breed', 'Doo');
-    data.append('age', this.editLostDogForm.get('age')?.value);
-    //data.append('age', '18');
-    data.append('size', this.editLostDogForm.get('size')?.value);
-    //data.append('size', 'Enormous');
-    data.append('color', this.editLostDogForm.get('color')?.value);
-    //data.append('color', 'Black');
-    data.append('specialMark', 'costam');
-    //data.append('specialMark', 'Lacks one leg');
-    data.append('name', this.editLostDogForm.get('name')?.value);
-    //data.append('name', 'Scooby');
-    data.append('hairLength', this.editLostDogForm.get('hairLength')?.value);
-    //data.append('hairLength', 'Long');
-    data.append('tailLength', this.editLostDogForm.get('tailLength')?.value);
-    //data.append('tailLength', 'Short');
-    data.append('earsType', this.editLostDogForm.get('earsType')?.value);
-    //data.append('earsType', 'He doesn\'t have'); 
-    data.append('behaviors', 'Depression');
-    data.append('behaviors', 'Prosze zaakceptuj to');
-    data.append('location.City', this.editLostDogForm.get('locationCity')?.value);
-    //data.append('location.City', 'Chrzęszczyszczeborzyce');
-    data.append('location.District', this.editLostDogForm.get('locationDistrict')?.value);
-    //data.append('location.District', 'Łękoboldy');
-    data.append('dateLost', this.datepipe.transform(this.editLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
-    //data.append('dateLost', '2021-03-23');
-    data.append('ownerId', localStorage.getItem('userId')!);
+    lostDog.ownerId = localStorage.getItem('userId')!;
+    data.append('dog', JSON.stringify(lostDog));
     if (this.isNewPictureChosen) {
       data.append('picture', this.selectedFile.file);
     }
     console.log(data.forEach(val => console.log(val)));
-    //console.log(data.get('image'));
     return data;
   }
 
@@ -127,10 +112,26 @@ export class EditLostDogComponent implements OnInit {
     });
     
     reader.readAsDataURL(file);
-    reader.onload = (event:any) => {
+    reader.onload = (event: any) => {
       this.url = reader.result;
       //console.log(reader.result);
     }
   }
 
+  mapLostDogDataIntoForm() {
+    console.log(this.lostDog?.behaviors[0])
+    this.editLostDogForm.get('breed')?.setValue(this.lostDog?.breed);
+    this.editLostDogForm.get('age')?.setValue(this.lostDog?.age);
+    this.editLostDogForm.get('size')?.setValue(this.lostDog?.size);
+    this.editLostDogForm.get('color')?.setValue(this.lostDog?.color);
+    this.editLostDogForm.get('name')?.setValue(this.lostDog?.name);
+    this.editLostDogForm.get('hairLength')?.setValue(this.lostDog?.hairLength);
+    this.editLostDogForm.get('tailLength')?.setValue(this.lostDog?.tailLength);
+    this.editLostDogForm.get('earsType')?.setValue(this.lostDog?.earsType);
+    this.editLostDogForm.get('specialMarks')?.setValue(this.lostDog?.specialMark);
+    this.editLostDogForm.get('behaviour')?.setValue(this.lostDog?.behaviors[0].behavior);
+    this.editLostDogForm.get('locationCity')?.setValue(this.lostDog?.location.city);
+    this.editLostDogForm.get('locationDistrict')?.setValue(this.lostDog?.location.district);
+    this.editLostDogForm.get('dateLost')?.setValue(this.lostDog?.dateLost);
+  }
 }

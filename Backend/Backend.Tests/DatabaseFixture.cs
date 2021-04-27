@@ -23,8 +23,8 @@ namespace Backend.Tests
 {
     public class DatabaseFixture : IDisposable
     {
-        private IServiceProvider serviceProvider;
-        private IConfiguration configuration;
+        private readonly IServiceProvider serviceProvider;
+        private readonly IConfiguration configuration;
 
         private UserManager<Account> UserManager { get; }
         private RoleManager<IdentityRole<int>> RoleManager { get; }

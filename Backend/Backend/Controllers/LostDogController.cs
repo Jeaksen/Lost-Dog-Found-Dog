@@ -1,7 +1,8 @@
-﻿using Backend.DTOs.Dogs;
+﻿using AutoMapper;
+using Backend.DTOs.Dogs;
 using Backend.Models.Authentication;
 using Backend.Models.DogBase.LostDog;
-using Backend.Services;
+using Backend.Models.Response;
 using Backend.Services.LostDogService;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
@@ -21,23 +22,23 @@ namespace Backend.Controllers
     public class LostDogController : ControllerBase
     {
         private readonly ILostDogService lostDogService;
+        private readonly IMapper mapper;
 
-        public LostDogController(ILostDogService lostDogService)
+        public LostDogController(ILostDogService lostDogService, IMapper mapper)
         {
             this.lostDogService = lostDogService;
+            this.mapper = mapper;
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GetLostDogs(int? ownerId)
+        public async Task<IActionResult> GetLostDogs([FromQuery(Name = "filter")] LostDogFilter filter, [FromQuery] string sort, 
+                                                     [FromQuery] int page = 1, [FromQuery] int size = 10)
         {
-            ServiceResponse<List<LostDog>> serviceResponse;
-            if (ownerId.HasValue)
-                serviceResponse = await lostDogService.GetUserLostDogs(ownerId.Value);
-            else
-                serviceResponse = await lostDogService.GetLostDogs();
+            var serviceResponse = await lostDogService.GetLostDogs(filter, sort, page, size);
+            var controllerResponse = mapper.Map<ServiceResponse<List<LostDog>, int>, ControllerResponse<List<LostDog>, int>>(serviceResponse);
 
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
 
@@ -46,7 +47,9 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetLostDogDetails(int dogId)
         {
             var serviceResponse = await lostDogService.GetLostDogDetails(dogId);
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<LostDog>, ControllerResponse<LostDog>>(serviceResponse);
+
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
         [HttpPut]
@@ -59,20 +62,20 @@ namespace Backend.Controllers
             var response = await lostDogService.GetLostDogDetails(dogId);
             if (!response.Successful)
                 return StatusCode(response.StatusCode, response);
-
+             
             if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == response.Data.OwnerId.ToString())
-            { 
+            {
+                dog.OwnerId = response.Data.OwnerId;
                 var serviceResponse = await lostDogService.UpdateLostDog(dog, picture, dogId);
-                return StatusCode(serviceResponse.StatusCode, serviceResponse);
+                var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+                return StatusCode(serviceResponse.StatusCode, controllerResponse);
             }
 
-
-            return Unauthorized(new ServiceResponse<bool>() 
-                    { 
-                        Message = "Attempted to update a dog which is not owned by the user!", 
-                        Successful = false, 
-                        StatusCode = StatusCodes.Status401Unauthorized 
-                    });
+            return Unauthorized(new ControllerResponse() 
+                { 
+                    Message = "Attempted to update a dog which is not owned by the user!", 
+                    Successful = false
+                });
         }
 
 
@@ -82,16 +85,17 @@ namespace Backend.Controllers
                                                     IFormFile picture)
         {
             if (picture is null)
-                return BadRequest( new ServiceResponse<bool>() 
+                return BadRequest( new ControllerResponse() 
                     { 
                         Message = "No image was provided!", 
-                        Successful = false, 
-                        StatusCode = StatusCodes.Status400BadRequest 
+                        Successful = false 
                     });
             dog.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
             var serviceResponse = await lostDogService.AddLostDog(dog, picture);
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<LostDog>, ControllerResponse<LostDog>>(serviceResponse);
+
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
 
@@ -100,7 +104,8 @@ namespace Backend.Controllers
         public async Task<IActionResult> MarkLostDogAsFound(int dogId)
         {
             var serviceResponse = await lostDogService.MarkLostDogAsFound(dogId);
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
 
@@ -109,9 +114,9 @@ namespace Backend.Controllers
         public async Task<IActionResult> DeleteLostDog(int dogId)
         {
             var serviceResponse = await lostDogService.DeleteLostDog(dogId);
-            return StatusCode(serviceResponse.StatusCode, serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
-
 
         //[HttpGet]
         //[Route]

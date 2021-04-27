@@ -1,5 +1,5 @@
 export class Dog {
-    id: number;
+    id?: number;
     name: string;
     breed: string;
     age: number;
@@ -11,9 +11,8 @@ export class Dog {
     tailLength: string;
     behaviors: string[] = [''];
 
-    constructor(id: number, name: string, breed: string, age: number, size: string, color: string, specialMark: string,
+    constructor(name: string, breed: string, age: number, size: string, color: string, specialMark: string,
         hairLength: string, earsType: string, tailLength: string, behaviors: string[]) {
-        this.id = id;
         this.name = name;
         this.breed = breed;
         this.age = age;

@@ -30,8 +30,15 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
   }
 
+  private constructLoginForm(): FormData {
+    let data = new FormData();
+    data.append('username', this.loginForm.get('username')?.value);
+    data.append('password', this.loginForm.get('password')?.value);
+    return data;
+  }
+
   onSubmit() {
-    this.authenticationService.login(this.loginForm.get('username')?.value, this.loginForm.get('password')?.value)
+    this.authenticationService.login(this.constructLoginForm())
       .pipe(first())
       .subscribe(
         data => {
