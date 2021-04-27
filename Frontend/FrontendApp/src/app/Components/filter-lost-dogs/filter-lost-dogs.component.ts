@@ -11,6 +11,7 @@ import { DogColorSelector } from '../../selectors/dog-color-selector';
 import { DogSizeSelector } from '../../selectors/dog-size-selector';
 import { LostDog } from 'src/app/models/lost-dog';
 import { Location } from 'src/app/models/location';
+import { PageEvent } from '@angular/material/paginator';
 
 interface SortValues {
   value: string;
@@ -43,6 +44,8 @@ export class FilterLostDogsComponent implements OnInit {
   lostDogs?: LostDogFromBackend[];
   dogColors: string[] = DogColorSelector;
   dogSizes: string[] = DogSizeSelector;
+  minValue: number = 0;
+  maxValue: number = 20;
   sortFeatures: SortValues[] = [
     {value: 'name', viewValue: 'Dog\'s Name'},
     {value: 'breed', viewValue: 'Breed'},
@@ -152,6 +155,12 @@ export class FilterLostDogsComponent implements OnInit {
       console.log(response)
       this.lostDogs = response.data;
     });
+  }
+
+  public getPaginatorData(event: PageEvent): PageEvent {
+    this.minValue = event.pageIndex * event.pageSize;
+    this.maxValue = this.minValue + event.pageSize;
+    return event;
   }
 
 }
