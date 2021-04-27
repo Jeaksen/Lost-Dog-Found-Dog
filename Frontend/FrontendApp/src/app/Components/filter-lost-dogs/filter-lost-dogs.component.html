@@ -11,25 +11,25 @@
                 <div class="filter-row">
                     <Label>Name</Label>
                     <mat-form-field  appearance="outline">
-                        <input type="text" matInput formControlName="name" placeholder="Name">
+                        <input type="text" matInput maxlength="100" formControlName="name" placeholder="Name">
                     </mat-form-field>
                 </div>
                 <div class="filter-row">
                     <Label>Breed</Label>
                     <mat-form-field  appearance="outline">
-                        <input type="text" matInput formControlName="breed" placeholder="Breed">
+                        <input type="text" matInput maxlength="50" formControlName="breed" placeholder="Breed">
                     </mat-form-field>
                 </div>
                 <div class="filter-row">
                     <Label>Age</Label>
                     <mat-form-field  appearance="outline">
-                        <input type="number" matInput formControlName="ageFrom" placeholder="From">
+                        <input type="number" min="1" matInput formControlName="ageFrom" placeholder="From">
                     </mat-form-field>
                 </div>
                 <div class="filter-row">
                     <Label>Age</Label>
                     <mat-form-field  appearance="outline">
-                        <input type="number" matInput formControlName="ageTo" placeholder="To">
+                        <input type="number" min="1" matInput formControlName="ageTo" placeholder="To">
                     </mat-form-field>
                 </div>
                 <div class="filter-row">
@@ -55,13 +55,13 @@
                 <div class="filter-row">
                     <Label>City</Label>
                     <mat-form-field  appearance="outline">
-                        <input type="text" matInput formControlName="locationCity" placeholder="City">
+                        <input type="text" matInput maxlength="100" formControlName="locationCity" placeholder="City">
                     </mat-form-field>
                 </div>
                 <div class="filter-row">
                     <Label>District</Label>
                     <mat-form-field  appearance="outline">
-                        <input type="text" matInput formControlName="locationDistrict" placeholder="District">
+                        <input type="text" matInput maxlength="100" formControlName="locationDistrict" placeholder="District">
                     </mat-form-field>
                 </div>
                 <div class="filter-row">
@@ -75,9 +75,9 @@
                 <div class="filter-row">
                     <Label>Lost after</Label>
                     <mat-form-field  appearance="outline" style="width:200px;">
-                        <input matInput [matDatepicker]="picker" formControlName="dateLostAfter" placeholder="Date after">
-                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
+                        <input matInput [matDatepicker]="picker1" formControlName="dateLostAfter" placeholder="Date after">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
                     </mat-form-field>
                 </div>
                 <div class="filter-row">

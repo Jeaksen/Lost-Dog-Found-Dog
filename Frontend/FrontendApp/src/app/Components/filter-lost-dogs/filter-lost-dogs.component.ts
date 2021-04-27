@@ -60,16 +60,51 @@ export class FilterLostDogsComponent implements OnInit {
     console.log(this.filterForm);
     this.lostDogService.getFilteredLostDogs(this.constructFilterString()).subscribe(response => {
       console.log(response)
-      //this.router.navigate(['/home']);
+      this.lostDogs = response.data;
     });
   }
 
   constructFilterString(): string {
-    return '';
+    let filter = '';
+    console.log(this.filterForm.get('ageFrom')?.value);
+    if(this.filterForm.get('name')?.value) 
+        filter += "filter.name=" + this.filterForm.get('name')?.value + '&';
+    if(this.filterForm.get('breed')?.value) 
+        filter += "filter.breed=" + this.filterForm.get('breed')?.value + '&';
+    if(this.filterForm.get('ageFrom')?.value) 
+        filter += "filter.ageFrom=" + this.filterForm.get('ageFrom')?.value + '&';
+    if(this.filterForm.get('ageTo')?.value) 
+        filter += "filter.ageTo=" + this.filterForm.get('ageTo')?.value + '&';
+    if(this.filterForm.get('size')?.value) 
+        filter += "filter.size=" + this.filterForm.get('size')?.value + '&';
+    if(this.filterForm.get('color')?.value) 
+        filter += "filter.color=" + this.filterForm.get('color')?.value + '&';
+    if(this.filterForm.get('locationCity')?.value) 
+        filter += "filter.location.city=" + this.filterForm.get('locationCity')?.value + '&';
+    if(this.filterForm.get('locationDistrict')?.value) 
+        filter += "filter.location.district=" + this.filterForm.get('locationDistrict')?.value + '&';
+    if(this.filterForm.get('dateLostBefore')?.value) 
+        filter += "filter.dateLostBefore=" + this.datepipe.transform(this.filterForm.get('dateLostBefore')?.value, 'yyyy-MM-dd')! + '&';
+    if(this.filterForm.get('dateLostAfter')?.value) 
+        filter += "filter.dateLostAfter=" + this.datepipe.transform(this.filterForm.get('dateLostAfter')?.value, 'yyyy-MM-dd')! + '&';
+    console.log(filter);
+    return filter;
   }
 
   onClearForm(): void {
-
+    this.filterForm.reset({
+      'name': '',
+      'breed': '',
+      'ageFrom': '',
+      'ageTo': '',
+      'size': '',
+      'color': '',
+      'dateLostBefore':'',
+      'dateLostAfter': '',
+      'locationCity': '',
+      'locationDistrict': '',
+    });
+    this.getLostDogs();
   }
 
   onOptionSetChangedHandler(event: MatSelectChange, controlName: string) {
