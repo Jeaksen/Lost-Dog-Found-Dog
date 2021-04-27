@@ -6,7 +6,7 @@
 
     <div class="grid">
         <mat-card>
-            <form [formGroup]="sortingForm" (ngSubmit)="onSortClick()" class="sorting-grid">
+            <form [formGroup]="sortingForm" (ngSubmit)="onSubmit()" class="sorting-grid">
                 <h1 style="text-align: center;">Sorting</h1>
                 <div class="filter-row">
                     <Label>Sort by</Label>
@@ -114,11 +114,12 @@
 
         <mat-card style="margin-left: 15px;">
             <h1 style="text-align: center;">Lost Dogs registered in the system</h1>
-            <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true" 
+            <!-- <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true" 
             [length]="lostDogs?.length" (page)="getPaginatorData($event)" pageSize="10">
-            </mat-paginator>
+            </mat-paginator> -->
+            <h2 *ngIf="lostDogs?.length == 0" style="text-align: center;">No results</h2>
             <mat-list dense class="mat-list">
-                <mat-list-item *ngFor="let lostdog of lostDogs | slice: minValue : maxValue">
+                <mat-list-item *ngFor="let lostdog of lostDogs">
                     <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=100 max-height=150
                     style="margin-top: 60px;">
                     <mat-label class="item-label">{{lostdog.name}} ({{lostdog.breed}}),</mat-label>
@@ -128,6 +129,15 @@
                     </button>
                 </mat-list-item>
             </mat-list>
+            <div >
+                <div *ngIf="lostDogs?.length" class="pagination">
+                  <button>First</button>
+                  <button>Previous</button>
+                  <a>1</a>
+                  <button>Next</button>
+                  <button>Last</button>
+                </div>
+            </div>
         </mat-card>
     </div>
 </div>

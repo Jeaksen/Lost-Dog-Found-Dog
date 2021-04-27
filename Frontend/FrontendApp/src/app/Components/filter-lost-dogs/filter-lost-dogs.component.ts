@@ -44,8 +44,7 @@ export class FilterLostDogsComponent implements OnInit {
   lostDogs?: LostDogFromBackend[];
   dogColors: string[] = DogColorSelector;
   dogSizes: string[] = DogSizeSelector;
-  minValue: number = 0;
-  maxValue: number = 20;
+  allDogsCount?: number;;
   sortFeatures: SortValues[] = [
     {value: 'name', viewValue: 'Dog\'s Name'},
     {value: 'breed', viewValue: 'Breed'},
@@ -73,6 +72,7 @@ export class FilterLostDogsComponent implements OnInit {
     this.lostDogService.getAllLostDogs()
       .subscribe(response => {
         this.lostDogs = response.data;
+        this.allDogsCount = this.lostDogs?.length;
       });
   }  
 
@@ -93,7 +93,6 @@ export class FilterLostDogsComponent implements OnInit {
 
   constructFilterString(): string {
     let filter = '';
-    console.log(this.filterForm.get('ageFrom')?.value);
     if(this.filterForm.get('name')?.value) 
         filter += "filter.name=" + this.filterForm.get('name')?.value + '&';
     if(this.filterForm.get('breed')?.value) 
@@ -115,6 +114,10 @@ export class FilterLostDogsComponent implements OnInit {
     if(this.filterForm.get('dateLostAfter')?.value) 
         filter += "filter.dateLostAfter=" + this.datepipe.transform(this.filterForm.get('dateLostAfter')?.value, 'yyyy-MM-dd')! + '&';
     console.log(filter);
+    if(this.sortingForm.get('sort')?.value) filter += 'sort=' + this.sortingForm.get('sort')?.value + '&';
+    if(this.sortingForm.get('option')?.value) filter += ',' + this.sortingForm.get('option')?.value + '&';
+    //filter += '&size=5&page=2'
+    console.log(filter);
     return filter;
   }
 
@@ -131,7 +134,7 @@ export class FilterLostDogsComponent implements OnInit {
       'locationCity': '',
       'locationDistrict': '',
     });
-    this.getLostDogs();
+    this.onSubmit();
   }
 
   onClearSortForm(): void {
@@ -139,28 +142,32 @@ export class FilterLostDogsComponent implements OnInit {
       'sort': '',
       'option': '',
     });
+    this.onSubmit();
   }
 
   onOptionSetChangedHandler(event: MatSelectChange, controlName: string) {
     this.filterForm.get(controlName)?.setValue(event.value);
   }
 
-  onSortClick(): void {
-    console.log(this.sortingForm);
-    let sorter = '';
-    if(this.sortingForm.get('sort')?.value) sorter += 'sort=' + this.sortingForm.get('sort')?.value;
-    if(this.sortingForm.get('option')?.value) sorter += ',' + this.sortingForm.get('option')?.value;
-    console.log(sorter);
-    this.lostDogService.getFilteredLostDogs(sorter).subscribe(response => {
-      console.log(response)
-      this.lostDogs = response.data;
-    });
-  }
-
+  minValue: number = 0;
+  maxValue: number = 20;
   public getPaginatorData(event: PageEvent): PageEvent {
     this.minValue = event.pageIndex * event.pageSize;
     this.maxValue = this.minValue + event.pageSize;
     return event;
   }
+
+//   private loadPage(page) {
+//     // get page of items from api
+//     this.lostDogService.getFilteredLostDogs().subscribe(response => {
+//       console.log(response)
+//       this.pager = response.pager;
+//       this.lostDogs = response.data;
+//     });
+//     this.http.get<any>(`/api/items?page=${page}`).subscribe(x => {
+//         this.pager = x.pager;
+//         this.pageOfDogs = x.pageOfItems;
+//     });
+// }
 
 }
