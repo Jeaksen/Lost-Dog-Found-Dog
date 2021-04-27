@@ -114,8 +114,10 @@ export class FilterLostDogsComponent implements OnInit {
     if(this.filterForm.get('dateLostAfter')?.value) 
         filter += "filter.dateLostAfter=" + this.datepipe.transform(this.filterForm.get('dateLostAfter')?.value, 'yyyy-MM-dd')! + '&';
     console.log(filter);
-    if(this.sortingForm.get('sort')?.value) filter += 'sort=' + this.sortingForm.get('sort')?.value + '&';
-    if(this.sortingForm.get('option')?.value) filter += ',' + this.sortingForm.get('option')?.value + '&';
+    if(this.sortingForm.get('sort')?.value) {
+      filter += 'sort=' + this.sortingForm.get('sort')?.value;
+      if(this.sortingForm.get('option')?.value) filter += ',' + this.sortingForm.get('option')?.value;
+    }
     //filter += '&size=5&page=2'
     console.log(filter);
     return filter;
