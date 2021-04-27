@@ -115,7 +115,7 @@
         <mat-card style="margin-left: 15px;">
             <h1 style="text-align: center;">Lost Dogs registered in the system</h1>
             <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true" 
-            [length]="lostDogs?.length" (page)="getPaginatorData($event)">
+            [length]="lostDogs?.length" (page)="getPaginatorData($event)" pageSize="10">
             </mat-paginator>
             <mat-list dense class="mat-list">
                 <mat-list-item *ngFor="let lostdog of lostDogs | slice: minValue : maxValue">
