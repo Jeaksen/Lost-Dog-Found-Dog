@@ -11,6 +11,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from  '@angular/material/core';
+import { MatRadioModule } from '@angular/material/radio';
 import { DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -60,6 +61,7 @@ import { FilterLostDogsComponent } from './Components/filter-lost-dogs/filter-lo
     MatListModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatRadioModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -76,6 +78,7 @@ import { FilterLostDogsComponent } from './Components/filter-lost-dogs/filter-lo
     MatListModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatRadioModule,
   ]
 })
 export class AppModule { }

@@ -12,6 +12,11 @@ import { DogSizeSelector } from '../../selectors/dog-size-selector';
 import { LostDog } from 'src/app/models/lost-dog';
 import { Location } from 'src/app/models/location';
 
+interface SortValues {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-filter-lost-dogs',
   templateUrl: './filter-lost-dogs.component.html',
@@ -30,10 +35,29 @@ export class FilterLostDogsComponent implements OnInit {
     locationCity: new FormControl('', []),
     locationDistrict: new FormControl('', []),
   });
+  sortingForm = new FormGroup({
+    sort: new FormControl('', []),
+    option: new FormControl('', []),
+  });
 
   lostDogs?: LostDogFromBackend[];
   dogColors: string[] = DogColorSelector;
   dogSizes: string[] = DogSizeSelector;
+  sortFeatures: SortValues[] = [
+    {value: 'name', viewValue: 'Dog\'s Name'},
+    {value: 'breed', viewValue: 'Breed'},
+    {value: 'age', viewValue: 'Age'},
+    {value: 'size', viewValue: 'Size'},
+    {value: 'color', viewValue: 'Color'},
+    {value: 'hairLength', viewValue: 'Hair Length'},
+    {value: 'earsType', viewValue: 'Ears Type'},
+    {value: 'tailLength', viewValue: 'Tail Length'},
+    {value: 'dateLost', viewValue: 'Date Lost'},
+    {value: 'specialMark', viewValue: 'Special Marks'},
+    //{value: 'behaviors', viewValue: 'Behaviour'},
+    {value: 'location.city', viewValue: 'City'},
+    {value: 'location.district', viewValue: 'District'},
+  ];
 
   constructor(
     private router: Router,
@@ -107,8 +131,27 @@ export class FilterLostDogsComponent implements OnInit {
     this.getLostDogs();
   }
 
+  onClearSortForm(): void {
+    this.sortingForm.reset({
+      'sort': '',
+      'option': '',
+    });
+  }
+
   onOptionSetChangedHandler(event: MatSelectChange, controlName: string) {
     this.filterForm.get(controlName)?.setValue(event.value);
+  }
+
+  onSortClick(): void {
+    console.log(this.sortingForm);
+    let sorter = '';
+    if(this.sortingForm.get('sort')?.value) sorter += 'sort=' + this.sortingForm.get('sort')?.value;
+    if(this.sortingForm.get('option')?.value) sorter += ',' + this.sortingForm.get('option')?.value;
+    console.log(sorter);
+    this.lostDogService.getFilteredLostDogs(sorter).subscribe(response => {
+      console.log(response)
+      this.lostDogs = response.data;
+    });
   }
 
 }
