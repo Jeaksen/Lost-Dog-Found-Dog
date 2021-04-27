@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Backend.Models.Response;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,29 +8,45 @@ namespace Backend.Services.Security
 {
     public class SecurityService : ISecurityService
     {
-        private List<string> AllowedPictureMimeTypes = new List<string>() { "image/png", "image/jpeg" };
-        private Dictionary<string, List<string>> ExtensionsForMimeType = new Dictionary<string, List<string>>()
+        private readonly int MinimalPictureSize = 65;
+        private readonly List<string> AllowedPictureMimeTypes = new() { "image/png", "image/jpeg" };
+        private readonly Dictionary<string, List<string>> ExtensionsForMimeType = new()
         {
             { "image/png", new List<string>() { "png"} },
             { "image/jpeg", new List<string>() { "jpg", "jpeg" } }
         };
-        private int MinimalPictureSize = 65;
 
-        public (bool Successful, string Message) IsPictureValid(IFormFile picture)
+        public ServiceResponse IsPictureValid(IFormFile picture)
         {
+            var response = new ServiceResponse();
             if (picture.Length < MinimalPictureSize)
-                return (false, $"Picture has size smaller than {MinimalPictureSize}!");
+            {
+                response.Message = $"Picture has size smaller than {MinimalPictureSize}!";
+                response.Successful = false;
+                response.StatusCode = StatusCodes.Status400BadRequest;
+            }
+            else
+            {
+                var typeIndex = AllowedPictureMimeTypes.FindIndex(s => s == picture.ContentType);
+                if (!AllowedPictureMimeTypes.Contains(picture.ContentType))
+                {
+                    response.Message = $"Type {picture.ContentType} is not an allowed type for pictures!";
+                    response.Successful = false;
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                }
+                else
+                {
+                    var ext = picture.FileName.Split('.').Last();
+                    if (!ExtensionsForMimeType[picture.ContentType].Contains(ext))
+                    {
+                        response.Message = $"Picture has an invalid extension: {MinimalPictureSize}, expected one of [ {string.Join(", ", ExtensionsForMimeType[picture.ContentType])}]!";
+                        response.Successful = false;
+                        response.StatusCode = StatusCodes.Status400BadRequest;
+                    }
+                }
+            }
 
-            var typeIndex = AllowedPictureMimeTypes.FindIndex(s => s == picture.ContentType);
-            if (!AllowedPictureMimeTypes.Contains(picture.ContentType))
-                return (false, $"Type {picture.ContentType} is not an allowed typ for pictures!");
-
-            var ext = picture.FileName.Split('.').Last();
-
-            if (!ExtensionsForMimeType[picture.ContentType].Contains(ext))
-                return (false, $"Picture has an invalid extension: {MinimalPictureSize}, expected one of [ {string.Join(", ", ExtensionsForMimeType[picture.ContentType])}]!");
-
-            return (true, "picture valid");
+            return response;
         }
     }
 }

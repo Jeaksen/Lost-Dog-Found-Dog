@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Backend.DataAccess;
 using Backend.DTOs.Authentication;
 using Backend.DTOs.Dogs;
 using Backend.Models.Authentication;
 using Backend.Models.DogBase;
 using Backend.Models.DogBase.LostDog;
-using Backend.Services;
+using Backend.Models.Response;
 using System.Linq;
 
 namespace Backend
@@ -21,7 +20,12 @@ namespace Backend
             CreateMap<AddLocationDto, Location>();
             CreateMap<AddLostDogCommentDto, LostDogComment>();
             CreateMap<UpdateLostDogDto, LostDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behavior = s })));
+            CreateMap(typeof(RepositoryResponse), typeof(ServiceResponse)).ForMember("StatusCode", s => s.Ignore());
             CreateMap(typeof(RepositoryResponse<>), typeof(ServiceResponse<>)).ForMember("StatusCode", s => s.Ignore());
+            CreateMap(typeof(RepositoryResponse<,>), typeof(ServiceResponse<,>)).ForMember("StatusCode", s => s.Ignore());
+            CreateMap(typeof(ServiceResponse), typeof(ControllerResponse));
+            CreateMap(typeof(ServiceResponse<>), typeof(ControllerResponse<>));
+            CreateMap(typeof(ServiceResponse<,>), typeof(ControllerResponse<,>));
         }
     }
 }

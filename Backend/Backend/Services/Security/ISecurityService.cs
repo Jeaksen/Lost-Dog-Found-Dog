@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Backend.Models.Response;
+using Microsoft.AspNetCore.Http;
 
 namespace Backend.Services.Security
 {
     public interface ISecurityService
     {
-        public (bool Successful, string Message) IsPictureValid(IFormFile picture);
+        public ServiceResponse IsPictureValid(IFormFile picture);
     }
 }
