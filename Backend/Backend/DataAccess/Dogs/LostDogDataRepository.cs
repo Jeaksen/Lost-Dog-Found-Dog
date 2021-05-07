@@ -20,15 +20,15 @@ namespace Backend.DataAccess.Dogs
 
         private static readonly Dictionary<string, FilterOperator> filterOperatorsForProperties = new()
         {
-            { "Breed", FilterOperator.Equals },
+            { "Breed", FilterOperator.Contains },
             { "AgeFrom", FilterOperator.GreaterThanOrEqual },
             { "AgeTo", FilterOperator.LessThanOrEqual },
             { "Size", FilterOperator.Equals },
             { "Color", FilterOperator.Equals },
-            { "Name", FilterOperator.Equals },
+            { "Name", FilterOperator.Contains },
             { "OwnerId", FilterOperator.Equals },
-            { "City", FilterOperator.Equals },
-            { "District", FilterOperator.Equals },
+            { "City", FilterOperator.StartsWith },
+            { "District", FilterOperator.StartsWith },
             { "DateLostBefore", FilterOperator.LessThanOrEqual },
             { "DateLostAfter", FilterOperator.GreaterThanOrEqual }
         };
