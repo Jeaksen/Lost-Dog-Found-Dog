@@ -16,13 +16,17 @@ namespace Backend
             CreateMap<AddAccountDto, Account>().ForMember(a => a.UserName, opt => opt.MapFrom(dto => dto.Name));
             CreateMap<GetAccountDto, Account>().ForMember(a => a.UserName, opt => opt.MapFrom(dto => dto.Name));
             CreateMap<Account, GetAccountDto>().ForMember(dto => dto.Name, opt => opt.MapFrom(a => a.UserName));
-            CreateMap<AddLostDogDto, LostDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behavior = s })));
-            CreateMap<AddLocationDto, Location>();
+
+            CreateMap<LocationDto, Location>();
+            CreateMap<Location, LocationDto>();
             CreateMap<AddLostDogCommentDto, LostDogComment>();
-            CreateMap<UpdateLostDogDto, LostDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behavior = s })));
+            CreateMap<LostDog, GetLostDogDto>().ForMember(dto => dto.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(b => b.Behavior)));
+            CreateMap<UploadLostDogDto, LostDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behavior = s })));
+
             CreateMap(typeof(RepositoryResponse), typeof(ServiceResponse)).ForMember("StatusCode", s => s.Ignore());
             CreateMap(typeof(RepositoryResponse<>), typeof(ServiceResponse<>)).ForMember("StatusCode", s => s.Ignore());
             CreateMap(typeof(RepositoryResponse<,>), typeof(ServiceResponse<,>)).ForMember("StatusCode", s => s.Ignore());
+
             CreateMap(typeof(ServiceResponse), typeof(ControllerResponse));
             CreateMap(typeof(ServiceResponse<>), typeof(ControllerResponse<>));
             CreateMap(typeof(ServiceResponse<,>), typeof(ControllerResponse<,>));

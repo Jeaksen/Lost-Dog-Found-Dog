@@ -2,7 +2,7 @@
 
 namespace Backend.DTOs.Dogs
 {
-    public class AddLocationDto
+    public class LocationDto
     {
         [Required]
         [MaxLength(100)]

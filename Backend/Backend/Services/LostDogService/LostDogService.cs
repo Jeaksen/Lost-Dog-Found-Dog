@@ -28,9 +28,9 @@ namespace Backend.Services.LostDogService
             this.logger = logger;
         }
 
-        public async Task<ServiceResponse<LostDog>> AddLostDog(AddLostDogDto lostDogDto, IFormFile picture)
+        public async Task<ServiceResponse<GetLostDogDto>> AddLostDog(UploadLostDogDto lostDogDto, IFormFile picture)
         {
-            var serviceResponse = new ServiceResponse<LostDog>();
+            var serviceResponse = new ServiceResponse<GetLostDogDto>();
             LostDog lostDog = mapper.Map<LostDog>(lostDogDto);
             byte[] data;
 
@@ -58,11 +58,9 @@ namespace Backend.Services.LostDogService
                         Data = data
                     };
                     var repoResponse = await lostDogDataRepository.AddLostDog(lostDog);
-                    serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
+                    serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<GetLostDogDto>>(repoResponse);
                     if (!serviceResponse.Successful)
                         serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-                    else
-                        serviceResponse.Data.Picture.Data = null;
                 }
                 else
                 {
@@ -75,25 +73,25 @@ namespace Backend.Services.LostDogService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<LostDog>, int>> GetLostDogs(LostDogFilter filter, string sort, int page, int size)
+        public async Task<ServiceResponse<List<GetLostDogDto>, int>> GetLostDogs(LostDogFilter filter, string sort, int page, int size)
         {
             var repoResponse = await lostDogDataRepository.GetLostDogs(filter, sort, page, size);
-            var serviceResponse = mapper.Map<RepositoryResponse<List<LostDog>, int>, ServiceResponse<List<LostDog>, int>>(repoResponse);
+            var serviceResponse = mapper.Map<RepositoryResponse<List<LostDog>, int>, ServiceResponse<List<GetLostDogDto>, int>>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LostDog>> GetLostDogDetails(int dogId)
+        public async Task<ServiceResponse<GetLostDogDto>> GetLostDogDetails(int dogId)
         {
             var repoResponse = await lostDogDataRepository.GetLostDogDetails(dogId);
-            var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
+            var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<GetLostDogDto>>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LostDog>> UpdateLostDog(UpdateLostDogDto lostDogDto, IFormFile picture, int dogId)
+        public async Task<ServiceResponse<GetLostDogDto>> UpdateLostDog(UploadLostDogDto lostDogDto, IFormFile picture, int dogId)
         {
             var lostDog = mapper.Map<LostDog>(lostDogDto);
             lostDog.Id = dogId;
@@ -117,7 +115,8 @@ namespace Backend.Services.LostDogService
                         Data = data
                     };
                 }
-                else return new ServiceResponse<LostDog>()
+                else 
+                    return new ServiceResponse<GetLostDogDto>()
                             {
                                 Successful = false,
                                 StatusCode = StatusCodes.Status400BadRequest,
@@ -126,7 +125,7 @@ namespace Backend.Services.LostDogService
             }
             
             var repoResponse = await lostDogDataRepository.UpdateLostDog(lostDog);
-            var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<LostDog>>(repoResponse);
+            var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<GetLostDogDto>>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
 
