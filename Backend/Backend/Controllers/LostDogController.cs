@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
-
     [Authorize(Roles = AccountRoles.Regular)]
     [Route("/lostdogs/")]
     [ApiController]
@@ -33,7 +32,7 @@ namespace Backend.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetLostDogs([FromQuery(Name = "filter")] LostDogFilter filter, [FromQuery] string sort, 
-                                                     [FromQuery] int page = 1, [FromQuery] int size = 10)
+                                                     [FromQuery] int page = 0, [FromQuery] int size = 10)
         {
             var serviceResponse = await lostDogService.GetLostDogs(filter, sort, page, size);
             var controllerResponse = mapper.Map<ServiceResponse<List<GetLostDogDto>, int>, ControllerResponse<List<GetLostDogDto>, int>>(serviceResponse);

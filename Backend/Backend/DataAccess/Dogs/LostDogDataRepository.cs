@@ -120,7 +120,7 @@ namespace Backend.DataAccess.Dogs
                 else
                     ordered = query.OrderByDescending(d => d.DateLost);
 
-                response.Data = await ordered.Skip((page - 1) * size).Take(size).ToListAsync();
+                response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
                 response.Metadata = await ordered.CountAsync();
                 response.Message = $"Found {response.Data.Count} Lost Dogs";
             }
