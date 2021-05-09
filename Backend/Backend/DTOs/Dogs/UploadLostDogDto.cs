@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend.DTOs.Dogs
 {
-    public class AddLostDogDto : AddDogDto
+    public class UploadLostDogDto : UploadDogDto
     {
         public int OwnerId { get; set; }
 
         [Required]
-        public AddLocationDto Location { get; set; }
+        public LocationDto Location { get; set; }
 
         [Required]
         public DateTime DateLost { get; set; }

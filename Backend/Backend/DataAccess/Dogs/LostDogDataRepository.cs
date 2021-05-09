@@ -20,15 +20,15 @@ namespace Backend.DataAccess.Dogs
 
         private static readonly Dictionary<string, FilterOperator> filterOperatorsForProperties = new()
         {
-            { "Breed", FilterOperator.Equals },
+            { "Breed", FilterOperator.StartsWith },
             { "AgeFrom", FilterOperator.GreaterThanOrEqual },
             { "AgeTo", FilterOperator.LessThanOrEqual },
             { "Size", FilterOperator.Equals },
             { "Color", FilterOperator.Equals },
-            { "Name", FilterOperator.Equals },
+            { "Name", FilterOperator.StartsWith },
             { "OwnerId", FilterOperator.Equals },
-            { "City", FilterOperator.Equals },
-            { "District", FilterOperator.Equals },
+            { "City", FilterOperator.StartsWith },
+            { "District", FilterOperator.StartsWith },
             { "DateLostBefore", FilterOperator.LessThanOrEqual },
             { "DateLostAfter", FilterOperator.GreaterThanOrEqual }
         };
@@ -120,7 +120,7 @@ namespace Backend.DataAccess.Dogs
                 else
                     ordered = query.OrderByDescending(d => d.DateLost);
 
-                response.Data = await ordered.Skip((page - 1) * size).Take(size).ToListAsync();
+                response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
                 response.Metadata = await ordered.CountAsync();
                 response.Message = $"Found {response.Data.Count} Lost Dogs";
             }

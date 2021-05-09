@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend.DTOs.Dogs
 {
-    public class UpdateDogDto
+    public abstract class UploadDogDto
     {
         [Required]
         [MaxLength(50)]

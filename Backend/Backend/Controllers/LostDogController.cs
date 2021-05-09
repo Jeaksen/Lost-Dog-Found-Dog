@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
-
     [Authorize(Roles = AccountRoles.Regular)]
     [Route("/lostdogs/")]
     [ApiController]
@@ -33,10 +32,10 @@ namespace Backend.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetLostDogs([FromQuery(Name = "filter")] LostDogFilter filter, [FromQuery] string sort, 
-                                                     [FromQuery] int page = 1, [FromQuery] int size = 10)
+                                                     [FromQuery] int page = 0, [FromQuery] int size = 10)
         {
             var serviceResponse = await lostDogService.GetLostDogs(filter, sort, page, size);
-            var controllerResponse = mapper.Map<ServiceResponse<List<LostDog>, int>, ControllerResponse<List<LostDog>, int>>(serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<List<GetLostDogDto>, int>, ControllerResponse<List<GetLostDogDto>, int>>(serviceResponse);
 
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
@@ -47,7 +46,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetLostDogDetails(int dogId)
         {
             var serviceResponse = await lostDogService.GetLostDogDetails(dogId);
-            var controllerResponse = mapper.Map<ServiceResponse<LostDog>, ControllerResponse<LostDog>>(serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
 
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
@@ -55,7 +54,7 @@ namespace Backend.Controllers
         [HttpPut]
         [Route("{dogId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] [FromForm] UpdateLostDogDto dog,
+        public async Task<IActionResult> UpdateLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] [FromForm] UploadLostDogDto dog,
                                                        IFormFile picture,
                                                        [FromRoute] int dogId)
         {
@@ -67,7 +66,7 @@ namespace Backend.Controllers
             {
                 dog.OwnerId = response.Data.OwnerId;
                 var serviceResponse = await lostDogService.UpdateLostDog(dog, picture, dogId);
-                var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+                var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
                 return StatusCode(serviceResponse.StatusCode, controllerResponse);
             }
 
@@ -81,7 +80,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] AddLostDogDto dog,
+        public async Task<IActionResult> AddLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] UploadLostDogDto dog,
                                                     IFormFile picture)
         {
             if (picture is null)
@@ -93,7 +92,7 @@ namespace Backend.Controllers
             dog.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
             var serviceResponse = await lostDogService.AddLostDog(dog, picture);
-            var controllerResponse = mapper.Map<ServiceResponse<LostDog>, ControllerResponse<LostDog>>(serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
 
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
