@@ -108,7 +108,8 @@ namespace Backend.Tests
                 Name = "bob",
                 Email = "bob@gmail.com",
                 PhoneNumber = "222333444",
-                Password = "SafePass66"
+                Password = "SafePass66",
+                AccountRole = AccountRoles.Regular
             };
             if (!AccountService.AddAccount(account).Result.Successful)
                 throw new ApplicationException("Could not seed the database with a user");

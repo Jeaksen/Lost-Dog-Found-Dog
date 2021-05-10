@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Backend.Models.Authentication;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Backend.DTOs.Authentication
 {
@@ -24,5 +21,7 @@ namespace Backend.DTOs.Authentication
         [MaxLength(20)]
         [MinLength(8)]
         public string PhoneNumber { get; set; }
+
+        public string AccountRole { get; set; } = AccountRoles.Regular;
     }
 }

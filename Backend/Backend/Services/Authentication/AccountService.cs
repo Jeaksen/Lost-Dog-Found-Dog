@@ -48,86 +48,6 @@ namespace Backend.Services.Authentication
                 await roleManager.CreateAsync(new IdentityRole<int>(AccountRoles.Shelter));
         }
 
-        public async Task<ServiceResponse<GetAccountDto>> AddAccount(AddAccountDto _account)
-        {
-            var serviceResponse = new ServiceResponse<GetAccountDto>();
-            
-
-            Account account = mapper.Map<Account>(_account);
-            account.SecurityStamp = Guid.NewGuid().ToString();
-            var result = await userManager.CreateAsync(account, _account.Password);
-
-            if (!result.Succeeded)
-            {
-                var errorBuilder = new StringBuilder($"User creation failed: ");
-                foreach (var error in result.Errors)
-                {
-                    errorBuilder.Append(error.Code);
-                    errorBuilder.Append(": ");
-                    errorBuilder.Append(error.Description);
-                    errorBuilder.Append(" ");
-                }
-                serviceResponse.Message = errorBuilder.ToString();
-                serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-            }
-            else
-            {
-                result = await userManager.AddToRoleAsync(account, AccountRoles.Regular);
-                var savedUser = await userManager.FindByNameAsync(_account.Name);
-                if (!result.Succeeded)
-                {
-                    serviceResponse.Message = $"Failed to add user to the role! {string.Join(", ", result.Errors)}";
-                    serviceResponse.Successful = false;
-                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-                    await userManager.DeleteAsync(savedUser);
-                }
-                else
-                {
-                    serviceResponse.Message = $"User sucessfully created!";
-                    serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
-                }
-            }
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<GetAccountDto>> GetAccountById(int id)
-        {
-            var serviceResponse = new ServiceResponse<GetAccountDto>();
-            var savedUser = await userManager.FindByIdAsync(id.ToString());
-            if (savedUser == null)
-            {
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-                serviceResponse.Successful = false;
-                serviceResponse.Message = $"Failed to fetch User with id: {id}";
-            }
-            else
-            {
-                serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
-                serviceResponse.Message = "User found";
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<IList<GetAccountDto>>> GetAllAccountsForRole(string role)
-        {
-            var serviceResponse = new ServiceResponse<IList<GetAccountDto>>();
-            var savedUsers =  await userManager.GetUsersInRoleAsync(role);
-            if (savedUsers == null)
-            {
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-                serviceResponse.Successful = false;
-                serviceResponse.Message = "Failed to fetch Users";
-            } 
-            else
-            {
-                serviceResponse.Data = mapper.Map<IList<GetAccountDto>>(savedUsers);
-                serviceResponse.Message = $"{savedUsers.Count} User found";
-            }
-            return serviceResponse;
-        }
-
         public async Task<ServiceResponse<AuthenticationResult>> Authenticate(LoginDto loginDto)
         {
             var serviceResponse = new ServiceResponse<AuthenticationResult>();
@@ -177,11 +97,89 @@ namespace Backend.Services.Authentication
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<GetAccountDto>> GetAccountById(int id)
+        {
+            var serviceResponse = new ServiceResponse<GetAccountDto>();
+            var savedUser = await userManager.FindByIdAsync(id.ToString());
+            if (savedUser == null)
+            {
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                serviceResponse.Successful = false;
+                serviceResponse.Message = $"Failed to fetch User with id: {id}";
+            }
+            else
+            {
+                serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
+                serviceResponse.Message = "User found";
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IList<GetAccountDto>>> GetAllAccountsForRole(string role)
+        {
+            var serviceResponse = new ServiceResponse<IList<GetAccountDto>>();
+            var savedUsers = await userManager.GetUsersInRoleAsync(role);
+            if (savedUsers == null)
+            {
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                serviceResponse.Successful = false;
+                serviceResponse.Message = "Failed to fetch Users";
+            }
+            else
+            {
+                serviceResponse.Data = mapper.Map<IList<GetAccountDto>>(savedUsers);
+                serviceResponse.Message = $"{savedUsers.Count} User found";
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetAccountDto>> AddAccount(AddAccountDto _account)
+        {
+            var serviceResponse = new ServiceResponse<GetAccountDto>();
+
+            Account account = mapper.Map<Account>(_account);
+            account.SecurityStamp = Guid.NewGuid().ToString();
+            var result = await userManager.CreateAsync(account, _account.Password);
+
+            if (result.Succeeded)
+            {
+                result = await userManager.AddToRoleAsync(account, _account.AccountRole);
+                var savedUser = await userManager.FindByNameAsync(_account.Name);
+                if (result.Succeeded)
+                {
+                    serviceResponse.Message = $"User sucessfully created!";
+                    serviceResponse.Data = mapper.Map<GetAccountDto>(savedUser);
+                }
+                else
+                {
+                    serviceResponse.Message = GetErrorsString(result.Errors, "Failed to add user to the role! ");
+                    serviceResponse.Successful = false;
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    await userManager.DeleteAsync(savedUser);
+                }
+            }
+            else
+            {
+                serviceResponse.Message = GetErrorsString(result.Errors, "User creation failed! ");
+                serviceResponse.Successful = false;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            }
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<GetAccountDto>> UpdateAccount(UpdateAccountDto accountDto, int userId)
         {
-            var savedAccount = await userManager.FindByIdAsync(userId.ToString());
             var serviceResponse = new ServiceResponse<GetAccountDto>();
-            if (savedAccount != null)
+            var savedAccount = await userManager.FindByIdAsync(userId.ToString());
+
+            if (savedAccount is null)
+            {
+                serviceResponse.Message = $"Failed to update user with id {userId}: Account not found";
+                serviceResponse.Successful = false;
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            }
+            else
             {
                 savedAccount.UserName = accountDto.Name;
                 savedAccount.Email = accountDto.Email;
@@ -194,26 +192,25 @@ namespace Backend.Services.Authentication
                 }
                 else
                 {
-                    var errorBuilder = new StringBuilder($"Failed to update user with id { userId }: ");
-                    foreach (var error in result.Errors)
-                    {
-                        errorBuilder.Append(error.Code);
-                        errorBuilder.Append(": ");
-                        errorBuilder.Append(error.Description);
-                        errorBuilder.Append(" ");
-                    }
-                    serviceResponse.Message = errorBuilder.ToString();
+                    serviceResponse.Message = GetErrorsString(result.Errors, $"Failed to update user with id { userId }! ");
                     serviceResponse.Successful = false;
                     serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 }
             }
-            else
-            {
-                serviceResponse.Message = $"Failed to update user with id {userId}: Account not found";
-                serviceResponse.Successful = false;
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-            }
             return serviceResponse;
+        }
+
+        private string GetErrorsString(IEnumerable<IdentityError> errors, string message)
+        {
+            var errorBuilder = new StringBuilder(message);
+            foreach (var error in errors)
+            {
+                errorBuilder.Append(error.Code);
+                errorBuilder.Append(": ");
+                errorBuilder.Append(error.Description);
+                errorBuilder.Append(" ");
+            }
+            return errorBuilder.ToString();
         }
     }
 }

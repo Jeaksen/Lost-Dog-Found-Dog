@@ -15,7 +15,6 @@ namespace Backend.Tests.Accounts
         private const string chars = "abcdefghijklmnoprstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private const int nameLenght = 40;
 
-
         public AccountServiceTests(DatabaseFixture databaseAuthFixture)
         {
             this.databaseAuthFixture = databaseAuthFixture;
@@ -31,9 +30,11 @@ namespace Backend.Tests.Accounts
             };
         }
 
-        [InlineData("LongSafePas6")]
         [Theory]
-        public async void SucceedForValidUserAndPassword(string password)
+        [InlineData("LongSafePas6", AccountRoles.Regular)]
+        [InlineData("LongSafePas6", AccountRoles.Shelter)]
+        [InlineData("LongSafePas6", AccountRoles.Admin)]
+        public async void CreateAccountSucceedForValidUserAndPassword(string password, string role)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -41,7 +42,8 @@ namespace Backend.Tests.Accounts
                 Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
-                Password = password
+                Password = password,
+                AccountRole = role
             };
             var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
@@ -49,7 +51,7 @@ namespace Backend.Tests.Accounts
 
         [InlineData("Short66")]
         [Theory]
-        public async void FailForForPasswordShorterThanEightDigits(string password)
+        public async void CreateAccountFailForForPasswordShorterThanEightDigits(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -65,7 +67,7 @@ namespace Backend.Tests.Accounts
 
         [InlineData("short666^")]
         [Theory]
-        public async void FailForForPasswordWithoutCapitalLetters(string password)
+        public async void CreateAccountFailForForPasswordWithoutCapitalLetters(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -81,7 +83,7 @@ namespace Backend.Tests.Accounts
 
         [InlineData("Shortttt")]
         [Theory]
-        public async void FailForForPasswordWithoutDigits(string password)
+        public async void CreateAccountFailForForPasswordWithoutDigits(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -97,7 +99,7 @@ namespace Backend.Tests.Accounts
 
         [InlineData("SHORT666")]
         [Theory]
-        public async void FailForForPasswordWithoutSmallLetters(string password)
+        public async void CreateAccountFailForForPasswordWithoutSmallLetters(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -113,7 +115,7 @@ namespace Backend.Tests.Accounts
 
         [InlineData("LongSafePas6")]
         [Theory]
-        public async void FailForCreatingUsersWithTheSameName(string password)
+        public async void CreateAccountFailForCreatingUsersWithTheSameName(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
