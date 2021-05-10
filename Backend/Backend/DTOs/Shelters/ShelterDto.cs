@@ -1,14 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.Shelters
+namespace Backend.DTOs.Shelters
 {
-    public class Shelter
+    public class ShelterDto
     {
-        [Required]
         public int Id { get; set; }
-
-        [Required]
-        public bool IsApproved { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -23,6 +19,6 @@ namespace Backend.Models.Shelters
         public string Email { get; set; }
 
         [Required]
-        public Address Address { get; set; }
+        public AddressDto Address { get; set; }
     }
 }

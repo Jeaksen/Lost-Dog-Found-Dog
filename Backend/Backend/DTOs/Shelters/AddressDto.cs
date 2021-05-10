@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.Shelters
+namespace Backend.DTOs.Shelters
 {
-    public class Address
+    public class AddressDto
     {
-        [Required]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string City { get; set; }
@@ -25,6 +22,6 @@ namespace Backend.Models.Shelters
 
         [Required]
         [MaxLength(200)]
-        public string AdditionalAddressLine { get; set; }
+        public string additionalAddressLine { get; set; }
     }
 }
