@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Backend.Models.DogBase
+namespace Backend.Models.Dogs
 {
     public class DogBehavior : IEquatable<DogBehavior>
     {

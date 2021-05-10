@@ -15,7 +15,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Backend.Services.AuthenticationService
+namespace Backend.Services.Authentication
 {
     public class AccountService : IAccountService
 

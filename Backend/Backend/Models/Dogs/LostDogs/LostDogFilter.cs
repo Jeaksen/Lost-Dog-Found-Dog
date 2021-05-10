@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.DogBase.LostDog
+namespace Backend.Models.Dogs.LostDogs
 {
     public class LostDogFilter
     {

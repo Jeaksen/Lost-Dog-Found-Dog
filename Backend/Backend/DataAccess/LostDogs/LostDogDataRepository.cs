@@ -1,5 +1,4 @@
-﻿using Backend.Models.DogBase.LostDog;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,8 +9,9 @@ using DynamicExpressions;
 using System.Reflection;
 using System.Linq.Expressions;
 using Backend.Models.Response;
+using Backend.Models.Dogs.LostDogs;
 
-namespace Backend.DataAccess.Dogs
+namespace Backend.DataAccess.LostDogs
 {
     public class LostDogDataRepository : ILostDogRepository
     {

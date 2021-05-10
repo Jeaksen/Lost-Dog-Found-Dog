@@ -1,9 +1,6 @@
-﻿using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
+﻿using Backend.Models.Dogs.LostDogs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Backend.DTOs.Dogs
 {

@@ -2,10 +2,9 @@
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
 using Backend.Models.Response;
-using Backend.Services.AuthenticationService;
+using Backend.Services.Authentication;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

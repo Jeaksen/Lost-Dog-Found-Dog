@@ -2,8 +2,8 @@
 using Backend.DTOs.Authentication;
 using Backend.DTOs.Dogs;
 using Backend.Models.Authentication;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
+using Backend.Models.Dogs;
+using Backend.Models.Dogs.LostDogs;
 using Backend.Models.Response;
 using System.Linq;
 

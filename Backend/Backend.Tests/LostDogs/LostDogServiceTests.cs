@@ -1,17 +1,17 @@
-﻿using Backend.Services.LostDogService;
-using Moq;
-using Backend.DataAccess.Dogs;
+﻿using Moq;
 using Xunit;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Backend.Models.DogBase.LostDog;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Backend.DTOs.Dogs;
 using Backend.Services.Security;
 using Backend.Models.Response;
+using Backend.Services.LostDogs;
+using Backend.Models.Dogs.LostDogs;
+using Backend.DataAccess.LostDogs;
 
 namespace Backend.Tests.LostDogs
 {

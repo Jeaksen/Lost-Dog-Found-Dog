@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Backend.DTOs.Dogs;
 using Backend.Models.Authentication;
-using Backend.Models.DogBase.LostDog;
+using Backend.Models.Dogs.LostDogs;
 using Backend.Models.Response;
-using Backend.Services.LostDogService;
+using Backend.Services.LostDogs;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

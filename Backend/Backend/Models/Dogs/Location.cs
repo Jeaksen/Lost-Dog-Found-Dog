@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.DogBase
+namespace Backend.Models.Dogs
 {
     public class Location : IComparable, IEquatable<Location>
     {

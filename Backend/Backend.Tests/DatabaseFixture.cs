@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Backend.DataAccess;
-using Backend.DataAccess.Dogs;
+using Backend.DataAccess.LostDogs;
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
-using Backend.Services.AuthenticationService;
+using Backend.Models.Dogs;
+using Backend.Models.Dogs.LostDogs;
+using Backend.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

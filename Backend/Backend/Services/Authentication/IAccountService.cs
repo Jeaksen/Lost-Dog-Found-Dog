@@ -4,7 +4,7 @@ using Backend.Models.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Backend.Services.AuthenticationService
+namespace Backend.Services.Authentication
 {
     public interface IAccountService
     {

@@ -1,7 +1,7 @@
 ﻿using Backend.Models.Authentication;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
-using Backend.Models.DogBase.ShelterDog;
+using Backend.Models.Dogs;
+using Backend.Models.Dogs.LostDogs;
+using Backend.Models.Dogs.ShelterDogs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

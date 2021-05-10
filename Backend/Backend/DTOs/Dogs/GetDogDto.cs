@@ -1,8 +1,5 @@
-﻿using Backend.Models.DogBase;
-using System;
+﻿using Backend.Models.Dogs;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Backend.DTOs.Dogs
 {
