@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Backend.Models.Response;
+using Backend.Models.Shelters;
 using System.Threading.Tasks;
 
 namespace Backend.DataAccess.Shelters
 {
-    public class IShelterRepository
+    public interface IShelterRepository
     {
+        public Task<RepositoryResponse<Shelter>> AddShelter(Shelter shelter);
+
+        public Task<RepositoryResponse<Shelter>> GetShelter(int id);
     }
 }

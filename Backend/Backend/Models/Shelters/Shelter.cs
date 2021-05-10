@@ -20,9 +20,12 @@ namespace Backend.Models.Shelters
 
         [Required]
         [MaxLength(256)]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required]
         public Address Address { get; set; }
+
+        public int AddressId { get; set; }
     }
 }

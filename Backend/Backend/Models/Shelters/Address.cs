@@ -23,7 +23,6 @@ namespace Backend.Models.Shelters
         [MaxLength(20)]
         public string BuildingNumber { get; set; }
 
-        [Required]
         [MaxLength(200)]
         public string AdditionalAddressLine { get; set; }
     }

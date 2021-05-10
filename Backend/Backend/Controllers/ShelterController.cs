@@ -7,5 +7,7 @@ namespace Backend.Controllers
 {
     public class ShelterController
     {
+
+
     }
 }

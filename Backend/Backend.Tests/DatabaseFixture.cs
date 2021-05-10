@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Backend.DataAccess;
 using Backend.DataAccess.LostDogs;
+using Backend.DataAccess.Shelters;
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
 using Backend.Models.Dogs;
@@ -33,7 +34,7 @@ namespace Backend.Tests
 
         public IAccountService AccountService => new AccountService(UserManager, RoleManager, configuration, Mapper, LoggerFactory.CreateLogger<AccountService>());
         public ILostDogRepository LostDogRepository => new LostDogDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<LostDogDataRepository>());
-
+        public IShelterRepository ShelterRepository => new ShelterDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<ShelterDataRepository>());
 
         public DatabaseFixture()
         {
