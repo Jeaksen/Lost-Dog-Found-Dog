@@ -67,10 +67,24 @@ namespace Backend.Services.Shelters
         public async Task<ServiceResponse> DeleteShelter(int id)
         {
             // Add deleting dogs
-            var repoResponse = await shelterRepository.DeleteShelterWithoutDogs(id);
-            var serviceResponse = mapper.Map<RepositoryResponse, ServiceResponse>(repoResponse);
-            if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            var getResponse = await GetShelter(id);
+            var serviceResponse = mapper.Map<ServiceResponse<ShelterDto>, ServiceResponse>(getResponse);
+            if (getResponse.Successful)
+            {
+                var repoResponse = await shelterRepository.DeleteShelterWithoutDogs(id);
+                serviceResponse = mapper.Map<RepositoryResponse, ServiceResponse>(repoResponse);
+                if (!serviceResponse.Successful)
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                else
+                {
+                    serviceResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
+                    if (serviceResponse.Successful)
+                        serviceResponse.Message = $"Shelter with id {id} deleted";
+                    else
+                        serviceResponse.Message = $"Shelter deleted, failed to delete shelter account {serviceResponse.Message}";
+                }
+            }
+
             return serviceResponse;
         }
     }

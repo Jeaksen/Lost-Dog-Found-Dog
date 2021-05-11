@@ -2,6 +2,7 @@
 using Backend.DataAccess.Shelters;
 using Backend.DTOs.Authentication;
 using Backend.DTOs.Shelters;
+using Backend.Models.Authentication;
 using Backend.Models.Response;
 using Backend.Models.Shelters;
 using Backend.Services.Authentication;
@@ -102,22 +103,55 @@ namespace Backend.Tests.Shelters
         }
 
         [Fact]
-        public async void DeleteShelterSuccessfulForSuccessRepoResponse()
+        public async void DeleteShelterSuccessfulForSuccessResponses()
         {
             var repo = new Mock<IShelterRepository>();
             var account = new Mock<IAccountService>();
+            repo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             repo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse()));
             var service = new ShelterService(repo.Object, account.Object, mapper, logger);
 
             Assert.True((await service.DeleteShelter(1)).Successful);
         }
 
         [Fact]
-        public async void DeleteShelterFailsForFailedRepoResponse()
+        public async void DeleteShelterFailsForFailedGetShelterResponse()
         {
             var repo = new Mock<IShelterRepository>();
             var account = new Mock<IAccountService>();
+
+            repo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Successful = false }));
+
+            var service = new ShelterService(repo.Object, account.Object, mapper, logger);
+
+            Assert.False((await service.DeleteShelter(-1)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteShelterFailsForFailedDeleteShelterResponse()
+        {
+            var repo = new Mock<IShelterRepository>();
+            var account = new Mock<IAccountService>();
+
+            repo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             repo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
+
+            var service = new ShelterService(repo.Object, account.Object, mapper, logger);
+
+            Assert.False((await service.DeleteShelter(-1)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteShelterFailsForFailedAccountDeleteResponse()
+        {
+            var repo = new Mock<IShelterRepository>();
+            var account = new Mock<IAccountService>();
+
+            repo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            repo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse() { Successful = false }));
+
             var service = new ShelterService(repo.Object, account.Object, mapper, logger);
 
             Assert.False((await service.DeleteShelter(-1)).Successful);
