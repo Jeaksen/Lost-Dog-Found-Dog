@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Backend.DTOs.Authentication;
+using Backend.DTOs.Shelters;
+using Backend.Models.Response;
 using System.Threading.Tasks;
 
 namespace Backend.Services.Shelters
 {
-    public class IShelterService
+    public interface IShelterService
     {
+        public Task<ServiceResponse<ShelterDto, GetAccountDto>> AddShelter(ShelterDto shelterDto);
+
+        public Task<ServiceResponse<ShelterDto>> GetShelter(int id);
     }
 }

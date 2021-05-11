@@ -2,6 +2,7 @@
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
 using Backend.Models.Response;
+using Backend.Models.Shelters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Backend.Services.Authentication
@@ -131,6 +133,19 @@ namespace Backend.Services.Authentication
                 serviceResponse.Message = $"{savedUsers.Count} User found";
             }
             return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetAccountDto>> AddShelterAccount(Shelter shelter)
+        {
+            var shelterAccount = new AddAccountDto()
+            {
+                Email = shelter.Email,
+                Name = Regex.Replace(shelter.Name, "[^a-zA-Z_.]+", "", RegexOptions.Compiled),
+                Password = "safepass",
+                PhoneNumber = shelter.PhoneNumber,
+                AccountRole = AccountRoles.Shelter
+            };
+            return await AddAccount(shelterAccount);
         }
 
         public async Task<ServiceResponse<GetAccountDto>> AddAccount(AddAccountDto _account)
