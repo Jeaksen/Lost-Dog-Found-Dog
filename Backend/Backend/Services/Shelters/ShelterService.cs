@@ -39,6 +39,7 @@ namespace Backend.Services.Shelters
                     serviceResponse.Metadata = addAccountResult.Data;
                 else
                 {
+                    serviceResponse.Data = null;
                     serviceResponse.Successful = false;
                     var deleteResult = await shelterRepository.DeleteShelterWithoutDogs(addShelterResult.Data.Id);
                     if (deleteResult.Successful)
