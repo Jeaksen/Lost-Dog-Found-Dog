@@ -140,8 +140,8 @@ namespace Backend.Services.Authentication
             var shelterAccount = new AddAccountDto()
             {
                 Email = shelter.Email,
-                Name = Regex.Replace(shelter.Name, "[^a-zA-Z_.]+", "", RegexOptions.Compiled),
-                Password = "safepass",
+                Name = Regex.Replace(shelter.Name, "[^a-zA-Z_.0-9]+", "", RegexOptions.Compiled),
+                Password = "SafePass22",
                 PhoneNumber = shelter.PhoneNumber,
                 AccountRole = AccountRoles.Shelter
             };
