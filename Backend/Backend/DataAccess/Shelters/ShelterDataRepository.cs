@@ -65,5 +65,31 @@ namespace Backend.DataAccess.Shelters
             }
             return response;
         }
+
+        public async Task<RepositoryResponse> DeleteShelterWithoutDogs(int id)
+        {
+            var response = new RepositoryResponse();
+            try
+            {
+                var getResponse = await GetShelter(id);
+                if (response.Successful)
+                {
+                    dbContext.Remove(getResponse.Data);
+                    await dbContext.SaveChangesAsync();
+                    response.Message = $"Shelter with id {id} was deleted";
+                }
+                else
+                {
+                    response.Successful = false;
+                    response.Message = getResponse.Message;
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to delete shelter: {e.Message}  {e.InnerException?.Message}";
+            }
+            return response;
+        }
     }
 }

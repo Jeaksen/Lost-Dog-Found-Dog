@@ -9,5 +9,7 @@ namespace Backend.DataAccess.Shelters
         public Task<RepositoryResponse<Shelter>> AddShelter(Shelter shelter);
 
         public Task<RepositoryResponse<Shelter>> GetShelter(int id);
+
+        public Task<RepositoryResponse> DeleteShelterWithoutDogs(int id);
     }
 }

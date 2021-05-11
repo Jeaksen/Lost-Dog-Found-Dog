@@ -168,5 +168,23 @@ namespace Backend.Tests.Shelters
             Assert.True(result.Successful);
         }
 
+        [Fact]
+        public async void DeleteShelterWithoutDogsFailsForNotExistingShelter()
+        {
+            var result = await shelterRepository.DeleteShelterWithoutDogs(-1);
+            Assert.False(result.Successful);
+        }
+
+        [Fact]
+        public async void DeleteShelterWithoutDogsSuccessfulForExistingShelter()
+        {
+            var addShelter = GetValidShelter();
+            var addResult = await shelterRepository.AddShelter(addShelter);
+            Assert.True(addResult.Successful);
+
+            var result = await shelterRepository.DeleteShelterWithoutDogs(addResult.Data.Id);
+            Assert.True(result.Successful);
+        }
+
     }
 }

@@ -67,7 +67,7 @@ namespace Backend.DataAccess.LostDogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message} {e.InnerException?.Message}";
+                response.Message = $"Failed to add dog: {e.Message} {e.InnerException?.Message}";
             }
 
             return response;
