@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
 using Backend.DTOs.Authentication;
 using Backend.DTOs.Shelters;
+using Backend.Models.Authentication;
 using Backend.Models.Response;
 using Backend.Services.Shelters;
 using Backend.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
+    [Authorize]
     [Route("/shelters/")]
     [ApiController]
     public class ShelterController : ControllerBase
