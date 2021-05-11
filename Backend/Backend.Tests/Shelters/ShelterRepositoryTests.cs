@@ -42,7 +42,7 @@ namespace Backend.Tests.Shelters
         }
 
         [Fact]
-        public async void AddShelterSuccessfulForShelter()
+        public async void AddShelterSuccessfulForValidShelter()
         {
             var addShelter = GetValidShelter();
             var result = await shelterRepository.AddShelter(addShelter);
