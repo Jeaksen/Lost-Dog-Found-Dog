@@ -30,7 +30,8 @@ namespace Backend.DataAccess.LostDogs
             { "City", FilterOperator.StartsWith },
             { "District", FilterOperator.StartsWith },
             { "DateLostBefore", FilterOperator.LessThanOrEqual },
-            { "DateLostAfter", FilterOperator.GreaterThanOrEqual }
+            { "DateLostAfter", FilterOperator.GreaterThanOrEqual },
+            { "IsFound", FilterOperator.Equals }
         };
 
         private static readonly Dictionary<string, string> lostDogPropertyForFilterProperty = new()
@@ -45,7 +46,9 @@ namespace Backend.DataAccess.LostDogs
             { "District", "Location.District" },
             { "DateLostBefore", "DateLost" },
             { "DateLostAfter", "DateLost" },
-            { "OwnerId", "OwnerId" }
+            { "OwnerId", "OwnerId" },
+            { "IsFound", "IsFound" }
+
         };
 
         public LostDogDataRepository(ApplicationDbContext dbContext, ILogger<LostDogDataRepository> logger)
@@ -120,8 +123,8 @@ namespace Backend.DataAccess.LostDogs
                 else
                     ordered = query.OrderByDescending(d => d.DateLost);
 
+                response.Metadata = (int)Math.Ceiling(await ordered.CountAsync() / (double)size);
                 response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
-                response.Metadata = await ordered.CountAsync();
                 response.Message = $"Found {response.Data.Count} Lost Dogs";
             }
             catch (Exception e)

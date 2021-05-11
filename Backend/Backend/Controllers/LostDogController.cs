@@ -29,7 +29,6 @@ namespace Backend.Controllers
             this.mapper = mapper;
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetLostDogs([FromQuery(Name = "filter")] LostDogFilter filter, [FromQuery] string sort, 
                                                      [FromQuery] int page = 0, [FromQuery] int size = 10)

@@ -25,6 +25,8 @@ namespace Backend.Models.Dogs.LostDogs
 
         public int? OwnerId { get; set; }
 
+        public bool? IsFound { get; set; }
+
         public LocationFilter Location { get; set; }
 
         public DateTime? DateLostBefore { get; set; }
