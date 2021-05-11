@@ -44,7 +44,7 @@ export class FilterLostDogsComponent implements OnInit {
   lostDogs?: LostDogFromBackend[];
   dogColors: string[] = DogColorSelector;
   dogSizes: string[] = DogSizeSelector;
-  allDogsCount?: number;;
+  allDogsCount?: number;
   sortFeatures: SortValues[] = [
     {value: 'name', viewValue: 'Dog\'s Name'},
     {value: 'breed', viewValue: 'Breed'},

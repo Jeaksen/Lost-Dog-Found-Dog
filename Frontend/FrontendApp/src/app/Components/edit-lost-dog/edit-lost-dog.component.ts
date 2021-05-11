@@ -33,7 +33,7 @@ export class EditLostDogComponent implements OnInit {
     earsType: new FormControl('', [Validators.required]),
     dateLost: new FormControl('', [Validators.required]),
     specialMarks: new FormControl('', []),
-    behaviour: new FormControl('', []),
+    behavior: new FormControl('', []),
     locationCity: new FormControl('', [Validators.required]),
     locationDistrict: new FormControl('', [Validators.required]),
   });
@@ -61,7 +61,6 @@ export class EditLostDogComponent implements OnInit {
     this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
       this.lostDog = response.data;
       this.url = 'data:' + this.lostDog!.picture!.fileType + ';base64,' + this.lostDog!.picture!.data;
-      this.editLostDogForm.get("behaviour")?.setValue("Deppression");
       this.mapLostDogDataIntoForm();
     });
   }
@@ -75,13 +74,24 @@ export class EditLostDogComponent implements OnInit {
   }
 
   private constructForm(): FormData {
-    const location = new Location(this.editLostDogForm.get('locationCity')?.value,
-      this.editLostDogForm.get('locationDistrict')?.value);
-    const lostDog = new LostDog(this.editLostDogForm.get('name')?.value, this.editLostDogForm.get('breed')?.value,
-      this.editLostDogForm.get('age')?.value, this.editLostDogForm.get('size')?.value,
-      this.editLostDogForm.get('color')?.value, 'costam', this.editLostDogForm.get('hairLength')?.value,
-      this.editLostDogForm.get('earsType')?.value, this.editLostDogForm.get('tailLength')?.value,
-      ['behav1', 'behav2'], location, this.datepipe.transform(this.editLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!);
+    const location = new Location(
+      this.editLostDogForm.get('locationCity')?.value,
+      this.editLostDogForm.get('locationDistrict')?.value
+    );
+    const lostDog = new LostDog(
+      this.editLostDogForm.get('name')?.value,
+      this.editLostDogForm.get('breed')?.value,
+      this.editLostDogForm.get('age')?.value,
+      this.editLostDogForm.get('size')?.value,
+      this.editLostDogForm.get('color')?.value,
+      this.editLostDogForm.get('specialMarks')?.value, 
+      this.editLostDogForm.get('hairLength')?.value,
+      this.editLostDogForm.get('earsType')?.value,
+      this.editLostDogForm.get('tailLength')?.value,
+      [ this.editLostDogForm.get('behavior')?.value ],
+      location,
+      this.datepipe.transform(this.editLostDogForm.get('dateLost')?.value, 'yyyy-MM-dd')!
+    );
       
     let data = new FormData();
     lostDog.ownerId = localStorage.getItem('userId')!;
@@ -119,7 +129,6 @@ export class EditLostDogComponent implements OnInit {
   }
 
   mapLostDogDataIntoForm() {
-    console.log(this.lostDog?.behaviors[0])
     this.editLostDogForm.get('breed')?.setValue(this.lostDog?.breed);
     this.editLostDogForm.get('age')?.setValue(this.lostDog?.age);
     this.editLostDogForm.get('size')?.setValue(this.lostDog?.size);
@@ -129,7 +138,7 @@ export class EditLostDogComponent implements OnInit {
     this.editLostDogForm.get('tailLength')?.setValue(this.lostDog?.tailLength);
     this.editLostDogForm.get('earsType')?.setValue(this.lostDog?.earsType);
     this.editLostDogForm.get('specialMarks')?.setValue(this.lostDog?.specialMark);
-    this.editLostDogForm.get('behaviour')?.setValue(this.lostDog?.behaviors[0].behavior);
+    this.editLostDogForm.get('behavior')?.setValue(this.lostDog?.behaviors[0]);
     this.editLostDogForm.get('locationCity')?.setValue(this.lostDog?.location.city);
     this.editLostDogForm.get('locationDistrict')?.setValue(this.lostDog?.location.district);
     this.editLostDogForm.get('dateLost')?.setValue(this.lostDog?.dateLost);
