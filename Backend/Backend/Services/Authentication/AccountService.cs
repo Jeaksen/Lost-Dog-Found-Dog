@@ -227,5 +227,84 @@ namespace Backend.Services.Authentication
             }
             return errorBuilder.ToString();
         }
+
+        private async Task<ServiceResponse<Account>> GetAccount(int? id = null, string username = null, string email = null)
+        {
+            var serviceResponse = new ServiceResponse<Account>();
+            Account savedAccount = null;
+            if (id.HasValue)
+            {
+                savedAccount = await userManager.FindByIdAsync(id.ToString());
+                if (savedAccount == null)
+                {
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    serviceResponse.Successful = false;
+                    serviceResponse.Message = $"Failed to fetch User with id: {id.Value}";
+                }
+                else
+                {
+                    serviceResponse.Data = savedAccount;
+                    serviceResponse.Message = "User found";
+                }
+            }
+            else if (!string.IsNullOrEmpty(email))
+            {
+                savedAccount = await userManager.FindByEmailAsync(email);
+                if (savedAccount == null)
+                {
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    serviceResponse.Successful = false;
+                    serviceResponse.Message = $"Failed to fetch User with email: {email}";
+                }
+                else
+                {
+                    serviceResponse.Data = savedAccount;
+                    serviceResponse.Message = "User found";
+                }
+            }
+            else if (!string.IsNullOrEmpty(username))
+            {
+                savedAccount = await userManager.FindByNameAsync(username);
+                if (savedAccount == null)
+                {
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                    serviceResponse.Successful = false;
+                    serviceResponse.Message = $"Failed to fetch User with username: {username}";
+                }
+                else
+                {
+                    serviceResponse.Data = savedAccount;
+                    serviceResponse.Message = "User found";
+                }
+            }
+            else
+            {
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                serviceResponse.Successful = false;
+                serviceResponse.Message = $"No data was given to identify an account";
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse> DeleteAccount(int? id = null, string username = null, string email = null)
+        {
+            var accountResponse = await GetAccount(id.HasValue? id.Value : null, username, email);
+            var response = mapper.Map<ServiceResponse<Account>, ServiceResponse>(accountResponse);
+            if (accountResponse.Successful)
+            {
+                var result = await userManager.DeleteAsync(accountResponse.Data);
+                if (result.Succeeded)
+                    response.Message = $"Account with id {accountResponse.Data.Id} deleted";
+                else
+                {
+                    response.Successful = false;
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    response.Message = GetErrorsString(result.Errors, $"Failed to delete account with id {accountResponse.Data.Id}");
+                }
+            }
+
+            return response;
+        }
     }
 }

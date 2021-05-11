@@ -15,5 +15,7 @@ namespace Backend.Services.Authentication
         Task<ServiceResponse<GetAccountDto>> AddShelterAccount(Shelter shelter);
         Task<ServiceResponse<AuthenticationResult>> Authenticate(LoginDto loginDto);
         Task<ServiceResponse<GetAccountDto>> UpdateAccount(UpdateAccountDto accountDto, int userId);
+        Task<ServiceResponse> DeleteAccount(int? id = null, string username = null, string email = null);
+
     }
 }
