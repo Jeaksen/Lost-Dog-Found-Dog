@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210511113727_dog-shelter-relation")]
-    partial class dogshelterrelation
+    [Migration("20210511132547_shelters-added")]
+    partial class sheltersadded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -267,9 +267,7 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Shelters.Address", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("AdditionalAddressLine")
                         .HasMaxLength(200)
@@ -329,8 +327,6 @@ namespace Backend.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -501,7 +497,9 @@ namespace Backend.Migrations
                     b.Property<int>("ShelterId")
                         .HasColumnType("int");
 
-                    b.HasIndex("ShelterId");
+                    b.HasIndex("ShelterId")
+                        .IsUnique()
+                        .HasFilter("[ShelterId] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("ShelterDog");
                 });
@@ -545,15 +543,14 @@ namespace Backend.Migrations
                     b.Navigation("Picture");
                 });
 
-            modelBuilder.Entity("Backend.Models.Shelters.Shelter", b =>
+            modelBuilder.Entity("Backend.Models.Shelters.Address", b =>
                 {
-                    b.HasOne("Backend.Models.Shelters.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
+                    b.HasOne("Backend.Models.Shelters.Shelter", null)
+                        .WithOne("Address")
+                        .HasForeignKey("Backend.Models.Shelters.Address", "Id")
+                        .HasPrincipalKey("Backend.Models.Shelters.Shelter", "AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -627,8 +624,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Dogs.ShelterDogs.ShelterDog", b =>
                 {
                     b.HasOne("Backend.Models.Shelters.Shelter", "Shelter")
-                        .WithMany()
-                        .HasForeignKey("ShelterId")
+                        .WithOne()
+                        .HasForeignKey("Backend.Models.Dogs.ShelterDogs.ShelterDog", "ShelterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -638,6 +635,12 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Dogs.Dog", b =>
                 {
                     b.Navigation("Behaviors");
+                });
+
+            modelBuilder.Entity("Backend.Models.Shelters.Shelter", b =>
+                {
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Backend.Models.Dogs.LostDogs.LostDog", b =>
