@@ -100,5 +100,27 @@ namespace Backend.Tests.Shelters
 
             Assert.False((await service.GetShelter(-1)).Successful);
         }
+
+        [Fact]
+        public async void DeleteShelterSuccessfulForSuccessRepoResponse()
+        {
+            var repo = new Mock<IShelterRepository>();
+            var account = new Mock<IAccountService>();
+            repo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            var service = new ShelterService(repo.Object, account.Object, mapper, logger);
+
+            Assert.True((await service.DeleteShelter(1)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteShelterFailsForFailedRepoResponse()
+        {
+            var repo = new Mock<IShelterRepository>();
+            var account = new Mock<IAccountService>();
+            repo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
+            var service = new ShelterService(repo.Object, account.Object, mapper, logger);
+
+            Assert.False((await service.DeleteShelter(-1)).Successful);
+        }
     }
 }

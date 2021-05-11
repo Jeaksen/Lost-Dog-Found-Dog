@@ -53,10 +53,21 @@ namespace Backend.Services.Shelters
             return serviceResponse;
         }
 
+
         public async Task<ServiceResponse<ShelterDto>> GetShelter(int id)
         {
             var repoResponse = await shelterRepository.GetShelter(id);
             var serviceResponse = mapper.Map<RepositoryResponse<Shelter>, ServiceResponse<ShelterDto>>(repoResponse);
+            if (!serviceResponse.Successful)
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse> DeleteShelter(int id)
+        {
+            // Add deleting dogs
+            var repoResponse = await shelterRepository.DeleteShelterWithoutDogs(id);
+            var serviceResponse = mapper.Map<RepositoryResponse, ServiceResponse>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;

@@ -10,5 +10,7 @@ namespace Backend.Services.Shelters
         public Task<ServiceResponse<ShelterDto, GetAccountDto>> AddShelter(ShelterDto shelterDto);
 
         public Task<ServiceResponse<ShelterDto>> GetShelter(int id);
+
+        public Task<ServiceResponse> DeleteShelter(int id);
     }
 }
