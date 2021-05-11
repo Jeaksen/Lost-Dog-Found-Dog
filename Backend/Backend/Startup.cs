@@ -23,6 +23,8 @@ using Backend.Models.Response;
 using Backend.DataAccess.LostDogs;
 using Backend.Services.Authentication;
 using Backend.Services.LostDogs;
+using Backend.DataAccess.Shelters;
+using Backend.Services.Shelters;
 
 namespace Backend
 {
@@ -82,6 +84,8 @@ namespace Backend
             services.AddScoped<ILostDogRepository, LostDogDataRepository>();
             services.AddScoped<ILostDogService, LostDogService>();
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IShelterRepository, ShelterDataRepository>();
+            services.AddScoped<IShelterService, ShelterService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>(options =>
             {
