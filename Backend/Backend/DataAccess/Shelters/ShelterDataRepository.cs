@@ -74,7 +74,7 @@ namespace Backend.DataAccess.Shelters
                 var getResponse = await GetShelter(id);
                 if (response.Successful)
                 {
-                    dbContext.Shelters.Remove(getResponse.Data);
+                    dbContext.Remove(getResponse.Data);
                     await dbContext.SaveChangesAsync();
                     response.Message = $"Shelter with id {id} was deleted";
                 }

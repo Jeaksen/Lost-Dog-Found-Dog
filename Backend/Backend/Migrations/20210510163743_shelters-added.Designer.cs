@@ -4,14 +4,16 @@ using Backend.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210510163743_shelters-added")]
+    partial class sheltersadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -499,8 +501,6 @@ namespace Backend.Migrations
                     b.Property<int>("ShelterId")
                         .HasColumnType("int");
 
-                    b.HasIndex("ShelterId");
-
                     b.HasDiscriminator().HasValue("ShelterDog");
                 });
 
@@ -620,17 +620,6 @@ namespace Backend.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Backend.Models.Dogs.ShelterDogs.ShelterDog", b =>
-                {
-                    b.HasOne("Backend.Models.Shelters.Shelter", "Shelter")
-                        .WithMany()
-                        .HasForeignKey("ShelterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shelter");
                 });
 
             modelBuilder.Entity("Backend.Models.Dogs.Dog", b =>
