@@ -33,6 +33,7 @@ namespace Backend.DataAccess
             builder.Entity<Shelter>().Property(s => s.AddressId).IsRequired(true);
             builder.Entity<Shelter>().HasIndex(s => s.Name).IsUnique(true);
             builder.Entity<Shelter>().HasIndex(s => s.Email).IsUnique(true);
+            builder.Entity<Account>().HasOne(a => a.Shelter).WithOne().HasForeignKey<Account>(a => a.ShelterId);
         }
 
     }

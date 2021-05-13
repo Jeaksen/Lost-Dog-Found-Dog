@@ -22,5 +22,6 @@ namespace Backend.Models.Authentication
 
         public int ShelterId { get; set; }
 
+        public Shelter Shelter { get; set; }
     }
 }
