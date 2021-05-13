@@ -101,8 +101,11 @@ namespace Backend.Controllers
         [Route("{dogId}/found")]
         public async Task<IActionResult> MarkLostDogAsFound(int dogId)
         {
-            var savedDog = await lostDogService.GetLostDogDetails(dogId);
-            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDog.Data.OwnerId.ToString())
+            var savedDogResponse = await lostDogService.GetLostDogDetails(dogId);
+            if (savedDogResponse.Data == null)
+                return StatusCode(savedDogResponse.StatusCode, mapper.Map<ControllerResponse<GetLostDogDto>>(savedDogResponse));
+
+            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDogResponse.Data.OwnerId.ToString())
             {
                 var serviceResponse = await lostDogService.MarkLostDogAsFound(dogId);
                 var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
@@ -121,8 +124,11 @@ namespace Backend.Controllers
         [Route("{dogId}")]
         public async Task<IActionResult> DeleteLostDog(int dogId)
         {
-            var savedDog = await lostDogService.GetLostDogDetails(dogId);
-            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDog.Data.OwnerId.ToString())
+            var savedDogResponse = await lostDogService.GetLostDogDetails(dogId);
+            if (savedDogResponse.Data == null)
+                return StatusCode(savedDogResponse.StatusCode, mapper.Map<ControllerResponse<GetLostDogDto>>(savedDogResponse));
+
+            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDogResponse.Data.OwnerId.ToString())
             {
                 var serviceResponse = await lostDogService.DeleteLostDog(dogId);
                 var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
