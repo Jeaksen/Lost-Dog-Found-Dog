@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210513093304_shelterId-added-to-account")]
-    partial class shelterIdaddedtoaccount
+    [Migration("20210513102832_shelters-added")]
+    partial class sheltersadded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,7 +71,7 @@ namespace Backend.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShelterId")
+                    b.Property<int?>("ShelterId")
                         .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -90,6 +90,10 @@ namespace Backend.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ShelterId")
+                        .IsUnique()
+                        .HasFilter("[ShelterId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -507,6 +511,15 @@ namespace Backend.Migrations
                     b.HasIndex("ShelterId");
 
                     b.HasDiscriminator().HasValue("ShelterDog");
+                });
+
+            modelBuilder.Entity("Backend.Models.Authentication.Account", b =>
+                {
+                    b.HasOne("Backend.Models.Shelters.Shelter", "Shelter")
+                        .WithOne()
+                        .HasForeignKey("Backend.Models.Authentication.Account", "ShelterId");
+
+                    b.Navigation("Shelter");
                 });
 
             modelBuilder.Entity("Backend.Models.Dogs.Dog", b =>

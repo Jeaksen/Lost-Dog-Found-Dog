@@ -64,7 +64,7 @@ namespace Backend.Services.Authentication
                     var userRole = (await userManager.GetRolesAsync(user)).First();
 
                     if (userRole == AccountRoles.Shelter)
-                        user.Id = user.ShelterId;
+                        user.Id = user.ShelterId.Value;
 
                     var authClaims = new List<Claim>
                     {

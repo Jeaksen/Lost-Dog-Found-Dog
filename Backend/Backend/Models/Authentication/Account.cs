@@ -20,7 +20,7 @@ namespace Backend.Models.Authentication
         [Required]
         public override string Email { get; set; }
 
-        public int ShelterId { get; set; }
+        public int? ShelterId { get; set; }
 
         public Shelter Shelter { get; set; }
     }

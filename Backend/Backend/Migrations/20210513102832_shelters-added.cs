@@ -6,6 +6,12 @@ namespace Backend.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "ShelterId",
+                table: "AspNetUsers",
+                type: "int",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Addresses",
                 columns: table => new
@@ -47,6 +53,18 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Dogs_ShelterId",
+                table: "Dogs",
+                column: "ShelterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ShelterId",
+                table: "AspNetUsers",
+                column: "ShelterId",
+                unique: true,
+                filter: "[ShelterId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Shelters_AddressId",
                 table: "Shelters",
                 column: "AddressId");
@@ -62,15 +80,51 @@ namespace Backend.Migrations
                 table: "Shelters",
                 column: "Name",
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Shelters_ShelterId",
+                table: "AspNetUsers",
+                column: "ShelterId",
+                principalTable: "Shelters",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Dogs_Shelters_ShelterId",
+                table: "Dogs",
+                column: "ShelterId",
+                principalTable: "Shelters",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Shelters_ShelterId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Dogs_Shelters_ShelterId",
+                table: "Dogs");
+
             migrationBuilder.DropTable(
                 name: "Shelters");
 
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Dogs_ShelterId",
+                table: "Dogs");
+
+            migrationBuilder.DropIndex(
+                name: "IX_AspNetUsers_ShelterId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "ShelterId",
+                table: "AspNetUsers");
         }
     }
 }

@@ -71,18 +71,19 @@ namespace Backend.Services.Shelters
             var serviceResponse = mapper.Map<ServiceResponse<ShelterDto>, ServiceResponse>(getResponse);
             if (getResponse.Successful)
             {
-                var repoResponse = await shelterRepository.DeleteShelterWithoutDogs(id);
-                serviceResponse = mapper.Map<RepositoryResponse, ServiceResponse>(repoResponse);
-                if (!serviceResponse.Successful)
-                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-                else
+                var accountResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
+                var shelterResponse = await shelterRepository.DeleteShelterWithoutDogs(id);
+
+                if (!accountResponse.Successful || !shelterResponse.Successful)
                 {
-                    serviceResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
-                    if (serviceResponse.Successful)
-                        serviceResponse.Message = $"Shelter with id {id} deleted";
-                    else
-                        serviceResponse.Message = $"Shelter deleted, failed to delete shelter account {serviceResponse.Message}";
+                    serviceResponse.Message = "Failed to delete shelter! ";
+                    serviceResponse.Message += accountResponse.Successful ? "" : accountResponse.Message;
+                    serviceResponse.Message += shelterResponse.Successful ? "" : shelterResponse.Message;
+                    serviceResponse.Successful = false;
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
                 }
+                else
+                    serviceResponse.Message = $"Shelter with id {id} deleted";
             }
 
             return serviceResponse;

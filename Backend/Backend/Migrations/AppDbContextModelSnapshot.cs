@@ -69,7 +69,7 @@ namespace Backend.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShelterId")
+                    b.Property<int?>("ShelterId")
                         .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -90,7 +90,8 @@ namespace Backend.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex("ShelterId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ShelterId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -514,9 +515,7 @@ namespace Backend.Migrations
                 {
                     b.HasOne("Backend.Models.Shelters.Shelter", "Shelter")
                         .WithOne()
-                        .HasForeignKey("Backend.Models.Authentication.Account", "ShelterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Backend.Models.Authentication.Account", "ShelterId");
 
                     b.Navigation("Shelter");
                 });
