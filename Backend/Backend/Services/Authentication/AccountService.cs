@@ -54,11 +54,18 @@ namespace Backend.Services.Authentication
         {
             var serviceResponse = new ServiceResponse<AuthenticationResult>();
             var user = await userManager.FindByNameAsync(loginDto.UserName);
+            if (user == null)
+                user = await userManager.FindByEmailAsync(loginDto.UserName);
+
             if (user != null)
             {
                 if (await userManager.CheckPasswordAsync(user, loginDto.Password))
                 {
                     var userRole = (await userManager.GetRolesAsync(user)).First();
+
+                    if (userRole == AccountRoles.Shelter)
+                        user.Id = user.ShelterId;
+
                     var authClaims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.UserName),
@@ -137,13 +144,14 @@ namespace Backend.Services.Authentication
 
         public async Task<ServiceResponse<GetAccountDto>> AddShelterAccount(Shelter shelter)
         {
-            var shelterAccount = new AddAccountDto()
+            var shelterAccount = new AddShelterAccountDto()
             {
                 Email = shelter.Email,
                 Name = Regex.Replace(shelter.Name, "[^a-zA-Z_.0-9]+", "", RegexOptions.Compiled),
                 Password = "SafePass22",
                 PhoneNumber = shelter.PhoneNumber,
-                AccountRole = AccountRoles.Shelter
+                AccountRole = AccountRoles.Shelter,
+                ShelterId = shelter.Id
             };
             return await AddAccount(shelterAccount);
         }

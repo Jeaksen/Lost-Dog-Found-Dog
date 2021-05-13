@@ -32,7 +32,7 @@ namespace Backend.DataAccess.Shelters
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message} {e.InnerException?.Message}";
+                response.Message = $"Failed add shelter: {e.Message} {e.InnerException?.Message}";
             }
 
             return response;
@@ -55,7 +55,7 @@ namespace Backend.DataAccess.Shelters
                 else
                 {
                     response.Data = shelter;
-                    response.Message = $"Lost Dog with id {id} was found";
+                    response.Message = $"Shelter with id {id} was found";
                 }
             }
             catch (Exception e)

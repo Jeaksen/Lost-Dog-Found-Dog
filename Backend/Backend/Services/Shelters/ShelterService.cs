@@ -45,7 +45,7 @@ namespace Backend.Services.Shelters
                     if (deleteResult.Successful)
                         serviceResponse.Message = $"Failed to add shelter acccount: {addAccountResult.Message}";
                     else
-                        serviceResponse.Message = $"Failed to add shelter account and remove shelter after failing to add acccount: {addAccountResult.Message} {deleteResult.Message}";
+                        serviceResponse.Message = $"Data corrupted! Failed to add shelter account and remove shelter after failing to add acccount: {addAccountResult.Message} {deleteResult.Message}";
                 }
             }
             else
