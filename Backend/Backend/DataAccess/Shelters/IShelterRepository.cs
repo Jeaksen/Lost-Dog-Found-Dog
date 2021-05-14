@@ -1,5 +1,6 @@
 ﻿using Backend.Models.Response;
 using Backend.Models.Shelters;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Backend.DataAccess.Shelters
@@ -11,5 +12,7 @@ namespace Backend.DataAccess.Shelters
         public Task<RepositoryResponse<Shelter>> GetShelter(int id);
 
         public Task<RepositoryResponse> DeleteShelterWithoutDogs(int id);
+
+        public Task<RepositoryResponse<List<Shelter>, int>> GetShelters(string name, string sort, int page, int size);
     }
 }

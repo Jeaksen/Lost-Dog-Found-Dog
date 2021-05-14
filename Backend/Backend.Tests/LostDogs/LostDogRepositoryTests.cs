@@ -256,7 +256,6 @@ namespace Backend.Tests.LostDogs
             Assert.False((await lostDogRepository.UpdateLostDog(lostDog)).Successful);
         }
 
-
         [Fact]
         public async void GetLostDogSortsProperly()
         {

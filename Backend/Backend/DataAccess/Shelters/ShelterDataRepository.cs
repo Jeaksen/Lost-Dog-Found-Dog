@@ -1,8 +1,10 @@
 ﻿using Backend.Models.Response;
 using Backend.Models.Shelters;
+using DynamicExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,6 +37,40 @@ namespace Backend.DataAccess.Shelters
                 response.Message = $"Failed add shelter: {e.Message} {e.InnerException?.Message}";
             }
 
+            return response;
+        }
+
+
+        public async Task<RepositoryResponse<List<Shelter>, int>> GetShelters(string name, string sort, int page, int size)
+        {
+            var response = new RepositoryResponse<List<Shelter>, int>();
+            try
+            {
+                var query = dbContext.Shelters.Include(s => s.Address).AsQueryable();
+
+                if (!string.IsNullOrEmpty(name))
+                    query = query.Where(s => s.Name.StartsWith(name));
+
+                IOrderedQueryable<Shelter> ordered;
+
+                var she = query.ToList();
+
+                if (!string.IsNullOrEmpty(sort) && sort.Equals("name,desc", StringComparison.InvariantCultureIgnoreCase))
+                    ordered = query.OrderByDescending(s => s.Name.StartsWith(name));
+                else 
+                    ordered = query.OrderBy(s => s.Name);
+
+                she = ordered.ToList();
+
+                response.Metadata = (int)Math.Ceiling(await ordered.CountAsync() / (double)size);
+                response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
+                response.Message = $"Found {response.Data.Count} Lost Dogs";
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to get lost dogs: {e.Message} {e.InnerException?.Message}";
+            }
             return response;
         }
 
