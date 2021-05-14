@@ -39,7 +39,7 @@ namespace Backend.Tests.Shelters
             repo.Setup(o => o.GetShelters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<List<Shelter>, int>()));
             var service = new ShelterService(repo.Object, account.Object, mapper, logger);
 
-            Assert.True((await service.GetShelters(0, 0, null, null)).Successful);
+            Assert.True((await service.GetShelters(null, null, 0, 0)).Successful);
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Backend.Tests.Shelters
             repo.Setup(o => o.GetShelters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<List<Shelter>, int>() { Successful = false }));
             var service = new ShelterService(repo.Object, account.Object, mapper, logger);
 
-            Assert.False((await service.GetShelters(0, 0, null, null)).Successful);
+            Assert.False((await service.GetShelters(null, null, 0, 0)).Successful);
         }
 
         [Fact]
