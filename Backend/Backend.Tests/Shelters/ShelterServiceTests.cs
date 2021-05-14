@@ -32,6 +32,28 @@ namespace Backend.Tests.Shelters
         }
 
         [Fact]
+        public async void GetSheltersSuccessfulForRepoSucess()
+        {
+            var repo = new Mock<IShelterRepository>();
+            var account = new Mock<IAccountService>();
+            repo.Setup(o => o.GetShelters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<List<Shelter>, int>()));
+            var service = new ShelterService(repo.Object, account.Object, mapper, logger);
+
+            Assert.True((await service.GetShelters(0, 0, null, null)).Successful);
+        }
+
+        [Fact]
+        public async void GetSheltersFailsForReporError()
+        {
+            var repo = new Mock<IShelterRepository>();
+            var account = new Mock<IAccountService>();
+            repo.Setup(o => o.GetShelters(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<List<Shelter>, int>() { Successful = false }));
+            var service = new ShelterService(repo.Object, account.Object, mapper, logger);
+
+            Assert.False((await service.GetShelters(0, 0, null, null)).Successful);
+        }
+
+        [Fact]
         public async void AddShelterSuccessfulForSuccessfulRepoAndAccountServiceResponse()
         {
             var repo = new Mock<IShelterRepository>();

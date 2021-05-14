@@ -28,7 +28,7 @@ namespace Backend.Tests.LostDogs
         }
 
         [Fact]
-        public async void GetLostDogsSuccessfulForNotNullData()
+        public async void GetLostDogsSuccessfulForRepoSucess()
         {
             var repo = new Mock<ILostDogRepository>();
             var security = new Mock<ISecurityService>();
@@ -39,7 +39,7 @@ namespace Backend.Tests.LostDogs
         }
 
         [Fact]
-        public async void GetLostDogsFailsForNullData()
+        public async void GetLostDogsFailsForReporError()
         {
             var repo = new Mock<ILostDogRepository>();
             var security = new Mock<ISecurityService>();

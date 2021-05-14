@@ -7,6 +7,7 @@ using Backend.Models.Shelters;
 using Backend.Services.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Backend.Services.Shelters
@@ -86,6 +87,15 @@ namespace Backend.Services.Shelters
                     serviceResponse.Message = $"Shelter with id {id} deleted";
             }
 
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(int page, int size, string name = null, string sort = null)
+        {
+            var repoResponse = await shelterRepository.GetShelters(name, sort, page, size);
+            var serviceResponse = mapper.Map<ServiceResponse<List<ShelterDto>, int>>(repoResponse);
+            if (!serviceResponse.Successful)
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
     }
