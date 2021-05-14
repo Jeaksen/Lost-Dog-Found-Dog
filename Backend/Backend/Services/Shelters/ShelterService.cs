@@ -55,6 +55,14 @@ namespace Backend.Services.Shelters
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(string name, string sort, int page, int size)
+        {
+            var repoResponse = await shelterRepository.GetShelters(name, sort, page, size);
+            var serviceResponse = mapper.Map<ServiceResponse<List<ShelterDto>, int>>(repoResponse);
+            if (!serviceResponse.Successful)
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            return serviceResponse;
+        }
 
         public async Task<ServiceResponse<ShelterDto>> GetShelter(int id)
         {
@@ -90,13 +98,5 @@ namespace Backend.Services.Shelters
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(string name, string sort, int page, int size)
-        {
-            var repoResponse = await shelterRepository.GetShelters(name, sort, page, size);
-            var serviceResponse = mapper.Map<ServiceResponse<List<ShelterDto>, int>>(repoResponse);
-            if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-            return serviceResponse;
-        }
     }
 }

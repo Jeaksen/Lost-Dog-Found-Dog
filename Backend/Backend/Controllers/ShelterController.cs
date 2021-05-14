@@ -7,6 +7,7 @@ using Backend.Services.Shelters;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,6 +28,16 @@ namespace Backend.Controllers
             this.mapper = mapper;
         }
 
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> GetShelters([FromQuery] string name, [FromQuery] string sort,
+                                                     [FromQuery] int page = 0, [FromQuery] int size = 10)
+        {
+            var serviceResponse = await shelterService.GetShelters(name, sort, page, size);
+            var controllerResponse = mapper.Map<ControllerResponse<List<ShelterDto>, int>>(serviceResponse);
+
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        }
 
         [HttpGet]
         [Route("{shelterId}")]

@@ -46,21 +46,16 @@ namespace Backend.DataAccess.Shelters
             var response = new RepositoryResponse<List<Shelter>, int>();
             try
             {
+                IOrderedQueryable<Shelter> ordered;
                 var query = dbContext.Shelters.Include(s => s.Address).AsQueryable();
 
                 if (!string.IsNullOrEmpty(name))
                     query = query.Where(s => s.Name.StartsWith(name));
 
-                IOrderedQueryable<Shelter> ordered;
-
-                var she = query.ToList();
-
                 if (!string.IsNullOrEmpty(sort) && sort.Equals("name,desc", StringComparison.InvariantCultureIgnoreCase))
-                    ordered = query.OrderByDescending(s => s.Name.StartsWith(name));
-                else 
+                    ordered = query.OrderByDescending(s => s.Name);
+                else
                     ordered = query.OrderBy(s => s.Name);
-
-                she = ordered.ToList();
 
                 response.Metadata = (int)Math.Ceiling(await ordered.CountAsync() / (double)size);
                 response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
