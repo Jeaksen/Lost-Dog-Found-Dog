@@ -12,7 +12,7 @@ namespace Backend.Services.Shelters
 
         public Task<ServiceResponse<ShelterDto>> GetShelter(int id);
 
-        public Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(int page, int size, string name = null, string sort = null);
+        public Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(string name, string sort, int page, int size);
 
         public Task<ServiceResponse> DeleteShelter(int id);
     }

@@ -90,7 +90,7 @@ namespace Backend.Services.Shelters
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(int page, int size, string name = null, string sort = null)
+        public async Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(string name, string sort, int page, int size)
         {
             var repoResponse = await shelterRepository.GetShelters(name, sort, page, size);
             var serviceResponse = mapper.Map<ServiceResponse<List<ShelterDto>, int>>(repoResponse);
