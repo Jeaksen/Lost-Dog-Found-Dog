@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.DogBase.LostDog
+namespace Backend.Models.Dogs.LostDogs
 {
     public class LostDogFilter
     {
@@ -24,6 +24,8 @@ namespace Backend.Models.DogBase.LostDog
         public string Name { get; set; }
 
         public int? OwnerId { get; set; }
+
+        public bool? IsFound { get; set; }
 
         public LocationFilter Location { get; set; }
 

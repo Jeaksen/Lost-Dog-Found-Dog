@@ -1,11 +1,11 @@
 ﻿using Backend.DTOs.Dogs;
-using Backend.Models.DogBase.LostDog;
+using Backend.Models.Dogs.LostDogs;
 using Backend.Models.Response;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Backend.Services.LostDogService
+namespace Backend.Services.LostDogs
 {
     public interface ILostDogService
     {

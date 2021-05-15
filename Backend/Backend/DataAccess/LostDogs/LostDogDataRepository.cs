@@ -1,5 +1,4 @@
-﻿using Backend.Models.DogBase.LostDog;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,8 +9,9 @@ using DynamicExpressions;
 using System.Reflection;
 using System.Linq.Expressions;
 using Backend.Models.Response;
+using Backend.Models.Dogs.LostDogs;
 
-namespace Backend.DataAccess.Dogs
+namespace Backend.DataAccess.LostDogs
 {
     public class LostDogDataRepository : ILostDogRepository
     {
@@ -30,7 +30,8 @@ namespace Backend.DataAccess.Dogs
             { "City", FilterOperator.StartsWith },
             { "District", FilterOperator.StartsWith },
             { "DateLostBefore", FilterOperator.LessThanOrEqual },
-            { "DateLostAfter", FilterOperator.GreaterThanOrEqual }
+            { "DateLostAfter", FilterOperator.GreaterThanOrEqual },
+            { "IsFound", FilterOperator.Equals }
         };
 
         private static readonly Dictionary<string, string> lostDogPropertyForFilterProperty = new()
@@ -45,7 +46,9 @@ namespace Backend.DataAccess.Dogs
             { "District", "Location.District" },
             { "DateLostBefore", "DateLost" },
             { "DateLostAfter", "DateLost" },
-            { "OwnerId", "OwnerId" }
+            { "OwnerId", "OwnerId" },
+            { "IsFound", "IsFound" }
+
         };
 
         public LostDogDataRepository(ApplicationDbContext dbContext, ILogger<LostDogDataRepository> logger)
@@ -67,7 +70,7 @@ namespace Backend.DataAccess.Dogs
             catch (Exception e)
             {
                 response.Successful = false;
-                response.Message = $"Failed to delete dog: {e.Message} {e.InnerException?.Message}";
+                response.Message = $"Failed to add dog: {e.Message} {e.InnerException?.Message}";
             }
 
             return response;
@@ -120,8 +123,8 @@ namespace Backend.DataAccess.Dogs
                 else
                     ordered = query.OrderByDescending(d => d.DateLost);
 
+                response.Metadata = (int)Math.Ceiling(await ordered.CountAsync() / (double)size);
                 response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
-                response.Metadata = await ordered.CountAsync();
                 response.Message = $"Found {response.Data.Count} Lost Dogs";
             }
             catch (Exception e)

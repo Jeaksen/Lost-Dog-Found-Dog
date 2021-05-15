@@ -1,17 +1,17 @@
-﻿using Backend.Services.LostDogService;
-using Moq;
-using Backend.DataAccess.Dogs;
+﻿using Moq;
 using Xunit;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Backend.Models.DogBase.LostDog;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Backend.DTOs.Dogs;
 using Backend.Services.Security;
 using Backend.Models.Response;
+using Backend.Services.LostDogs;
+using Backend.Models.Dogs.LostDogs;
+using Backend.DataAccess.LostDogs;
 
 namespace Backend.Tests.LostDogs
 {
@@ -28,7 +28,7 @@ namespace Backend.Tests.LostDogs
         }
 
         [Fact]
-        public async void GetLostDogsSuccessfulForNotNullData()
+        public async void GetLostDogsSuccessfulForRepoSucess()
         {
             var repo = new Mock<ILostDogRepository>();
             var security = new Mock<ISecurityService>();
@@ -39,7 +39,7 @@ namespace Backend.Tests.LostDogs
         }
 
         [Fact]
-        public async void GetLostDogsFailsForNullData()
+        public async void GetLostDogsFailsForReporError()
         {
             var repo = new Mock<ILostDogRepository>();
             var security = new Mock<ISecurityService>();

@@ -1,5 +1,6 @@
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
+using Backend.Services.Authentication;
 using System;
 using System.Linq;
 using Xunit;
@@ -10,30 +11,32 @@ namespace Backend.Tests.Accounts
     public class AccountServiceTests
     {
 
-        private static readonly Random random = new ();
-        private readonly DatabaseFixture databaseAuthFixture;
+        private static readonly Random random = new();
         private const string chars = "abcdefghijklmnoprstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         private const int nameLenght = 40;
-
+        public IAccountService accountService;
 
         public AccountServiceTests(DatabaseFixture databaseAuthFixture)
         {
-            this.databaseAuthFixture = databaseAuthFixture;
+            accountService = databaseAuthFixture.AccountService;
         }
 
         private Account GetValidAccount()
         {
             var uname = new string(Enumerable.Range(1, nameLenght).Select(_ => chars[random.Next(chars.Length)]).ToArray());
-            return new Account() { 
-                UserName = uname, 
-                Email = $"{uname}@gmail.com", 
-                PhoneNumber = "222333444" 
+            return new Account()
+            {
+                UserName = uname,
+                Email = $"{uname}@gmail.com",
+                PhoneNumber = "222333444"
             };
         }
 
-        [InlineData("LongSafePas6")]
         [Theory]
-        public async void SucceedForValidUserAndPassword(string password)
+        [InlineData("LongSafePas6", AccountRoles.Regular)]
+        [InlineData("LongSafePas6", AccountRoles.Shelter)]
+        [InlineData("LongSafePas6", AccountRoles.Admin)]
+        public async void CreateAccountSucceedForValidUserAndPassword(string password, string role)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -41,15 +44,16 @@ namespace Backend.Tests.Accounts
                 Name = account.UserName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
-                Password = password
+                Password = password,
+                AccountRole = role
             };
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
         }
 
         [InlineData("Short66")]
         [Theory]
-        public async void FailForForPasswordShorterThanEightDigits(string password)
+        public async void CreateAccountFailForForPasswordShorterThanEightDigits(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -59,13 +63,13 @@ namespace Backend.Tests.Accounts
                 PhoneNumber = account.PhoneNumber,
                 Password = password
             };
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.False(result.Successful);
         }
 
         [InlineData("short666^")]
         [Theory]
-        public async void FailForForPasswordWithoutCapitalLetters(string password)
+        public async void CreateAccountFailForForPasswordWithoutCapitalLetters(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -75,13 +79,13 @@ namespace Backend.Tests.Accounts
                 PhoneNumber = account.PhoneNumber,
                 Password = password
             };
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.False(result.Successful);
         }
 
         [InlineData("Shortttt")]
         [Theory]
-        public async void FailForForPasswordWithoutDigits(string password)
+        public async void CreateAccountFailForForPasswordWithoutDigits(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -91,13 +95,13 @@ namespace Backend.Tests.Accounts
                 PhoneNumber = account.PhoneNumber,
                 Password = password
             };
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.False(result.Successful);
         }
 
         [InlineData("SHORT666")]
         [Theory]
-        public async void FailForForPasswordWithoutSmallLetters(string password)
+        public async void CreateAccountFailForForPasswordWithoutSmallLetters(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -107,13 +111,13 @@ namespace Backend.Tests.Accounts
                 PhoneNumber = account.PhoneNumber,
                 Password = password
             };
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.False(result.Successful);
         }
 
         [InlineData("LongSafePas6")]
         [Theory]
-        public async void FailForCreatingUsersWithTheSameName(string password)
+        public async void CreateAccountFailForCreatingUsersWithTheSameName(string password)
         {
             var account = GetValidAccount();
             var addAccountDto = new AddAccountDto()
@@ -123,8 +127,8 @@ namespace Backend.Tests.Accounts
                 PhoneNumber = account.PhoneNumber,
                 Password = password
             };
-            Assert.True((await databaseAuthFixture.AccountService.AddAccount(addAccountDto)).Successful);
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            Assert.True((await accountService.AddAccount(addAccountDto)).Successful);
+            var result = await accountService.AddAccount(addAccountDto);
 
             Assert.False(result.Successful);
         }
@@ -142,14 +146,14 @@ namespace Backend.Tests.Accounts
                 Password = password
             };
 
-            Assert.True((await databaseAuthFixture.AccountService.AddAccount(addAccountDto)).Successful);
+            Assert.True((await accountService.AddAccount(addAccountDto)).Successful);
             var loginDto = new LoginDto()
             {
                 UserName = account.UserName,
                 Password = password
             };
 
-            Assert.True((await databaseAuthFixture.AccountService.Authenticate(loginDto)).Successful);
+            Assert.True((await accountService.Authenticate(loginDto)).Successful);
         }
 
         [InlineData("LongSafePas6")]
@@ -165,10 +169,10 @@ namespace Backend.Tests.Accounts
                 Password = password
             };
 
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
-            Assert.True((await databaseAuthFixture.AccountService.GetAccountById(result.Data.Id)).Successful);
+            Assert.True((await accountService.GetAccountById(result.Data.Id)).Successful);
         }
 
         [InlineData("LongSafePas6")]
@@ -184,10 +188,10 @@ namespace Backend.Tests.Accounts
                 Password = password
             };
 
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
-            Assert.True((await databaseAuthFixture.AccountService.GetAllAccountsForRole(AccountRoles.Regular)).Data.Count > 0);
+            Assert.True((await accountService.GetAllAccountsForRole(AccountRoles.Regular)).Data.Count > 0);
         }
 
         [Fact]
@@ -202,7 +206,7 @@ namespace Backend.Tests.Accounts
                 Password = "Test123456"
             };
 
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
             var updateAccountDto = new UpdateAccountDto()
@@ -211,7 +215,7 @@ namespace Backend.Tests.Accounts
                 Email = "ab" + account.Email,
                 PhoneNumber = account.PhoneNumber
             };
-            Assert.True((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
+            Assert.True((await accountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
         }
 
         [Fact]
@@ -224,7 +228,7 @@ namespace Backend.Tests.Accounts
                 Email = "ab" + account.Email,
                 PhoneNumber = account.PhoneNumber
             };
-            Assert.False((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, -1)).Successful);
+            Assert.False((await accountService.UpdateAccount(updateAccountDto, -1)).Successful);
         }
 
         [Fact]
@@ -239,10 +243,10 @@ namespace Backend.Tests.Accounts
                 Password = "Test123456"
             };
 
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
-            var existingUsername = account.UserName; 
+            var existingUsername = account.UserName;
             account = GetValidAccount();
             addAccountDto = new AddAccountDto()
             {
@@ -252,7 +256,7 @@ namespace Backend.Tests.Accounts
                 Password = "Test123456"
             };
 
-            result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
             var updateAccountDto = new UpdateAccountDto()
@@ -261,7 +265,7 @@ namespace Backend.Tests.Accounts
                 Email = "ac" + account.Email,
                 PhoneNumber = account.PhoneNumber
             };
-            Assert.False((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
+            Assert.False((await accountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
         }
 
         [Fact]
@@ -276,7 +280,7 @@ namespace Backend.Tests.Accounts
                 Password = "Test123456"
             };
 
-            var result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            var result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
             var existingEmail = account.Email;
@@ -289,7 +293,7 @@ namespace Backend.Tests.Accounts
                 Password = "Test123456"
             };
 
-            result = await databaseAuthFixture.AccountService.AddAccount(addAccountDto);
+            result = await accountService.AddAccount(addAccountDto);
             Assert.True(result.Successful);
 
             var updateAccountDto = new UpdateAccountDto()
@@ -298,7 +302,80 @@ namespace Backend.Tests.Accounts
                 Email = existingEmail,
                 PhoneNumber = account.PhoneNumber
             };
-            Assert.False((await databaseAuthFixture.AccountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
+            Assert.False((await accountService.UpdateAccount(updateAccountDto, result.Data.Id)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteAccountByIdSuccessForExistingAccount()
+        {
+            var account = GetValidAccount();
+            var addAccountDto = new AddAccountDto()
+            {
+                Name = account.UserName + "a",
+                Email = "ab" + account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "LongSafePas6"
+            };
+            var addResult = await accountService.AddAccount(addAccountDto);
+            Assert.True(addResult.Successful);
+
+            Assert.True((await accountService.DeleteAccount(id: addResult.Data.Id)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteAccountByIdFailsForNotExistingAccount()
+        {
+            Assert.False((await accountService.DeleteAccount(id: -1)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteAccountByUsernameSuccessForExistingAccount()
+        {
+            var account = GetValidAccount();
+            var addAccountDto = new AddAccountDto()
+            {
+                Name = account.UserName + "a",
+                Email = "ab" + account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "LongSafePas6"
+            };
+            var addResult = await accountService.AddAccount(addAccountDto);
+            Assert.True(addResult.Successful);
+
+            Assert.True((await accountService.DeleteAccount(username: addResult.Data.Name)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteAccountByUsernameFailsForNotExistingAccount()
+        {
+            var account = GetValidAccount();
+
+            Assert.False((await accountService.DeleteAccount(username: account.UserName)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteAccountByEmailSuccessForExistingAccount()
+        {
+            var account = GetValidAccount();
+            var addAccountDto = new AddAccountDto()
+            {
+                Name = account.UserName + "a",
+                Email = "ab" + account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Password = "LongSafePas6"
+            };
+            var addResult = await accountService.AddAccount(addAccountDto);
+            Assert.True(addResult.Successful);
+
+            Assert.True((await accountService.DeleteAccount(email: addResult.Data.Email)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteAccountByEmaildFailsForNotExistingAccount()
+        {
+            var account = GetValidAccount();
+
+            Assert.False((await accountService.DeleteAccount(email: account.Email)).Successful);
         }
     }
 }

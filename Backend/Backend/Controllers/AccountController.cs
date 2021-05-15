@@ -2,10 +2,9 @@
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
 using Backend.Models.Response;
-using Backend.Services.AuthenticationService;
+using Backend.Services.Authentication;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,7 +30,7 @@ namespace Backend.Controllers
         [HttpPost]
         [Route("register")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddAccount([FromForm][Required] string username,
+        public async Task<IActionResult> AddRegularAccount([FromForm][Required] string username,
                                                     [FromForm][Required] string password,
                                                     [FromForm][Required] string phone_number,
                                                     [FromForm][Required] string email)
@@ -41,7 +40,8 @@ namespace Backend.Controllers
                 Name = username,
                 Password = password,
                 PhoneNumber = phone_number,
-                Email = email
+                Email = email,
+                AccountRole = AccountRoles.Regular
             };
             var serviceResponse = await accountService.AddAccount(_account);
             var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);

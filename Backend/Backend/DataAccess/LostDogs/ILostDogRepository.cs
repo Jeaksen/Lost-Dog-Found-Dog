@@ -1,9 +1,9 @@
-﻿using Backend.Models.DogBase.LostDog;
+﻿using Backend.Models.Dogs.LostDogs;
 using Backend.Models.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Backend.DataAccess.Dogs
+namespace Backend.DataAccess.LostDogs
 {
     public interface ILostDogRepository
     {

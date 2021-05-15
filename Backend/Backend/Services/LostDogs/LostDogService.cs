@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Backend.DataAccess.Dogs;
+using Backend.DataAccess.LostDogs;
 using Backend.DTOs.Dogs;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
+using Backend.Models.Dogs;
+using Backend.Models.Dogs.LostDogs;
 using Backend.Models.Response;
 using Backend.Services.Security;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Backend.Services.LostDogService
+namespace Backend.Services.LostDogs
 {
     public class LostDogService : ILostDogService
     {
@@ -31,7 +31,7 @@ namespace Backend.Services.LostDogService
         public async Task<ServiceResponse<GetLostDogDto>> AddLostDog(UploadLostDogDto lostDogDto, IFormFile picture)
         {
             var serviceResponse = new ServiceResponse<GetLostDogDto>();
-            LostDog lostDog = mapper.Map<LostDog>(lostDogDto);
+            var lostDog = mapper.Map<LostDog>(lostDogDto);
             byte[] data;
 
             if (picture is null)

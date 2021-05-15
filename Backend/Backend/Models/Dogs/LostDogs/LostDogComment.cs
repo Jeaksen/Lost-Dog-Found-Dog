@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Backend.Models.DogBase.LostDog
+namespace Backend.Models.Dogs.LostDogs
 {
     public class LostDogComment
     {

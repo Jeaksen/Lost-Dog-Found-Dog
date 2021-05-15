@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Backend.Models.Shelters;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,5 +19,9 @@ namespace Backend.Models.Authentication
 
         [Required]
         public override string Email { get; set; }
+
+        public int? ShelterId { get; set; }
+
+        public Shelter Shelter { get; set; }
     }
 }

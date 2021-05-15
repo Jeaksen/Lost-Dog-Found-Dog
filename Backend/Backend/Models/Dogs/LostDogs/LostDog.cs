@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Backend.Models.DogBase.LostDog
+namespace Backend.Models.Dogs.LostDogs
 {
     public class LostDog : Dog
     {
