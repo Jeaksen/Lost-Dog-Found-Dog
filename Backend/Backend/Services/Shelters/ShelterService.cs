@@ -30,7 +30,7 @@ namespace Backend.Services.Shelters
         public async Task<ServiceResponse<ShelterDto, GetAccountDto>> AddShelter(ShelterDto shelterDto)
         {
             var shelter = mapper.Map<Shelter>(shelterDto);
-
+            shelter.IsApproved = true;
             var addShelterResult = await shelterRepository.AddShelter(shelter);
             var serviceResponse = mapper.Map<RepositoryResponse<Shelter>, ServiceResponse<ShelterDto, GetAccountDto>>(addShelterResult);
             if (addShelterResult.Successful)
