@@ -13,9 +13,11 @@ import UserHome from './UserHome'
 import FoundDog from './FoundDog';
 import {Backend_Switch} from './Helpers/Backend'
 import LoadingPage from './Helpers/LoadingPage'
+import FilteredDogList from './FilteredDogList'
+
 
 const {width, height} = Dimensions.get("screen")
-const speed=350;
+const speed=250;
 const delta=100;
 var pos_Left=-delta;
 var pos_right=delta;
@@ -30,6 +32,8 @@ const Headers=[
   /*5 DogDetailed page */[{id: "1",title: "logout",},{id: "6",title: "User",},{id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
   /*6 User Home page */[{id: "1",title: "logout",},{id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
   /*7 Found Dog Page */[{id: "1",title: "logout",},{id: "6",title: "User",},{id: "7",title: "FoundDog",}],
+  /*8 Filtered Dog List */[{id: "1",title: "logout",},{id: "6",title: "User",},{id: "7",title: "FoundDog",}],
+
 ]
 
 export default class Navigator extends React.Component {
@@ -57,6 +61,7 @@ export default class Navigator extends React.Component {
     {
       super(props);
       this.HeaderRef = React.createRef();
+      this.LoadingRef = React.createRef();
     }
     //Keyboard:
     componentDidMount() {
@@ -85,6 +90,7 @@ loadingSwitch =(mode) =>
 {
   if (mode==true)
   {
+    this.LoadingRef.current.runAnim()
     Animated.timing(this.state.loadAnim,{toValue:  1,duration: speed,useNativeDriver: true}).start()
   }
   else
@@ -206,6 +212,10 @@ ViewContent = (indx,item)=>{
   {
     return (<FoundDog Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
   }
+  else if(indx==8)
+  {
+    return (<FilteredDogList Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
 }
 render(){
     const switchAnim={
@@ -217,6 +227,7 @@ render(){
       opacity: this.state.fadeAnim,
   };
   const loadAnim={
+   // opacity: 1,
     opacity: this.state.loadAnim,
   }
     var _headerHeight = 3*height/20;
@@ -227,7 +238,7 @@ render(){
           <View style={styles.pageContainer}>
             {this.ViewContent(this.state.currentViewID, this.state.currentViewItem)}
             <Animated.View style={[{marginTop: -0.8*width},loadAnim]}>
-                <LoadingPage/>
+                <LoadingPage ref={this.LoadingRef}/>
             </Animated.View>
           </View>
         </Animated.View>

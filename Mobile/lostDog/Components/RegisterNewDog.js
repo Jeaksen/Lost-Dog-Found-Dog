@@ -71,23 +71,25 @@ export default class RegisterNewDog extends React.Component {
     };
 
     var dog={
-      breed: "dogdog",
-      age: "5",
-      size: "Large, very large",
-      color: "Orange but a bit yellow and green dots",
-      specialMark: "tattoo of you on the neck",
-      name: "Cat",
-      hairLength: "Long",
-      tailLength: "None",
-      earsType: "Big",
-      behaviors: ["Angry","Sad"],
+      breed: this.state.breed,
+      age: this.state.age,
+      size: this.state.size,
+      color: this.state.color,
+      specialMark: this.state.specialMark,
+      name: this.state.name,
+      hairLength: this.state.hairLength,
+      tailLength: this.state.tailLength,
+      earsType: this.state.earsType,
+      behaviors: [this.state.behaviour1,this.state.behaviour2],
       location: {
-        city:"Biała",
-        district:"Small"
+        city:this.state.LocationCity,
+        district: this.state.LocationDistinct
       },
-      dateLost: "2021-03-20",
-      ownerId: "1"
+      dateLost: this.state.dateLost,
+      ownerId: this.props.Navi.id
     }
+    console.log("DOG :::::")
+    console.log(dog)
     const data = new FormData();
     data.append("dog",JSON.stringify(dog));
     data.append('picture', photo);    
@@ -96,6 +98,7 @@ export default class RegisterNewDog extends React.Component {
     this.props.Navi.RunOnBackend("registerNewDog",data).then((responseData)=>{
       //console.log(responseData)
       console.log("succes new dog added !")
+      this.props.Navi.swtichPage(3,null);
     }).catch((x)=>
         console.log("Login Error" + (x))
       )

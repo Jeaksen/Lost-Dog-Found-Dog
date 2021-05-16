@@ -15,7 +15,7 @@ export default class DogDetails extends React.Component {
 
   SetDogAsFound=(id)=>{
     var token = 'Bearer ' + this.props.token 
-    console.log("SetDogAsFound" + token + " id: " + this.props.item.id)
+    //console.log("SetDogAsFound" + token + " id: " + this.props.item.id)
     fetch(this.props.Navi.URL + 'lostdogs/'+this.props.item.id+'/found', {
         method: 'PUT', 
         headers: {
@@ -38,7 +38,7 @@ export default class DogDetails extends React.Component {
       .then(responseData => {
         if (responseData != null) 
         {
-          console.log("Succedd"+ responseData)
+          console.log("Succedd")
         }
         else{
           this.PutDataFailed()
