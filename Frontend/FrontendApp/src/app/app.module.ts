@@ -11,6 +11,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from  '@angular/material/core';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,6 +30,7 @@ import { JwtInterceptor } from './helpers/jwt-interceptor';
 import { RegisterUserComponent } from './Components/register-user/register-user.component';
 import { EditLostDogComponent } from './Components/edit-lost-dog/edit-lost-dog.component';
 import { EditContactInfoComponent } from './Components/edit-contact-info/edit-contact-info.component';
+import { FilterLostDogsComponent } from './Components/filter-lost-dogs/filter-lost-dogs.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,8 @@ import { EditContactInfoComponent } from './Components/edit-contact-info/edit-co
     FooterComponent,
     RegisterUserComponent,
     EditLostDogComponent,
-    EditContactInfoComponent
+    EditContactInfoComponent,
+    FilterLostDogsComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +62,8 @@ import { EditContactInfoComponent } from './Components/edit-contact-info/edit-co
     MatListModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatRadioModule,
+    MatPaginatorModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -74,6 +80,8 @@ import { EditContactInfoComponent } from './Components/edit-contact-info/edit-co
     MatListModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatRadioModule,
+    MatPaginatorModule,
   ]
 })
 export class AppModule { }

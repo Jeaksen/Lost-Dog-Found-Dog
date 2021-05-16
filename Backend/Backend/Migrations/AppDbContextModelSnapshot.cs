@@ -69,6 +69,9 @@ namespace Backend.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ShelterId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -86,10 +89,14 @@ namespace Backend.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("ShelterId")
+                        .IsUnique()
+                        .HasFilter("[ShelterId] IS NOT NULL");
+
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.Dog", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.Dog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,7 +163,7 @@ namespace Backend.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Dog");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.DogBehavior", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.DogBehavior", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -178,7 +185,7 @@ namespace Backend.Migrations
                     b.ToTable("DogBehaviors");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.Location", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.Location", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -200,7 +207,7 @@ namespace Backend.Migrations
                     b.ToTable("Locations");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDogComment", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.LostDogs.LostDogComment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -236,7 +243,7 @@ namespace Backend.Migrations
                     b.ToTable("LostDogComments");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.Picture", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.Picture", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -260,6 +267,83 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Pictures");
+                });
+
+            modelBuilder.Entity("Backend.Models.Shelters.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AdditionalAddressLine")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("BuildingNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PostCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("Backend.Models.Shelters.Shelter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Shelters");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -392,9 +476,9 @@ namespace Backend.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDog", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.LostDogs.LostDog", b =>
                 {
-                    b.HasBaseType("Backend.Models.DogBase.Dog");
+                    b.HasBaseType("Backend.Models.Dogs.Dog");
 
                     b.Property<DateTime>("DateLost")
                         .HasColumnType("datetime2");
@@ -415,35 +499,46 @@ namespace Backend.Migrations
                     b.HasDiscriminator().HasValue("LostDog");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.ShelterDog.ShelterDog", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.ShelterDogs.ShelterDog", b =>
                 {
-                    b.HasBaseType("Backend.Models.DogBase.Dog");
+                    b.HasBaseType("Backend.Models.Dogs.Dog");
 
                     b.Property<int>("ShelterId")
                         .HasColumnType("int");
 
+                    b.HasIndex("ShelterId");
+
                     b.HasDiscriminator().HasValue("ShelterDog");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.Dog", b =>
+            modelBuilder.Entity("Backend.Models.Authentication.Account", b =>
                 {
-                    b.HasOne("Backend.Models.DogBase.Picture", "Picture")
+                    b.HasOne("Backend.Models.Shelters.Shelter", "Shelter")
+                        .WithOne()
+                        .HasForeignKey("Backend.Models.Authentication.Account", "ShelterId");
+
+                    b.Navigation("Shelter");
+                });
+
+            modelBuilder.Entity("Backend.Models.Dogs.Dog", b =>
+                {
+                    b.HasOne("Backend.Models.Dogs.Picture", "Picture")
                         .WithMany()
                         .HasForeignKey("PictureId");
 
                     b.Navigation("Picture");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.DogBehavior", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.DogBehavior", b =>
                 {
-                    b.HasOne("Backend.Models.DogBase.Dog", null)
+                    b.HasOne("Backend.Models.Dogs.Dog", null)
                         .WithMany("Behaviors")
                         .HasForeignKey("DogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDogComment", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.LostDogs.LostDogComment", b =>
                 {
                     b.HasOne("Backend.Models.Authentication.Account", "Author")
                         .WithMany()
@@ -451,17 +546,28 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.DogBase.LostDog.LostDog", null)
+                    b.HasOne("Backend.Models.Dogs.LostDogs.LostDog", null)
                         .WithMany("Comments")
                         .HasForeignKey("LostDogId");
 
-                    b.HasOne("Backend.Models.DogBase.Picture", "Picture")
+                    b.HasOne("Backend.Models.Dogs.Picture", "Picture")
                         .WithMany()
                         .HasForeignKey("PictureId");
 
                     b.Navigation("Author");
 
                     b.Navigation("Picture");
+                });
+
+            modelBuilder.Entity("Backend.Models.Shelters.Shelter", b =>
+                {
+                    b.HasOne("Backend.Models.Shelters.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -515,9 +621,9 @@ namespace Backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDog", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.LostDogs.LostDog", b =>
                 {
-                    b.HasOne("Backend.Models.DogBase.Location", "Location")
+                    b.HasOne("Backend.Models.Dogs.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
 
@@ -532,12 +638,23 @@ namespace Backend.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.Dog", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.ShelterDogs.ShelterDog", b =>
+                {
+                    b.HasOne("Backend.Models.Shelters.Shelter", "Shelter")
+                        .WithMany()
+                        .HasForeignKey("ShelterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shelter");
+                });
+
+            modelBuilder.Entity("Backend.Models.Dogs.Dog", b =>
                 {
                     b.Navigation("Behaviors");
                 });
 
-            modelBuilder.Entity("Backend.Models.DogBase.LostDog.LostDog", b =>
+            modelBuilder.Entity("Backend.Models.Dogs.LostDogs.LostDog", b =>
                 {
                     b.Navigation("Comments");
                 });

@@ -1,7 +1,8 @@
 ﻿using Backend.Models.Authentication;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
-using Backend.Models.DogBase.ShelterDog;
+using Backend.Models.Dogs;
+using Backend.Models.Dogs.LostDogs;
+using Backend.Models.Dogs.ShelterDogs;
+using Backend.Models.Shelters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,8 @@ namespace Backend.DataAccess
         public DbSet<Location> Locations { get; set; }
         public DbSet<Picture> Pictures { get; set; }
         public DbSet<DogBehavior> DogBehaviors { get; set; }
+        public DbSet<Shelter> Shelters { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
@@ -27,6 +30,10 @@ namespace Backend.DataAccess
             builder.Entity<Dog>()
                 .Property("Discriminator")
                 .HasMaxLength(50);
+            builder.Entity<Shelter>().Property(s => s.AddressId).IsRequired(true);
+            builder.Entity<Shelter>().HasIndex(s => s.Name).IsUnique(true);
+            builder.Entity<Shelter>().HasIndex(s => s.Email).IsUnique(true);
+            builder.Entity<Account>().HasOne(a => a.Shelter).WithOne().HasForeignKey<Account>(a => a.ShelterId).IsRequired(false);
         }
 
     }

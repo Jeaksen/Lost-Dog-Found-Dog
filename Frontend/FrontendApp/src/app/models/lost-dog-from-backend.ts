@@ -1,4 +1,3 @@
-import { Behavior } from 'src/app/models/behavior';
 import { Location } from './location'
 import { Picture } from 'src/app/models/picture';
 
@@ -13,7 +12,7 @@ export interface LostDogFromBackend {
     hairLength: string;
     earsType: string;
     tailLength: string;
-    behaviors: Behavior[];
+    behaviors: string[];
     ownerId?: number;
     location: Location;
     dateLost: string;

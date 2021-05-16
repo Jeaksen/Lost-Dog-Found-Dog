@@ -1,8 +1,5 @@
 using Backend.DataAccess;
-using Backend.DataAccess.Dogs;
 using Backend.Models.Authentication;
-using Backend.Services.AuthenticationService;
-using Backend.Services.LostDogService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -23,7 +20,11 @@ using System.Text.Json.Serialization;
 using System.Globalization;
 using Backend.Services.Security;
 using Backend.Models.Response;
-using Microsoft.AspNetCore.Authorization;
+using Backend.DataAccess.LostDogs;
+using Backend.Services.Authentication;
+using Backend.Services.LostDogs;
+using Backend.DataAccess.Shelters;
+using Backend.Services.Shelters;
 
 namespace Backend
 {
@@ -83,6 +84,8 @@ namespace Backend
             services.AddScoped<ILostDogRepository, LostDogDataRepository>();
             services.AddScoped<ILostDogService, LostDogService>();
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IShelterRepository, ShelterDataRepository>();
+            services.AddScoped<IShelterService, ShelterService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddIdentity<Account, IdentityRole<int>>(options =>
             {

@@ -1,6 +1,6 @@
-﻿using Backend.DataAccess.Dogs;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
+﻿using Backend.DataAccess.LostDogs;
+using Backend.Models.Dogs;
+using Backend.Models.Dogs.LostDogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -255,7 +255,6 @@ namespace Backend.Tests.LostDogs
             lostDog.Breed = null;
             Assert.False((await lostDogRepository.UpdateLostDog(lostDog)).Successful);
         }
-
 
         [Fact]
         public async void GetLostDogSortsProperly()

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Backend.DTOs.Dogs;
 using Backend.Models.Authentication;
-using Backend.Models.DogBase.LostDog;
+using Backend.Models.Dogs.LostDogs;
 using Backend.Models.Response;
-using Backend.Services.LostDogService;
+using Backend.Services.LostDogs;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
-
     [Authorize(Roles = AccountRoles.Regular)]
     [Route("/lostdogs/")]
     [ApiController]
@@ -30,13 +29,12 @@ namespace Backend.Controllers
             this.mapper = mapper;
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetLostDogs([FromQuery(Name = "filter")] LostDogFilter filter, [FromQuery] string sort, 
-                                                     [FromQuery] int page = 1, [FromQuery] int size = 10)
+                                                     [FromQuery] int page = 0, [FromQuery] int size = 10)
         {
             var serviceResponse = await lostDogService.GetLostDogs(filter, sort, page, size);
-            var controllerResponse = mapper.Map<ServiceResponse<List<LostDog>, int>, ControllerResponse<List<LostDog>, int>>(serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<List<GetLostDogDto>, int>, ControllerResponse<List<GetLostDogDto>, int>>(serviceResponse);
 
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
@@ -47,7 +45,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetLostDogDetails(int dogId)
         {
             var serviceResponse = await lostDogService.GetLostDogDetails(dogId);
-            var controllerResponse = mapper.Map<ServiceResponse<LostDog>, ControllerResponse<LostDog>>(serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
 
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
@@ -55,7 +53,7 @@ namespace Backend.Controllers
         [HttpPut]
         [Route("{dogId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] [FromForm] UpdateLostDogDto dog,
+        public async Task<IActionResult> UpdateLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] [FromForm] UploadLostDogDto dog,
                                                        IFormFile picture,
                                                        [FromRoute] int dogId)
         {
@@ -67,7 +65,7 @@ namespace Backend.Controllers
             {
                 dog.OwnerId = response.Data.OwnerId;
                 var serviceResponse = await lostDogService.UpdateLostDog(dog, picture, dogId);
-                var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+                var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
                 return StatusCode(serviceResponse.StatusCode, controllerResponse);
             }
 
@@ -81,7 +79,7 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] AddLostDogDto dog,
+        public async Task<IActionResult> AddLostDog([ModelBinder(BinderType = typeof(JsonModelBinder))] UploadLostDogDto dog,
                                                     IFormFile picture)
         {
             if (picture is null)
@@ -93,7 +91,7 @@ namespace Backend.Controllers
             dog.OwnerId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
 
             var serviceResponse = await lostDogService.AddLostDog(dog, picture);
-            var controllerResponse = mapper.Map<ServiceResponse<LostDog>, ControllerResponse<LostDog>>(serviceResponse);
+            var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
 
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
@@ -103,9 +101,22 @@ namespace Backend.Controllers
         [Route("{dogId}/found")]
         public async Task<IActionResult> MarkLostDogAsFound(int dogId)
         {
-            var serviceResponse = await lostDogService.MarkLostDogAsFound(dogId);
-            var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
-            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+            var savedDogResponse = await lostDogService.GetLostDogDetails(dogId);
+            if (savedDogResponse.Data == null)
+                return StatusCode(savedDogResponse.StatusCode, mapper.Map<ControllerResponse<GetLostDogDto>>(savedDogResponse));
+
+            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDogResponse.Data.OwnerId.ToString())
+            {
+                var serviceResponse = await lostDogService.MarkLostDogAsFound(dogId);
+                var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+                return StatusCode(serviceResponse.StatusCode, controllerResponse);
+            }
+            else
+                return Unauthorized(new ControllerResponse()
+                {
+                    Message = "Attempted to mark as found a dog which is not owned by the user!",
+                    Successful = false
+                });
         }
 
 
@@ -113,18 +124,25 @@ namespace Backend.Controllers
         [Route("{dogId}")]
         public async Task<IActionResult> DeleteLostDog(int dogId)
         {
-            var serviceResponse = await lostDogService.DeleteLostDog(dogId);
-            var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
-            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+            var savedDogResponse = await lostDogService.GetLostDogDetails(dogId);
+            if (savedDogResponse.Data == null)
+                return StatusCode(savedDogResponse.StatusCode, mapper.Map<ControllerResponse<GetLostDogDto>>(savedDogResponse));
+
+            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDogResponse.Data.OwnerId.ToString())
+            {
+                var serviceResponse = await lostDogService.DeleteLostDog(dogId);
+                var controllerResponse = mapper.Map<ServiceResponse, ControllerResponse>(serviceResponse);
+                return StatusCode(serviceResponse.StatusCode, controllerResponse);
+            }
+            else
+                return Unauthorized(new ControllerResponse()
+                {
+                    Message = "Attempted to delete a dog which is not owned by the user!",
+                    Successful = false
+                });
+
         }
 
-        //[HttpGet]
-        //[Route]
-        //public async Task<IActionResult> GetUserLostDogs(int ownerId)
-        //{
-        //    var serviceResponse = await _lostDogService.GetUserLostDogs(ownerId);
-        //    return StatusCode(serviceResponse.StatusCode, serviceResponse);
-        //}
         //[HttpPost]
         //[Route("{}/comment")]
         //public async Task<IActionResult> AddLostDogComment(AddLostDogCommentDto commentDto)

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Backend.DataAccess;
-using Backend.DataAccess.Dogs;
+using Backend.DataAccess.LostDogs;
+using Backend.DataAccess.Shelters;
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
-using Backend.Models.DogBase;
-using Backend.Models.DogBase.LostDog;
-using Backend.Services.AuthenticationService;
+using Backend.Models.Dogs;
+using Backend.Models.Dogs.LostDogs;
+using Backend.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace Backend.Tests
 
         public IAccountService AccountService => new AccountService(UserManager, RoleManager, configuration, Mapper, LoggerFactory.CreateLogger<AccountService>());
         public ILostDogRepository LostDogRepository => new LostDogDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<LostDogDataRepository>());
-
+        public IShelterRepository ShelterRepository => new ShelterDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<ShelterDataRepository>());
 
         public DatabaseFixture()
         {
@@ -108,7 +109,8 @@ namespace Backend.Tests
                 Name = "bob",
                 Email = "bob@gmail.com",
                 PhoneNumber = "222333444",
-                Password = "SafePass66"
+                Password = "SafePass66",
+                AccountRole = AccountRoles.Regular
             };
             if (!AccountService.AddAccount(account).Result.Successful)
                 throw new ApplicationException("Could not seed the database with a user");
