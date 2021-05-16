@@ -7,6 +7,7 @@ import newDog from '../../Assets/newdog.png'
 import found from '../../Assets/found.png'
 import userIcon from '../../Assets/animal-care.png'
 import logout from '../../Assets/logout.png'
+import shelter from '../../Assets/animal-shelter.png'
 
 const {width, height} = Dimensions.get("screen")
 var size=100
@@ -19,6 +20,7 @@ const Icons=[
   {text: "Add Dog", icon: newDog},
   {text: "User", icon: userIcon},
   {text: "logout", icon: logout},
+  {text: "Shelters", icon: shelter},
 ]
 
 export default class HeaderItem extends React.Component {

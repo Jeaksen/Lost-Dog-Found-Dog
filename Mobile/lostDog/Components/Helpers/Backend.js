@@ -35,6 +35,11 @@ export const Backend_Switch =(FunName,Data,Token,Id)=>
                 .catch((x)=> {reject(x)})
                 .then((x)=>  {resolve(x)})
                 break;
+            case "getShelterList":
+                getShelterList(Data,URL,Token,Id)
+                .catch((x)=> {reject(x)})
+                .then((x)=>  {resolve(x)})
+                break;
         }
     });
 }
@@ -153,7 +158,6 @@ const registerNewDog = (data,url,Token) =>
       });
 }
 
-
 const getDogList = (data,url,Token,id) =>
 {
     console.log("getDogList")
@@ -245,6 +249,46 @@ const getFilteredDogList = (data,url,Token,id) =>
     console.log(newUrl)
     return new Promise((resolve, reject) => {
         fetch(newUrl, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'Authorization': Token,
+            },
+            })
+            .then(response=>{
+                //console.log(response)
+                return response.json();
+            })
+            .then(responseData => {
+                if (responseData.statusCode >= 400) {
+                    console.log("ERROR")  
+                    //console.log(responseData)  
+                    reject(response.statusCode)
+                    return null;
+                }
+                else
+                {
+                    //console.log("THEN RESOLVE")
+                    resolve(responseData.data)
+                    return (responseData.data);
+                }
+                })
+            .catch((x)=>{
+                console.log("CATCH REJECT")
+                reject(null)
+                return null;
+            })
+      });
+}
+
+const getShelterList = (data,url,Token,id) =>
+{
+    console.log("getDogList")
+    console.log("data: ")
+    //console.log(data)
+    return new Promise((resolve, reject) => {
+        fetch(url+ 'shelters', {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',

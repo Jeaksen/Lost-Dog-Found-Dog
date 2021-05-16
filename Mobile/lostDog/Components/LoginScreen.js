@@ -8,7 +8,7 @@ const {width, height} = Dimensions.get("screen")
 export default class LoginScreen extends React.Component {
 
   state={
-    login: "popo",
+    login: "popopo",
     password: "SafePass66",
     loadingState: false,
   }
@@ -27,47 +27,6 @@ export default class LoginScreen extends React.Component {
         console.log("Login Error" + (x))
       )
     return 0;
-
-    var name = this.state.login;
-    var pass = this.state.password;
-    console.log("login: "+ name + " password: "+ pass);
-
-    this.setState({loadingState: true})
-    try{
-      fetch(this.props.Navi.URL + 'login', {
-        method: 'POST', 
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': '*/*'
-        },
-        body: JSON.stringify({userName: name, password: pass})
-    })
-    .then(response => {
-      if (response.status == 404 || response.status == 401) {
-          return null;
-      }
-      else if (response.status == 200) {
-          return response.json();
-        }
-      else{
-        return null;
-      }
-      })
-      .then(responseData => {
-        if (responseData != null) 
-        {
-          console.log(" SUCCESS !")
-          this.props.Navi.setToken(responseData.data.token,responseData.data.id);
-          this.props.Navi.swtichPage(6);
-        } 
-        else this.FailedLogin();
-      })
-      .catch(()=> this.FailedLogin())
-      .finally(()=>console.log("LOADING ENDED"))
-    }
-    catch{
-      FailedLogin();
-    }
   }
 
   FailedLogin = () => {

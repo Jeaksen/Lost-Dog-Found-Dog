@@ -115,7 +115,7 @@ export default class DogDetails extends React.Component {
             <Text style={styles.infoText}>hairLength: {this.props.item.hairLength}</Text>
             <Text style={styles.infoText}>earsType: {this.props.item.earsType}</Text>
             <Text style={styles.infoText}>tailLength: {this.props.item.tailLength}</Text>
-            <Text style={styles.infoText}>behaviors: {this.props.item.hairLength}</Text>
+            <Text style={styles.infoText}>behaviors:</Text>
             {
               this.props.item.behaviors.map((e)=>{<Text style={styles.infoText}>e.behvaior</Text>})
             }

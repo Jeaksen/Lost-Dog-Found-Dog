@@ -20,6 +20,7 @@ export default class LoadingPage extends React.Component {
   }
   runAnim () 
   {
+    /*
    setTimeout(()=>{this.setState({ CurrentFrame: RunFrame1 })},1 * speed);
    setTimeout(()=>{this.setState({ CurrentFrame: RunFrame2 })},3 * speed);
    setTimeout(()=>{this.setState({ CurrentFrame: RunFrame3 })},5 * speed);
@@ -27,6 +28,7 @@ export default class LoadingPage extends React.Component {
    setTimeout(()=>{this.setState({ CurrentFrame: RunFrame3 })},9 * speed);
    setTimeout(()=>{this.setState({ CurrentFrame: RunFrame2 })},10 * speed);
    setTimeout(()=>{this.setState({ CurrentFrame: RunFrame1 })},12 * speed);
+   */
 
   }
 
