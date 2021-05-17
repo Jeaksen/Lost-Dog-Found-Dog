@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { UserType } from 'src/app/models/user-type.enum';
 import { AuthenticationService } from 'src/app/services/authentication-service';
 
 @Component({
@@ -14,20 +15,20 @@ export class LoginComponent implements OnInit {
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required])
   });
-  returnUrl: string = '/home';
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
-    private authenticationService: AuthenticationService) {
-      if (this.authenticationService.loggedIn) { 
+    private authenticationService: AuthenticationService) { }
+
+  ngOnInit(): void {
+    if (this.authenticationService.loggedIn) {
+      if (localStorage.getItem('userType') == UserType.Shelter) {
+        this.router.navigate(['/shelter-employee-home']);
+      }
+      else if (localStorage.getItem('userType') == UserType.Regular) {
         this.router.navigate(['/home']);
       }
     }
-
-  ngOnInit(): void {
-    // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
   }
 
   private constructLoginForm(): FormData {
@@ -41,8 +42,13 @@ export class LoginComponent implements OnInit {
     this.authenticationService.login(this.constructLoginForm())
       .pipe(first())
       .subscribe(
-        data => {
-          this.router.navigate([this.returnUrl]);
+        response => {
+          if (response.data.userType == UserType.Shelter) {
+            this.router.navigate(['/shelter-employee-home']);
+          }
+          else if (localStorage.getItem('userType') == UserType.Regular) {
+            this.router.navigate(['/home']);
+          }
         },
         error => {
 
