@@ -24,7 +24,7 @@ export class SheltersService {
         return this.http.get<GetSheltersResponse>(this.url + 'shelters')
             .pipe(
                 tap(_ => {
-                    this.log('fetched lost dogs');
+                    this.log('fetched shelter dogs');
                     console.log(_);
                 }),
                 catchError(this.handleError<GetSheltersResponse>('getAllShelters', undefined))
