@@ -26,7 +26,7 @@ export class AuthenticationService {
             .pipe(map(response => {
                 localStorage.setItem('authToken', response.data.token);
                 localStorage.setItem('userId', response.data.id.toString());
-                console.log(response)
+                localStorage.setItem('userType', response.data.userType);
                 return response;
             }));
     }

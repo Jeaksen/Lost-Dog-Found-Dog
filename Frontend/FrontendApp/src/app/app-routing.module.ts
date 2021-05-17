@@ -8,6 +8,7 @@ import { EditLostDogComponent } from './Components/edit-lost-dog/edit-lost-dog.c
 import { EditContactInfoComponent } from './Components/edit-contact-info/edit-contact-info.component';
 import { FilterLostDogsComponent } from './Components/filter-lost-dogs/filter-lost-dogs.component';
 import { SeeSheltersListComponent } from './Components/see-shelters-list/see-shelters-list.component';
+import { ShelterEmployeeHomePageComponent } from './Components/shelter-employee-home-page/shelter-employee-home-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'edit-contact-info', component: EditContactInfoComponent },
   { path: 'search', component: FilterLostDogsComponent },
   { path: 'shelters-list', component: SeeSheltersListComponent },
+  { path: 'shelter-employee-home', component: ShelterEmployeeHomePageComponent },
 ];
 
 @NgModule({
