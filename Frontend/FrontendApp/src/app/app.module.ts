@@ -33,6 +33,7 @@ import { EditContactInfoComponent } from './Components/edit-contact-info/edit-co
 import { FilterLostDogsComponent } from './Components/filter-lost-dogs/filter-lost-dogs.component';
 import { ShelterEmployeeHomePageComponent } from './Components/shelter-employee-home-page/shelter-employee-home-page.component';
 import { ShelterEmployeeNavbarComponent } from './Components/shelter-employee-navbar/shelter-employee-navbar.component';
+import { SeeSheltersListComponent } from './Components/see-shelters-list/see-shelters-list.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ShelterEmployeeNavbarComponent } from './Components/shelter-employee-na
     EditContactInfoComponent,
     FilterLostDogsComponent,
     ShelterEmployeeHomePageComponent,
-    ShelterEmployeeNavbarComponent
+    ShelterEmployeeNavbarComponent,
+    SeeSheltersListComponent
   ],
   imports: [
     BrowserModule,
