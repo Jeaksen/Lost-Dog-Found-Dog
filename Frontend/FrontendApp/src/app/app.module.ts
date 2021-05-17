@@ -49,8 +49,7 @@ import { SeeSheltersListComponent } from './Components/see-shelters-list/see-she
     EditContactInfoComponent,
     FilterLostDogsComponent,
     ShelterEmployeeHomePageComponent,
-    ShelterEmployeeNavbarComponent
-    FilterLostDogsComponent,
+    ShelterEmployeeNavbarComponent,
     SeeSheltersListComponent
   ],
   imports: [

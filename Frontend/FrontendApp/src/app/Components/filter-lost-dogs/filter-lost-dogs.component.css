@@ -51,11 +51,12 @@
 .mat-raised-button {
     margin-left: 10px;
 }
+
 .mat-list-item {
     float: left;
     display: flex;
     margin-bottom: 20px;
-    border: 1px solid #8c1aff;
+    border: 2px solid #8c1aff;
     border-radius: 10px;
     min-height: 100px;
     flex-direction: column;
