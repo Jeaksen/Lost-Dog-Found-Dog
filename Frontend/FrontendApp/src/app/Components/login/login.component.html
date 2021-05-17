@@ -1,9 +1,9 @@
-<mat-card id="card" style="text-align: center;">
+<div id="card" class="login-panel">
     <h1>
         Login
     </h1>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <mat-form-field  appearance="standard">
+        <mat-form-field appearance="outline">
             <mat-label>Username</mat-label>
             <input type="text" matInput formControlName="username" placeholder="Username">
             <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
@@ -11,7 +11,7 @@
             </mat-error>
         </mat-form-field><br>
 
-        <mat-form-field  appearance="standard">
+        <mat-form-field  appearance="outline">
             <mat-label>Password</mat-label>
             <input matInput type="password" formControlName="password" placeholder="Password">
             <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
@@ -19,15 +19,15 @@
             </mat-error>
         </mat-form-field><br>
 
-        <button mat-raised-button type="submit" [disabled]="!loginForm.valid" style="margin-right:10px;">
+        <button mat-raised-button type="submit" [disabled]="!loginForm.valid" style="margin-top:20px;">
             Log in
         </button>
     </form>
-    <div style="margin-top: 40px;">
+    <div style="margin-top: 60px;">
         <h3 style="margin-bottom: -5px; font-size: large;">Don't have an account yet? Join us!</h3><br>
         <button mat-raised-button type="button" (click)="onSignUpClick()">
             Sign up
         </button>
     </div>
-</mat-card>
+</div>
 

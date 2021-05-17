@@ -15,17 +15,23 @@
     grid-template-rows: repeat(11, 1fr);
     padding-bottom: 0;
 }
-.sorting-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows:    1fr 1fr 1fr;
-    margin-bottom: 40px;
-}
-
 .filter-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    margin-left: 30px;
+    margin-top: 45px;
+}
+.sort-form {
+    text-align: center; 
+    margin-bottom: 35px;
+    padding-top: 15px;
 }
 
 ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
@@ -53,10 +59,8 @@
 }
 .mat-list-item {
     float: left;
-    display: flex;
     margin-bottom: 20px;
-    border: 1px solid #8c1aff;
-    border-radius: 10px;
+    border-style: outset;
     min-height: 100px;
     flex-direction: column;
     justify-content:stretch;
@@ -68,27 +72,31 @@
     position: absolute;
     right: 20px;
 }
-.item-label {
-    margin-left: 15px;
-    font-size: large;
+.lost-label {
+    font-size: 24px;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: red;
 }
-
+.sort-label {
+    margin-right: 30px;
+    margin-left: 100px;
+    font-size: large;
+    font-weight: 500;
+    border: 1px solid black;
+    padding: 5px;
+}
 Label {
     padding-top: 15px;
     font-size: medium;
 }
-
-.filter-button-right {
+.filter-button {
     height: 40px;
     width: 80px;
-    margin-right:auto;
-    /* margin-left: auto; */
-}
-.filter-button-left {
-    height: 40px;
-    width: 80px;
-    /* margin-right:auto; */
-    margin-left: auto;
 }
 
 /**** PAGING ****/

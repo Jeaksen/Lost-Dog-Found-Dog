@@ -81,6 +81,7 @@ export class FilterLostDogsComponent implements OnInit {
       this.router.navigate(['/login']);
     }
     this.getLostDogs();
+    this.sortingForm.controls['sort'].setValue("Date Lost");
   }
   
   onSubmit() {

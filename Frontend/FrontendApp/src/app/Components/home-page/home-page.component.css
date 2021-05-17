@@ -9,7 +9,7 @@
 }
 .grid {
     display: grid;
-    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-columns: 4fr 3fr;
     grid-template-rows:    1fr;
 }
 div:nth-child(1) {
@@ -25,16 +25,26 @@ div:nth-child(1) {
     text-align: center;
     justify-content: center;
 }
+.item-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    margin-left: 30px;
+    margin-top: 50px;
+}
 
 .mat-raised-button {
     margin-left: 10px;
 }
 .mat-list-item {
     float: left;
-    display: list-item;
     margin-bottom: 20px;
-    padding-bottom: 10px;
+    border-style: outset;
+    min-height: 100px;
+    flex-direction: column;
+    justify-content:stretch;
 }
+
 .list-item {
     display: flex;
     flex-direction: row;
@@ -49,20 +59,26 @@ div:nth-child(1) {
 }
 
 .list-button {
-    margin-top:5px;
-    margin-bottom: 5px;
+    margin-top: 50px;
+    margin-bottom: auto;
     position: absolute;
     right: 20px;
 }
 
 .list-button2 {
-    margin-top:5px;
-    margin-bottom: 5px;
+    margin-top: 50px;
+    margin-bottom: auto;
     position: absolute;
     right: 155px;
 }
 
-.item-label {
-    margin-left: 15px;
-    font-size: large;
+.lost-label {
+    font-size: 24px;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: red;
 }

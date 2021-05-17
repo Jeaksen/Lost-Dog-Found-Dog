@@ -5,32 +5,7 @@
         and help them find their lost pupils!</h2>
 
     <div class="grid">
-        <mat-card>
-            <form [formGroup]="sortingForm" (ngSubmit)="onSubmit()" class="sorting-grid">
-                <h1 style="text-align: center;">Sorting</h1>
-                <div class="filter-row">
-                    <Label>Sort by</Label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName="sort" (selectionChange)="onOptionSetChangedHandler($event, 'sort')" placeholder="Dog feature">
-                            <mat-option *ngFor="let feature of sortFeatures" [value]="feature.value">
-                                {{feature.viewValue}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="filter-row">
-                    <Label style="margin-right:20px;">Order</Label>
-                    <mat-radio-group aria-label="Select sorting option" formControlName="option">
-                        <mat-radio-button value="ASC">Ascending</mat-radio-button>
-                        <mat-radio-button value="DESC">Descending</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-                <div class="filter-row">
-                    <button mat-raised-button class="filter-button-left" type="submit">Sort</button>
-                    <button mat-raised-button class="filter-button-right" (click)="onClearSortForm()">Cancel</button>
-                </div>
-            </form>
-            
+        <mat-card>  
             <h1 style="text-align: center;">Filters</h1>
             <form [formGroup]="filterForm" (ngSubmit)="onSubmit()" class="filter-grid">
                 <div class="filter-row">
@@ -106,27 +81,47 @@
                     </mat-form-field>
                 </div>
                 <div class="filter-row" style="margin-top: 15px;">
-                    <button mat-raised-button class="filter-button-left" type="submit">Apply</button>
-                    <button mat-raised-button class="filter-button-right" (click)="onClearForm()">Clear</button>
+                    <button mat-raised-button class="filter-button" style="margin-left: auto;" type="submit">Apply</button>
+                    <button mat-raised-button class="filter-button" style="margin-right: auto;" (click)="onClearForm()">Clear</button>
                 </div>
             </form>
         </mat-card>
 
-        <mat-card style="margin-left: 15px;">
+        <mat-card style="margin-left: 15px">
+            <form [formGroup]="sortingForm" (ngSubmit)="onSubmit()" class="sort-form">
+                <Label class="sort-label">Sort by</Label>
+                <mat-form-field appearance="outline">
+                    <mat-select formControlName="sort" (selectionChange)="onOptionSetChangedHandler($event, 'sort')" placeholder="Dog feature">
+                        <mat-option *ngFor="let feature of sortFeatures" [value]="feature.value">
+                            {{feature.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            
+                <Label class="sort-label">Order</Label>
+                <mat-radio-group aria-label="Select sorting option" formControlName="option">
+                    <mat-radio-button value="ASC">Ascending</mat-radio-button>
+                    <mat-radio-button value="DESC">Descending</mat-radio-button>
+                </mat-radio-group>
+            
+                <button mat-raised-button class="filter-button" style="margin-left: 100px;" type="submit">Sort</button>
+                <button mat-raised-button class="filter-button" (click)="onClearSortForm()">Cancel</button>
+            </form>
+        
             <h1 style="text-align: center;">Lost Dogs registered in the system</h1>
             <!-- <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true" 
             [length]="lostDogs?.length" (page)="getPaginatorData($event)" pageSize="10">
             </mat-paginator> -->
             <h2 *ngIf="lostDogs?.length == 0" style="text-align: center;">No results</h2>
-            <mat-list dense class="mat-list">
+            <mat-list dense>
                 <mat-list-item *ngFor="let lostdog of lostDogs">
                     <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=100 max-height=150
                     style="margin-top: 60px;">
-                    <mat-label class="item-label">{{lostdog.name}} ({{lostdog.breed}}),</mat-label>
-                    <mat-label class="item-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</mat-label>
-                    <button mat-raised-button class="list-button" disabled="True">
-                        Comment
-                    </button>
+                    <div class="item-grid">
+                        <label style="font-size: 20px;">{{lostdog.name}} ({{lostdog.breed}}) </label>
+                        <label class="lost-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</label>
+                        <label style="font-size: 20px;">Location: {{lostdog.location.city}}, {{lostdog.location.district}} </label>
+                    </div>
                 </mat-list-item>
             </mat-list>
             <!-- <div >
