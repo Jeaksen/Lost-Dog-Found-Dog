@@ -9,6 +9,12 @@
     grid-template-rows: 1fr;
     margin-bottom: 15px;
 }
+.item-grid {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    margin-left: 30px;
+    margin-top: 50px;
+}
 
 ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
     padding: 0.4em 0px !important;
@@ -25,30 +31,13 @@
 .mat-raised-button {
     margin-left: 10px;
 }
+
 .mat-list-item {
     float: left;
-    display: flex;
     margin-bottom: 20px;
-    border: 2px solid #8c1aff;
-    border-radius: 10px;
+    border-style: outset;
     min-height: 100px;
     flex-direction: column;
     justify-content:stretch;
 }
 
-.list-button {
-    margin-top:5px;
-    margin-bottom: 5px;
-    position: absolute;
-    right: 20px;
-}
-
-.item-label {
-    margin-left: 15px;
-    font-size: large;
-}
-
-Label {
-    padding-top: 15px;
-    font-size: medium;
-}
