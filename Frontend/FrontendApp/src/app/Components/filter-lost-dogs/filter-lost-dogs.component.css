@@ -6,7 +6,7 @@
 .grid {
     display: grid;
     grid-template-columns: 1fr 4fr;
-    grid-template-rows:    1fr 3fr;
+    grid-template-rows: auto auto;
     margin-bottom: 15px;
 }
 .filter-grid {
@@ -30,8 +30,12 @@
 }
 .sort-form {
     text-align: center; 
-    margin-bottom: 35px;
     padding-top: 15px;
+}
+.list-panel {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin-left: 15px;
 }
 
 ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
@@ -101,6 +105,12 @@ Label {
 }
 
 /**** PAGING ****/
+.paginator {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 30px;
+}
 /* .page-item-first {
 
 }

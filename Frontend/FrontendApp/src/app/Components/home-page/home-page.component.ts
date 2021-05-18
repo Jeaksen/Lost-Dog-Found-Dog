@@ -27,6 +27,7 @@ export class HomePageComponent implements OnInit {
     this.lostDogService.getUserLostDogs(+localStorage.getItem('userId')!)
       .subscribe(response => {
         this.lostDogs = response.data;
+        console.log("Count: " + this.lostDogs.length);
       });
   }
 
