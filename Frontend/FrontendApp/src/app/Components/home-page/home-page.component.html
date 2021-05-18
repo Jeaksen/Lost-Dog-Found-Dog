@@ -3,22 +3,21 @@
     <div class="container">
         <h1>Welcome, {{this.userDetails?.name}}!</h1>
         <div>
-            <button mat-raised-button (click)="onRegisterLostDogClick()">Register Lost Dog</button>
-            <button mat-raised-button (click)="onEditContactInfoClick()">Edit Contact Info</button>
         </div>
     </div>
-    <h2 style="margin-left: 12px;">This site is under development. Your current options are limited.</h2>
-    
     
     <div class="grid">
-        <div></div>
         <mat-card>
-            <h2 style="text-align: center;">Lost Dogs registered by me</h2>
+            <h1 style="text-align: center;">Lost Dogs registered by me</h1>
             <mat-list dense class="mat-list">
                 <mat-list-item *ngFor="let lostdog of lostDogs">
-                    <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=60 max-height=50>
-                    <mat-label class="item-label">{{lostdog.name}} ({{lostdog.breed}}),</mat-label>
-                    <mat-label class="item-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</mat-label>
+                    <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=100 max-height=150
+                    style="margin-top: 60px;">
+                    <div class="item-grid">
+                        <label style="font-size: 20px;">{{lostdog.name}} ({{lostdog.breed}}) </label>
+                        <label class="lost-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</label>
+                        <label style="font-size: 20px; margin-top: 7px;">Location: {{lostdog.location.city}}, {{lostdog.location.district}} </label>
+                    </div>
                     <button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id!)" mat-raised-button class="list-button">
                         Mark as Found
                     </button>
@@ -28,6 +27,10 @@
                 </mat-list-item>
             </mat-list>
         </mat-card>
+        <div class="register-button">
+            <button mat-raised-button (click)="onRegisterLostDogClick()">Register Lost Dog</button>
+            <button mat-raised-button (click)="onEditContactInfoClick()">Edit Contact Info</button>
+        </div>
     </div>
 </div>
 

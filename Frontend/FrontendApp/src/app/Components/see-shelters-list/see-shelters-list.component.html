@@ -8,9 +8,15 @@
             <h2 *ngIf="shelters?.length == 0" style="text-align: center;">No results</h2>
             <mat-list dense class="mat-list">
                 <mat-list-item *ngFor="let shelter of shelters">
-                    <mat-label class="item-label">{{shelter.name}}</mat-label>
+                    <img src="/assets/animal.jpg" width=100 max-height=150 style="margin-top: 60px;">
+                    <div class="item-grid">
+                        <label style="font-size: 20px; margin-top: 10px;">{{shelter.name}} </label>
+                        <label style="font-size: 20px; margin-top: 12px;">
+                            {{shelter.address.city}}, {{shelter.address.street}} {{shelter.address.buildingNumber}}
+                        </label>
+                    </div>
                     <!-- <button mat-raised-button class="list-button" disabled="True">
-                        Comment
+                        View
                     </button> -->
                 </mat-list-item>
             </mat-list>

@@ -44,7 +44,11 @@ export class FilterLostDogsComponent implements OnInit {
   lostDogs?: LostDogFromBackend[];
   dogColors: string[] = DogColorSelector;
   dogSizes: string[] = DogSizeSelector;
-  allDogsCount?: number;
+  allPagesCount?: number;
+  currentPage: number;
+  currentSize: number;
+  sizeOptions: number[] = [5, 10, 15, 20, 25, 50];
+
   sortFeatures: SortValues[] = [
     {value: 'name', viewValue: 'Dog\'s Name'},
     {value: 'breed', viewValue: 'Breed'},
@@ -65,14 +69,17 @@ export class FilterLostDogsComponent implements OnInit {
     private router: Router,
     private datepipe: DatePipe,
     private lostDogService: LostDogService,
-    private authenticationService: AuthenticationService) { }
+    private authenticationService: AuthenticationService) { 
+      this.currentPage = 1; 
+      this.currentSize = 10;
+    }
 
   getLostDogs(): void {
     console.log(localStorage.getItem('userId')!)
     this.lostDogService.getAllLostDogs()
       .subscribe(response => {
         this.lostDogs = response.data;
-        this.allDogsCount = this.lostDogs?.length;
+        this.allPagesCount = response.metadata;
       });
   }  
 
@@ -81,6 +88,7 @@ export class FilterLostDogsComponent implements OnInit {
       this.router.navigate(['/login']);
     }
     this.getLostDogs();
+    //this.sortingForm.get('sort')?.setValue(this.sortFeatures[8]); //-> psuje wysyłanie requesta :(
   }
   
   onSubmit() {
@@ -88,6 +96,7 @@ export class FilterLostDogsComponent implements OnInit {
     this.lostDogService.getFilteredLostDogs(this.constructFilterString()).subscribe(response => {
       console.log(response)
       this.lostDogs = response.data;
+      this.allPagesCount = response.metadata;
     });
   }
 
@@ -118,7 +127,9 @@ export class FilterLostDogsComponent implements OnInit {
       filter += 'sort=' + this.sortingForm.get('sort')?.value;
       if(this.sortingForm.get('option')?.value) filter += ',' + this.sortingForm.get('option')?.value;
     }
-    //filter += '&size=5&page=2'
+    let tmp = this.currentPage - 1;
+    filter += '&page=' + tmp;
+    filter += '&size=' + this.currentSize;
     console.log(filter);
     return filter;
   }
@@ -150,26 +161,19 @@ export class FilterLostDogsComponent implements OnInit {
   onOptionSetChangedHandler(event: MatSelectChange, controlName: string) {
     this.filterForm.get(controlName)?.setValue(event.value);
   }
-
-  minValue: number = 0;
-  maxValue: number = 20;
-  public getPaginatorData(event: PageEvent): PageEvent {
-    this.minValue = event.pageIndex * event.pageSize;
-    this.maxValue = this.minValue + event.pageSize;
-    return event;
+  onSortingSetChangedHandler(event: MatSelectChange, controlName: string) {
+    this.sortingForm.get(controlName)?.setValue(event.value);
+  }
+  onPageSizeChangedHandler(event: MatSelectChange, controlName: string) {
+    this.currentSize = event.value;
+    this.onSubmit();
   }
 
-//   private loadPage(page) {
-//     // get page of items from api
-//     this.lostDogService.getFilteredLostDogs().subscribe(response => {
-//       console.log(response)
-//       this.pager = response.pager;
-//       this.lostDogs = response.data;
-//     });
-//     this.http.get<any>(`/api/items?page=${page}`).subscribe(x => {
-//         this.pager = x.pager;
-//         this.pageOfDogs = x.pageOfItems;
-//     });
-// }
+  onChangePageClick(pageNum: number, firstLast: boolean) {
+    if (firstLast)
+        this.currentPage = pageNum;
+    else this.currentPage += pageNum;
+    this.onSubmit();
+  }
 
 }
