@@ -96,7 +96,7 @@ namespace Backend.Controllers
         [Authorize(Roles = AccountRoles.Shelter)]
         [Route("{shelterId}/dogs")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddShelterDog([ModelBinder(BinderType = typeof(JsonModelBinder))] UploadShelterDogDto dog,
+        public async Task<IActionResult> AddShelterDog(int shelterId, [ModelBinder(BinderType = typeof(JsonModelBinder))] UploadShelterDogDto dog,
                                                     IFormFile picture)
         {
             if (picture is null)
@@ -105,7 +105,14 @@ namespace Backend.Controllers
                     Message = "No image was provided!",
                     Successful = false
                 });
-            dog.ShelterId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+            var tokenShelterId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+            if (shelterId != tokenShelterId)
+                return Unauthorized(new ControllerResponse()
+                {
+                    Message = "Cannot add dogs to other shelters!",
+                    Successful = false
+                });
+            dog.ShelterId = tokenShelterId;
 
             var serviceResponse = await shelterService.AddShelterDog(dog, picture);
             var controllerResponse = mapper.Map<ControllerResponse<GetShelterDogDto>>(serviceResponse);
@@ -116,25 +123,25 @@ namespace Backend.Controllers
         [HttpDelete]
         [Authorize(Roles = AccountRoles.Shelter)]
         [Route("{shelterId}/dogs/{dogId}")]
-        public async Task<IActionResult> DeleteShelterDog(int dogId)
+        public async Task<IActionResult> DeleteShelterDog(int shelterId, int dogId)
         {
             var savedDogResponse = await shelterService.GetShelterDogDetails(dogId);
             if (savedDogResponse.Data == null)
                 return StatusCode(savedDogResponse.StatusCode, mapper.Map<ControllerResponse<GetShelterDogDto>>(savedDogResponse));
 
-            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDogResponse.Data.ShelterId.ToString())
-            {
-                var serviceResponse = await shelterService.DeleteShelterDog(dogId);
-                var controllerResponse = mapper.Map<ControllerResponse>(serviceResponse);
-                return StatusCode(serviceResponse.StatusCode, controllerResponse);
-            }
-            else
+            var tokenShelterId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (shelterId != int.Parse(tokenShelterId) || tokenShelterId != savedDogResponse.Data.ShelterId.ToString())
                 return Unauthorized(new ControllerResponse()
                 {
                     Message = "Attempted to delete a dog which is not owned by the user!",
                     Successful = false
                 });
-
+            else
+            {
+                var serviceResponse = await shelterService.DeleteShelterDog(dogId);
+                var controllerResponse = mapper.Map<ControllerResponse>(serviceResponse);
+                return StatusCode(serviceResponse.StatusCode, controllerResponse);
+            }
         }
 
     }
