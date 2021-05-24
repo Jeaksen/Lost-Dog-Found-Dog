@@ -5,6 +5,7 @@ using Backend.DTOs.Shelters;
 using Backend.Models.Authentication;
 using Backend.Models.Dogs;
 using Backend.Models.Dogs.LostDogs;
+using Backend.Models.Dogs.ShelterDogs;
 using Backend.Models.Response;
 using Backend.Models.Shelters;
 using System.Linq;
@@ -30,6 +31,9 @@ namespace Backend
             CreateMap<AddLostDogCommentDto, LostDogComment>();
             CreateMap<LostDog, GetLostDogDto>().ForMember(dto => dto.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(b => b.Behavior)));
             CreateMap<UploadLostDogDto, LostDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behavior = s })));
+
+            CreateMap<ShelterDog, GetShelterDogDto>().ForMember(dto => dto.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(b => b.Behavior)));
+            CreateMap<UploadShelterDogDto, ShelterDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behavior = s }))).ForMember(dog => dog.Shelter, opt => opt.Ignore());
 
             CreateMap(typeof(RepositoryResponse), typeof(ServiceResponse)).ForMember("StatusCode", s => s.Ignore());
             CreateMap(typeof(RepositoryResponse), typeof(ServiceResponse<>)).ForMember("StatusCode", s => s.Ignore()).ForMember("Data", s => s.Ignore());
