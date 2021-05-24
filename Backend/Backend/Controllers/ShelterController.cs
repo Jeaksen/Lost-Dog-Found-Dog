@@ -69,5 +69,15 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
+        //[HttpGet]
+        //[Route("{dogId}")]
+        //public async Task<IActionResult> GetShelterDogDetails(int dogId)
+        //{
+        //    var serviceResponse = await shelterService.GetLostDogDetails(dogId);
+        //    var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
+
+        //    return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        //}
+
     }
 }
