@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
 using Backend.DTOs.Authentication;
+using Backend.DTOs.Dogs;
 using Backend.DTOs.Shelters;
 using Backend.Models.Authentication;
 using Backend.Models.Response;
 using Backend.Services.Shelters;
 using Backend.Util;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Backend.Controllers
@@ -69,15 +72,70 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
-        //[HttpGet]
-        //[Route("{dogId}")]
-        //public async Task<IActionResult> GetShelterDogDetails(int dogId)
-        //{
-        //    var serviceResponse = await shelterService.GetLostDogDetails(dogId);
-        //    var controllerResponse = mapper.Map<ServiceResponse<GetLostDogDto>, ControllerResponse<GetLostDogDto>>(serviceResponse);
+        [HttpGet]
+        [Route("{shelterId}/dogs")]
+        public async Task<IActionResult> GetShelterDogs(int shelterId, [FromQuery] int page = 0, [FromQuery] int size = 10)
+        {
+            var serviceResponse = await shelterService.GetShelterDogs(shelterId, page, size);
+            var controllerResponse = mapper.Map<ControllerResponse<List<GetShelterDogDto>, int>>(serviceResponse);
 
-        //    return StatusCode(serviceResponse.StatusCode, controllerResponse);
-        //}
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        }
+
+        [HttpGet]
+        [Route("{shelterId}/dogs/{dogId}")]
+        public async Task<IActionResult> GetShelterDogDetails(int dogId)
+        {
+            var serviceResponse = await shelterService.GetShelterDogDetails(dogId);
+            var controllerResponse = mapper.Map<ControllerResponse<GetShelterDogDto>>(serviceResponse);
+
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = AccountRoles.Shelter)]
+        [Route("{shelterId}/dogs")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddShelterDog([ModelBinder(BinderType = typeof(JsonModelBinder))] UploadShelterDogDto dog,
+                                                    IFormFile picture)
+        {
+            if (picture is null)
+                return BadRequest(new ControllerResponse()
+                {
+                    Message = "No image was provided!",
+                    Successful = false
+                });
+            dog.ShelterId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+
+            var serviceResponse = await shelterService.AddShelterDog(dog, picture);
+            var controllerResponse = mapper.Map<ControllerResponse<GetShelterDogDto>>(serviceResponse);
+
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = AccountRoles.Shelter)]
+        [Route("{shelterId}/dogs/{dogId}")]
+        public async Task<IActionResult> DeleteShelterDog(int dogId)
+        {
+            var savedDogResponse = await shelterService.GetShelterDogDetails(dogId);
+            if (savedDogResponse.Data == null)
+                return StatusCode(savedDogResponse.StatusCode, mapper.Map<ControllerResponse<GetShelterDogDto>>(savedDogResponse));
+
+            if (User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier)?.Value == savedDogResponse.Data.ShelterId.ToString())
+            {
+                var serviceResponse = await shelterService.DeleteShelterDog(dogId);
+                var controllerResponse = mapper.Map<ControllerResponse>(serviceResponse);
+                return StatusCode(serviceResponse.StatusCode, controllerResponse);
+            }
+            else
+                return Unauthorized(new ControllerResponse()
+                {
+                    Message = "Attempted to delete a dog which is not owned by the user!",
+                    Successful = false
+                });
+
+        }
 
     }
 }
