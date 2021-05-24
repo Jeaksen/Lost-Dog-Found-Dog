@@ -179,12 +179,12 @@ namespace Backend.DataAccess.LostDogs
                     var savedDog = detailsResponse.Data;
                     if (updatedDog.Picture is not null)
                     {
-                        dbContext.Pictures.Remove(savedDog.Picture);
+                        //dbContext.Pictures.Remove(savedDog.Picture);
                         savedDog.Picture = updatedDog.Picture;
                     }
                     if (!updatedDog.Location.Equals(savedDog.Location))
                     {
-                        dbContext.Locations.Remove(savedDog.Location);
+                        //dbContext.Locations.Remove(savedDog.Location);
                         savedDog.Location = updatedDog.Location;
                     }
 
@@ -252,6 +252,7 @@ namespace Backend.DataAccess.LostDogs
             var response = new RepositoryResponse();
             try
             {
+                var dogResp = await GetLostDogDetails(dogId);
                 var lostDog = await dbContext.LostDogs.FindAsync(dogId);
                 if (lostDog == null)
                 {
@@ -260,7 +261,7 @@ namespace Backend.DataAccess.LostDogs
                 } 
                 else
                 {
-                    dbContext.LostDogs.Remove(lostDog);
+                    dbContext.LostDogs.Remove(dogResp.Data);
                     dbContext.SaveChanges();
                     response.Message = $"Lost Dog with id {dogId} was deleted";
                 }

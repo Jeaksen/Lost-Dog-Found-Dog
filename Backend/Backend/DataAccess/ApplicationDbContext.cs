@@ -22,7 +22,9 @@ namespace Backend.DataAccess
         public DbSet<Address> Addresses { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        { }
+        { 
+
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -34,6 +36,9 @@ namespace Backend.DataAccess
             builder.Entity<Shelter>().HasIndex(s => s.Name).IsUnique(true);
             builder.Entity<Shelter>().HasIndex(s => s.Email).IsUnique(true);
             builder.Entity<Account>().HasOne(a => a.Shelter).WithOne().HasForeignKey<Account>(a => a.ShelterId).IsRequired(false);
+            builder.Entity<Dog>().HasOne(d => d.Picture).WithOne().HasForeignKey<Picture>("OwningObjectId").OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<LostDog>().HasOne(d => d.Location).WithOne(l => l.LostDog).HasForeignKey<Location>(l => l.LostDogId).OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<ShelterDog>().HasOne(d => d.Shelter).WithOne().HasForeignKey<Shelter>(l => l.Id);
         }
 
     }

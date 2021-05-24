@@ -91,5 +91,6 @@ namespace Backend.Tests.ShelterDogs
             var result = await shelterDogRepository.GetShelterDogs(dog.Data.ShelterId, 0, 50);
             Assert.True(result.Successful && result.Data.Count > 0);
         }
+
     }
 }

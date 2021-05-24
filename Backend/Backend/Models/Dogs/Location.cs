@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Backend.Models.Dogs.LostDogs;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Models.Dogs
@@ -15,6 +16,12 @@ namespace Backend.Models.Dogs
         [Required]
         [MaxLength(100)]
         public string District { get; set; }
+
+        [Required]
+        public LostDog LostDog { get; set; }
+
+        [Required]
+        public int LostDogId { get; set; }
 
         public int CompareTo(object obj)
         {

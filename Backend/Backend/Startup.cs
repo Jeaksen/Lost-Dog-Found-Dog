@@ -154,7 +154,17 @@ namespace Backend
                             Successful = false,
                             Message = responseBuilder.ToString()
                         });
-                    }
+                    },
+                    OnForbidden = async context =>
+                    {
+                        context.Response.StatusCode = 403;
+
+                        await context.Response.WriteAsJsonAsync(new ControllerResponse()
+                        {
+                            Successful = false,
+                            Message = "Your role does not allow to access this resource!"
+                        }); ;
+                    },
                 };
                    
             });

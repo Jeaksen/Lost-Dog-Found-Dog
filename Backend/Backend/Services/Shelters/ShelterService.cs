@@ -85,18 +85,19 @@ namespace Backend.Services.Shelters
 
         public async Task<ServiceResponse> DeleteShelter(int id)
         {
-            // Add deleting dogs
             var getResponse = await GetShelter(id);
             var serviceResponse = mapper.Map<ServiceResponse<ShelterDto>, ServiceResponse>(getResponse);
             if (getResponse.Successful)
             {
                 var accountResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
+                var dogsResponse = await shelterDogRepository.DeleteAllForShelter(id);
                 var shelterResponse = await shelterRepository.DeleteShelterWithoutDogs(id);
 
-                if (!accountResponse.Successful || !shelterResponse.Successful)
+                if (!accountResponse.Successful || !dogsResponse.Successful || !shelterResponse.Successful)
                 {
                     serviceResponse.Message = "Failed to delete shelter! ";
                     serviceResponse.Message += accountResponse.Successful ? "" : accountResponse.Message;
+                    serviceResponse.Message += dogsResponse.Successful ? "" : dogsResponse.Message;
                     serviceResponse.Message += shelterResponse.Successful ? "" : shelterResponse.Message;
                     serviceResponse.Successful = false;
                     serviceResponse.StatusCode = StatusCodes.Status400BadRequest;

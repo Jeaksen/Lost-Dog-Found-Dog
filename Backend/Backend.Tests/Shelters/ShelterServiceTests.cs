@@ -155,6 +155,7 @@ namespace Backend.Tests.Shelters
             var account = new Mock<IAccountService>();
             shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             shelterRepo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            shelterDogRepo.Setup(r => r.DeleteAllForShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse()));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
 
@@ -169,6 +170,7 @@ namespace Backend.Tests.Shelters
             var security = new Mock<ISecurityService>();
             var account = new Mock<IAccountService>();
             shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Successful = false }));
+            shelterDogRepo.Setup(r => r.DeleteAllForShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
 
             Assert.False((await service.DeleteShelter(-1)).Successful);
@@ -183,6 +185,7 @@ namespace Backend.Tests.Shelters
             var account = new Mock<IAccountService>();
             shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             shelterRepo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
+            shelterDogRepo.Setup(r => r.DeleteAllForShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse()));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
 
@@ -199,6 +202,23 @@ namespace Backend.Tests.Shelters
             shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             shelterRepo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse() { Successful = false }));
+            shelterDogRepo.Setup(r => r.DeleteAllForShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.DeleteShelter(-1)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteShelterFailsForFailedDogsDeleteResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            shelterRepo.Setup(r => r.DeleteShelterWithoutDogs(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse()));
+            shelterDogRepo.Setup(r => r.DeleteAllForShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
 
             Assert.False((await service.DeleteShelter(-1)).Successful);
