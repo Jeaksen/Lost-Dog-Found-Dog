@@ -3,37 +3,54 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Backend.Migrations
 {
-    public partial class dogmodel : Migration
+    public partial class datamodel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "ShelterId",
+                table: "AspNetUsers",
+                type: "int",
+                nullable: true);
+
             migrationBuilder.CreateTable(
-                name: "Locations",
+                name: "Shelters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shelters", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    District = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PostCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    BuildingNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    AdditionalAddressLine = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ShelterId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Locations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pictures",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    FileType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pictures", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Shelters_ShelterId",
+                        column: x => x.ShelterId,
+                        principalTable: "Shelters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -48,12 +65,10 @@ namespace Backend.Migrations
                     Color = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SpecialMark = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PictureId = table.Column<int>(type: "int", nullable: true),
                     HairLength = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     EarsType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TailLength = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: true),
                     DateLost = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsFound = table.Column<bool>(type: "bit", nullable: true),
                     OwnerId = table.Column<int>(type: "int", nullable: true),
@@ -69,17 +84,11 @@ namespace Backend.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Dogs_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
+                        name: "FK_Dogs_Shelters_ShelterId",
+                        column: x => x.ShelterId,
+                        principalTable: "Shelters",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Dogs_Pictures_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Pictures",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,7 +97,7 @@ namespace Backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Behvaior = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Behavior = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DogId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -97,6 +106,49 @@ namespace Backend.Migrations
                     table.ForeignKey(
                         name: "FK_DogBehaviors_Dogs_DogId",
                         column: x => x.DogId,
+                        principalTable: "Dogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Locations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    District = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LostDogId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Locations_Dogs_LostDogId",
+                        column: x => x.LostDogId,
+                        principalTable: "Dogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pictures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    FileType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    OwningObjectId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pictures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pictures_Dogs_OwningObjectId",
+                        column: x => x.OwningObjectId,
                         principalTable: "Dogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -139,14 +191,22 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ShelterId",
+                table: "AspNetUsers",
+                column: "ShelterId",
+                unique: true,
+                filter: "[ShelterId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_ShelterId",
+                table: "Addresses",
+                column: "ShelterId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DogBehaviors_DogId",
                 table: "DogBehaviors",
                 column: "DogId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dogs_LocationId",
-                table: "Dogs",
-                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Dogs_OwnerId",
@@ -154,9 +214,15 @@ namespace Backend.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dogs_PictureId",
+                name: "IX_Dogs_ShelterId",
                 table: "Dogs",
-                column: "PictureId");
+                column: "ShelterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Locations_LostDogId",
+                table: "Locations",
+                column: "LostDogId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_LostDogComments_AuthorId",
@@ -172,24 +238,69 @@ namespace Backend.Migrations
                 name: "IX_LostDogComments_PictureId",
                 table: "LostDogComments",
                 column: "PictureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pictures_OwningObjectId",
+                table: "Pictures",
+                column: "OwningObjectId",
+                unique: true,
+                filter: "[OwningObjectId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shelters_Email",
+                table: "Shelters",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shelters_Name",
+                table: "Shelters",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Shelters_ShelterId",
+                table: "AspNetUsers",
+                column: "ShelterId",
+                principalTable: "Shelters",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Shelters_ShelterId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
+
             migrationBuilder.DropTable(
                 name: "DogBehaviors");
-
-            migrationBuilder.DropTable(
-                name: "LostDogComments");
-
-            migrationBuilder.DropTable(
-                name: "Dogs");
 
             migrationBuilder.DropTable(
                 name: "Locations");
 
             migrationBuilder.DropTable(
+                name: "LostDogComments");
+
+            migrationBuilder.DropTable(
                 name: "Pictures");
+
+            migrationBuilder.DropTable(
+                name: "Dogs");
+
+            migrationBuilder.DropTable(
+                name: "Shelters");
+
+            migrationBuilder.DropIndex(
+                name: "IX_AspNetUsers_ShelterId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "ShelterId",
+                table: "AspNetUsers");
         }
     }
 }

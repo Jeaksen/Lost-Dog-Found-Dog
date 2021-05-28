@@ -171,7 +171,7 @@ namespace Backend.Tests.Shelters
         [Fact]
         public async void DeleteShelterWithoutDogsFailsForNotExistingShelter()
         {
-            var result = await shelterRepository.DeleteShelterWithoutDogs(-1);
+            var result = await shelterRepository.DeleteShelter(-1);
             Assert.False(result.Successful);
         }
 
@@ -182,7 +182,7 @@ namespace Backend.Tests.Shelters
             var addResult = await shelterRepository.AddShelter(addShelter);
             Assert.True(addResult.Successful);
 
-            var result = await shelterRepository.DeleteShelterWithoutDogs(addResult.Data.Id);
+            var result = await shelterRepository.DeleteShelter(addResult.Data.Id);
             Assert.True(result.Successful);
         }
 

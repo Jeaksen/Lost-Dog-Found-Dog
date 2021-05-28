@@ -26,6 +26,8 @@ namespace Backend.DataAccess.Shelters
             var response = new RepositoryResponse<Shelter>();
             try
             {
+                if (shelter.Address == null)
+                    throw new ArgumentException("Shelter address can not be null");
                 var addedShelter = await dbContext.Shelters.AddAsync(shelter);
                 await dbContext.SaveChangesAsync();
                 response.Message = $"Shelter was added with id {addedShelter.Entity.Id}";
@@ -39,7 +41,6 @@ namespace Backend.DataAccess.Shelters
 
             return response;
         }
-
 
         public async Task<RepositoryResponse<List<Shelter>, int>> GetShelters(string name, string sort, int page, int size)
         {
@@ -97,7 +98,7 @@ namespace Backend.DataAccess.Shelters
             return response;
         }
 
-        public async Task<RepositoryResponse> DeleteShelterWithoutDogs(int id)
+        public async Task<RepositoryResponse> DeleteShelter(int id)
         {
             var response = new RepositoryResponse();
             try
@@ -105,7 +106,6 @@ namespace Backend.DataAccess.Shelters
                 var getResponse = await GetShelter(id);
                 if (response.Successful)
                 {
-                    dbContext.Addresses.Remove(getResponse.Data.Address);
                     dbContext.Remove(getResponse.Data);
                     await dbContext.SaveChangesAsync();
                     response.Message = $"Shelter with id {id} was deleted";

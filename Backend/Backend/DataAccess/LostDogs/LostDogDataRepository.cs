@@ -62,6 +62,10 @@ namespace Backend.DataAccess.LostDogs
             var response = new RepositoryResponse<LostDog>();
             try
             {
+                if (lostDog.Location == null)
+                    throw new ArgumentException("LostDog location can not be null");
+                if (lostDog.Picture == null)
+                    throw new ArgumentException("LostDog picture can not be null");
                 var returningDog = await dbContext.LostDogs.AddAsync(lostDog);
                 await dbContext.SaveChangesAsync();
                 response.Data = returningDog.Entity;
@@ -178,15 +182,9 @@ namespace Backend.DataAccess.LostDogs
                 {
                     var savedDog = detailsResponse.Data;
                     if (updatedDog.Picture is not null)
-                    {
-                        dbContext.Pictures.Remove(savedDog.Picture);
                         savedDog.Picture = updatedDog.Picture;
-                    }
                     if (!updatedDog.Location.Equals(savedDog.Location))
-                    {
-                        dbContext.Locations.Remove(savedDog.Location);
                         savedDog.Location = updatedDog.Location;
-                    }
 
                     var commonBehaviors = updatedDog.Behaviors.Intersect(savedDog.Behaviors).ToList();
                     var addBehaviors = updatedDog.Behaviors.Except(commonBehaviors).ToList();
@@ -196,12 +194,7 @@ namespace Backend.DataAccess.LostDogs
                         savedDog.Behaviors.RemoveAll(b => b.Id == v);
                     savedDog.Behaviors.AddRange(addBehaviors);
 
-                    //all properties are copied from lostDog to savedDog, so these ones must be assigned to lostDog
-                    updatedDog.Behaviors = savedDog.Behaviors;
-                    updatedDog.Comments = savedDog.Comments;
-                    updatedDog.Picture = savedDog.Picture;
-                    updatedDog.Location = savedDog.Location;
-                    updatedDog.CopyProperties(savedDog);
+                    updatedDog.CopySimplePropertiesTo(savedDog);
 
                     await dbContext.SaveChangesAsync();
                     response.Data = savedDog;
@@ -252,6 +245,7 @@ namespace Backend.DataAccess.LostDogs
             var response = new RepositoryResponse();
             try
             {
+                var dogResp = await GetLostDogDetails(dogId);
                 var lostDog = await dbContext.LostDogs.FindAsync(dogId);
                 if (lostDog == null)
                 {
@@ -260,7 +254,7 @@ namespace Backend.DataAccess.LostDogs
                 } 
                 else
                 {
-                    dbContext.LostDogs.Remove(lostDog);
+                    dbContext.LostDogs.Remove(dogResp.Data);
                     dbContext.SaveChanges();
                     response.Message = $"Lost Dog with id {dogId} was deleted";
                 }
@@ -272,6 +266,7 @@ namespace Backend.DataAccess.LostDogs
             }
             return response;
         }
+
 
         public async Task<RepositoryResponse<LostDogComment>> AddLostDogComment(LostDogComment comment)
         {
@@ -356,6 +351,10 @@ namespace Backend.DataAccess.LostDogs
 
 
         private List<PropertyInfo> GetNotNullProperties<T>(T obj) => obj.GetType().GetProperties().Where(p => p.GetValue(obj) != null).ToList();
+
+        private List<PropertyInfo> GetSimpleProperties<T>(T obj) => obj.GetType().GetProperties().Where(p => !p.PropertyType.IsClass || p.PropertyType == typeof(string)).ToList();
+
+       
 
     }
 }
