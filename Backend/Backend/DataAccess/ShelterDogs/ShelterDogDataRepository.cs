@@ -26,6 +26,8 @@ namespace Backend.DataAccess.ShelterDogs
             var response = new RepositoryResponse<ShelterDog>();
             try
             {
+                if (shelterDog.Picture == null)
+                    throw new ArgumentException("ShelterDog picture can not be null");
                 var returningDog = await dbContext.ShelterDogs.AddAsync(shelterDog);
                 await dbContext.SaveChangesAsync();
                 response.Data = returningDog.Entity;
@@ -62,25 +64,6 @@ namespace Backend.DataAccess.ShelterDogs
             {
                 response.Successful = false;
                 response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
-            }
-            return response;
-        }
-
-        public async Task<RepositoryResponse> DeleteAllForShelter(int shelterId)
-        {
-            var response = new RepositoryResponse();
-            try
-            {
-                var shelterDogs = await dbContext.ShelterDogs.Where(d => d.ShelterId == shelterId).ToArrayAsync();
-                dbContext.ShelterDogs.RemoveRange(shelterDogs);
-                dbContext.SaveChanges();
-                response.Message = $"{shelterDogs.Length} dogs were deleted from shelter with id {shelterId}";
-                
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = $"Failed to delete dogs for shelter with id {shelterId}: {e.Message}  {e.InnerException?.Message}";
             }
             return response;
         }

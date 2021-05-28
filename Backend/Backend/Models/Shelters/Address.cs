@@ -25,5 +25,11 @@ namespace Backend.Models.Shelters
 
         [MaxLength(200)]
         public string AdditionalAddressLine { get; set; }
+
+        [Required]
+        public Shelter Shelter { get; set; }
+        
+        [Required]
+        public int ShelterId { get; set; }
     }
 }

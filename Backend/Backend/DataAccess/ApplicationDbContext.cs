@@ -29,16 +29,19 @@ namespace Backend.DataAccess
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Dog>()
-                .Property("Discriminator")
-                .HasMaxLength(50);
-            builder.Entity<Shelter>().Property(s => s.AddressId).IsRequired(true);
-            builder.Entity<Shelter>().HasIndex(s => s.Name).IsUnique(true);
-            builder.Entity<Shelter>().HasIndex(s => s.Email).IsUnique(true);
+
+            builder.Entity<Shelter>().HasIndex(s => s.Name).IsUnique();
+            builder.Entity<Shelter>().HasIndex(s => s.Email).IsUnique();
+            builder.Entity<Shelter>().HasOne(s => s.Address).WithOne(a => a.Shelter).HasForeignKey<Address>(a => a.ShelterId).IsRequired();
+
             builder.Entity<Account>().HasOne(a => a.Shelter).WithOne().HasForeignKey<Account>(a => a.ShelterId).IsRequired(false);
+
+            builder.Entity<Dog>().Property("Discriminator").HasMaxLength(50);
             builder.Entity<Dog>().HasOne(d => d.Picture).WithOne().HasForeignKey<Picture>("OwningObjectId").OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<LostDog>().HasOne(d => d.Location).WithOne(l => l.LostDog).HasForeignKey<Location>(l => l.LostDogId).OnDelete(DeleteBehavior.Cascade);
-            //builder.Entity<ShelterDog>().HasOne(d => d.Shelter).WithOne().HasForeignKey<Shelter>(l => l.Id);
+
+            builder.Entity<ShelterDog>().HasOne(d => d.Shelter).WithMany().OnDelete(DeleteBehavior.Cascade);
         }
 
     }

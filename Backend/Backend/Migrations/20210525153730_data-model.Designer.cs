@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210524202445_data-model")]
+    [Migration("20210525153730_data-model")]
     partial class datamodel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -305,12 +305,18 @@ namespace Backend.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<int>("ShelterId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Street")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ShelterId")
+                        .IsUnique();
 
                     b.ToTable("Addresses");
                 });
@@ -321,9 +327,6 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -344,8 +347,6 @@ namespace Backend.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -574,15 +575,15 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Backend.Models.Shelters.Shelter", b =>
+            modelBuilder.Entity("Backend.Models.Shelters.Address", b =>
                 {
-                    b.HasOne("Backend.Models.Shelters.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
+                    b.HasOne("Backend.Models.Shelters.Shelter", "Shelter")
+                        .WithOne("Address")
+                        .HasForeignKey("Backend.Models.Shelters.Address", "ShelterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("Shelter");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -663,6 +664,12 @@ namespace Backend.Migrations
                     b.Navigation("Behaviors");
 
                     b.Navigation("Picture")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Backend.Models.Shelters.Shelter", b =>
+                {
+                    b.Navigation("Address")
                         .IsRequired();
                 });
 
