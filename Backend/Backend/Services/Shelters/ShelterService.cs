@@ -52,7 +52,7 @@ namespace Backend.Services.Shelters
                 {
                     serviceResponse.Data = null;
                     serviceResponse.Successful = false;
-                    var deleteResult = await shelterRepository.DeleteShelterWithoutDogs(addShelterResult.Data.Id);
+                    var deleteResult = await shelterRepository.DeleteShelter(addShelterResult.Data.Id);
                     if (deleteResult.Successful)
                         serviceResponse.Message = $"Failed to add shelter acccount: {addAccountResult.Message}";
                     else
@@ -90,7 +90,7 @@ namespace Backend.Services.Shelters
             if (getResponse.Successful)
             {
                 var accountResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
-                var shelterResponse = await shelterRepository.DeleteShelterWithoutDogs(id);
+                var shelterResponse = await shelterRepository.DeleteShelter(id);
                 
                 if (!accountResponse.Successful  || !shelterResponse.Successful)
                 {

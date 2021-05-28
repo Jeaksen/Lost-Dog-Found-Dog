@@ -98,7 +98,7 @@ namespace Backend.DataAccess.Shelters
             return response;
         }
 
-        public async Task<RepositoryResponse> DeleteShelterWithoutDogs(int id)
+        public async Task<RepositoryResponse> DeleteShelter(int id)
         {
             var response = new RepositoryResponse();
             try
@@ -106,7 +106,6 @@ namespace Backend.DataAccess.Shelters
                 var getResponse = await GetShelter(id);
                 if (response.Successful)
                 {
-                    //dbContext.Addresses.Remove(getResponse.Data.Address);
                     dbContext.Remove(getResponse.Data);
                     await dbContext.SaveChangesAsync();
                     response.Message = $"Shelter with id {id} was deleted";
