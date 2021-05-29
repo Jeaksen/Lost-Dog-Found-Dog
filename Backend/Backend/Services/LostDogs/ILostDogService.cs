@@ -16,8 +16,8 @@ namespace Backend.Services.LostDogs
         public Task<ServiceResponse> MarkLostDogAsFound(int dogId);
         public Task<ServiceResponse> DeleteLostDog(int dogId);
 
-        public Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto comment);
-        public Task<ServiceResponse<List<LostDogComment>>> GetLostDogComments(int dogId);
-        public Task<ServiceResponse<LostDogComment>> EditLostDogComment(LostDogComment comment);
+        //public Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto comment);
+        //public Task<ServiceResponse<List<LostDogComment>>> GetLostDogComments(int dogId);
+        //public Task<ServiceResponse<LostDogComment>> EditLostDogComment(LostDogComment comment);
     }
 }

@@ -27,7 +27,7 @@ namespace Backend.Models.Dogs
         public string Name { get; set; }
 
         [Required]
-        public Picture Picture { get; set; }
+        public PictureDog Picture { get; set; }
         [Required]
         [MaxLength(50)]
         public string HairLength { get; set; }

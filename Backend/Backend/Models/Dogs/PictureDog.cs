@@ -2,7 +2,7 @@
 
 namespace Backend.Models.Dogs
 {
-    public class Picture
+    public class PictureDog
     {
         [Required]
         [MaxLength(150)]
@@ -17,6 +17,10 @@ namespace Backend.Models.Dogs
 
         [Required]
         public byte[] Data { get; set; }
+
+        public Dog Dog { get; set; }
+
+        public int DogId { get; set; }
 
         public override string ToString() => FileName;
 

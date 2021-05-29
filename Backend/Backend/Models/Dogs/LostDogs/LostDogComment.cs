@@ -1,10 +1,5 @@
 ﻿using Backend.Models.Authentication;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Backend.Models.Dogs.LostDogs
 {
@@ -26,9 +21,12 @@ namespace Backend.Models.Dogs.LostDogs
         public Account Author { get; set; } 
 
         [Required]
-        public int DogId { get; set; }
+        public LostDog LostDog { get; set; }
 
         [Required]
-        public Picture Picture { get; set; }
+        public int LostDogId { get; set; }
+
+        [Required]
+        public PictureComment Picture { get; set; }
     }
 }

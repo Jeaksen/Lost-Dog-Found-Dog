@@ -51,7 +51,7 @@ namespace Backend.Services.LostDogs
                         picture.CopyTo(ms);
                         data = ms.ToArray();
                     }
-                    lostDog.Picture = new Picture()
+                    lostDog.Picture = new PictureDog()
                     {
                         FileName = picture.FileName,
                         FileType = picture.ContentType,
@@ -108,7 +108,7 @@ namespace Backend.Services.LostDogs
                         picture.CopyTo(ms);
                         data = ms.ToArray();
                     }
-                    lostDog.Picture = new Picture()
+                    lostDog.Picture = new PictureDog()
                     {
                         FileName = picture.FileName,
                         FileType = picture.ContentType,
@@ -151,34 +151,34 @@ namespace Backend.Services.LostDogs
         }
         
 
-        // Image has to be posted as well
-        public async Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto commentDto)
-        {
-            LostDogComment comment = mapper.Map<LostDogComment>(commentDto);
-            var repoResponse = await lostDogDataRepository.AddLostDogComment(comment);
-            var serviceResponse = mapper.Map<RepositoryResponse<LostDogComment>, ServiceResponse<LostDogComment>>(repoResponse);
-            if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-            return serviceResponse;
-        }
+        //// Image has to be posted as well
+        //public async Task<ServiceResponse<LostDogComment>> AddLostDogComment(AddLostDogCommentDto commentDto)
+        //{
+        //    LostDogComment comment = mapper.Map<LostDogComment>(commentDto);
+        //    var repoResponse = await lostDogDataRepository.AddLostDogComment(comment);
+        //    var serviceResponse = mapper.Map<RepositoryResponse<LostDogComment>, ServiceResponse<LostDogComment>>(repoResponse);
+        //    if (!serviceResponse.Successful)
+        //        serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+        //    return serviceResponse;
+        //}
 
-        public async Task<ServiceResponse<List<LostDogComment>>> GetLostDogComments(int dogId)
-        {
-            var repoResponse = await lostDogDataRepository.GetLostDogComments(dogId);
-            var serviceResponse = mapper.Map<RepositoryResponse<List<LostDogComment>>, ServiceResponse<List<LostDogComment>>>(repoResponse);
-            if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-            return serviceResponse;
-        }
+        //public async Task<ServiceResponse<List<LostDogComment>>> GetLostDogComments(int dogId)
+        //{
+        //    var repoResponse = await lostDogDataRepository.GetLostDogComments(dogId);
+        //    var serviceResponse = mapper.Map<RepositoryResponse<List<LostDogComment>>, ServiceResponse<List<LostDogComment>>>(repoResponse);
+        //    if (!serviceResponse.Successful)
+        //        serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+        //    return serviceResponse;
+        //}
 
-        // Image may be posted as well
-        public async Task<ServiceResponse<LostDogComment>> EditLostDogComment(LostDogComment comment)
-        {
-            var repoResponse = await lostDogDataRepository.EditLostDogComment(comment);
-            var serviceResponse = mapper.Map<RepositoryResponse<LostDogComment>, ServiceResponse<LostDogComment>>(repoResponse);
-            if (!serviceResponse.Successful)
-                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
-            return serviceResponse;
-        }
+        //// Image may be posted as well
+        //public async Task<ServiceResponse<LostDogComment>> EditLostDogComment(LostDogComment comment)
+        //{
+        //    var repoResponse = await lostDogDataRepository.EditLostDogComment(comment);
+        //    var serviceResponse = mapper.Map<RepositoryResponse<LostDogComment>, ServiceResponse<LostDogComment>>(repoResponse);
+        //    if (!serviceResponse.Successful)
+        //        serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+        //    return serviceResponse;
+        //}
     }
 }
