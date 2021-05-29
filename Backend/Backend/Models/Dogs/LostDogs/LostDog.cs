@@ -9,7 +9,7 @@ namespace Backend.Models.Dogs.LostDogs
     public class LostDog : Dog
     {
         [Required]
-        public Location Location { get; set; }
+        public LocationDog Location { get; set; }
 
         [Required]
         public DateTime DateLost { get; set; }

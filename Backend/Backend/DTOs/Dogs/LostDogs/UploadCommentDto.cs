@@ -5,10 +5,10 @@ namespace Backend.DTOs.Dogs
     public class UploadCommentDto
     {
         [Required]
-        public int Text { get; set; }
+        public string Text { get; set; }
 
         [Required]
-        public int LocationDto { get; set; }
+        public LocationDto LocationDto { get; set; }
 
         [Required]
         public int AuthorId { get; set; }

@@ -136,7 +136,7 @@ namespace Backend.Tests
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()

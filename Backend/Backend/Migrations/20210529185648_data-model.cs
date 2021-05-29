@@ -134,36 +134,14 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Locations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    District = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LostDogId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Locations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Locations_Dogs_LostDogId",
-                        column: x => x.LostDogId,
-                        principalTable: "Dogs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LostDogComments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<int>(type: "int", nullable: false),
-                    Location = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
-                    LostDogId = table.Column<int>(type: "int", nullable: false)
+                    LostDogId = table.Column<int>(type: "int", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,6 +156,48 @@ namespace Backend.Migrations
                         name: "FK_LostDogComments_Dogs_LostDogId",
                         column: x => x.LostDogId,
                         principalTable: "Dogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LostDogLocations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    District = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LostDogId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LostDogLocations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LostDogLocations_Dogs_LostDogId",
+                        column: x => x.LostDogId,
+                        principalTable: "Dogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommentLocations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    District = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CommentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentLocations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommentLocations_LostDogComments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "LostDogComments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -218,6 +238,12 @@ namespace Backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CommentLocations_CommentId",
+                table: "CommentLocations",
+                column: "CommentId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CommentPictures_LostDogCommentId",
                 table: "CommentPictures",
                 column: "LostDogCommentId",
@@ -245,21 +271,20 @@ namespace Backend.Migrations
                 column: "ShelterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Locations_LostDogId",
-                table: "Locations",
-                column: "LostDogId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_LostDogComments_AuthorId",
                 table: "LostDogComments",
-                column: "AuthorId",
-                unique: true);
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LostDogComments_LostDogId",
                 table: "LostDogComments",
                 column: "LostDogId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LostDogLocations_LostDogId",
+                table: "LostDogLocations",
+                column: "LostDogId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shelters_Email",
@@ -292,6 +317,9 @@ namespace Backend.Migrations
                 name: "Addresses");
 
             migrationBuilder.DropTable(
+                name: "CommentLocations");
+
+            migrationBuilder.DropTable(
                 name: "CommentPictures");
 
             migrationBuilder.DropTable(
@@ -301,7 +329,7 @@ namespace Backend.Migrations
                 name: "DogPictures");
 
             migrationBuilder.DropTable(
-                name: "Locations");
+                name: "LostDogLocations");
 
             migrationBuilder.DropTable(
                 name: "LostDogComments");

@@ -1,10 +1,9 @@
-﻿using Backend.Models.Dogs.LostDogs;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.Dogs
+namespace Backend.Models.Dogs.LostDogs
 {
-    public class Location : IComparable, IEquatable<Location>
+    public class LocationComment : IComparable, IEquatable<LocationComment>
     {
         [Required]
         public int Id { get; set; }
@@ -18,14 +17,14 @@ namespace Backend.Models.Dogs
         public string District { get; set; }
 
         [Required]
-        public LostDog LostDog { get; set; }
+        public LostDogComment Comment { get; set; }
 
         [Required]
-        public int LostDogId { get; set; }
+        public int CommentId { get; set; }
 
         public int CompareTo(object obj)
         {
-            if (obj is Location location)
+            if (obj is LocationComment location)
             {
                 int result = location.City.CompareTo(City);
                 if (result != 0)
@@ -35,7 +34,7 @@ namespace Backend.Models.Dogs
             return -1;
         }
 
-        public bool Equals(Location other)
+        public bool Equals(LocationComment other)
         {
             return CompareTo(other) == 0;
         }

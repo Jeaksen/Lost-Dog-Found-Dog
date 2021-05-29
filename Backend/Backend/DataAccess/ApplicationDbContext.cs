@@ -15,7 +15,8 @@ namespace Backend.DataAccess
         public DbSet<Dog> Dogs { get; set; }
         public DbSet<ShelterDog> ShelterDogs { get; set; }
         public DbSet<LostDogComment> LostDogComments { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        public DbSet<LocationDog> LostDogLocations { get; set; }
+        public DbSet<LocationComment> CommentLocations { get; set; }
         public DbSet<PictureDog> DogPictures { get; set; }
         public DbSet<PictureComment> CommentPictures { get; set; }
         public DbSet<DogBehavior> DogBehaviors { get; set; }
@@ -36,11 +37,11 @@ namespace Backend.DataAccess
             builder.Entity<Dog>().Property("Discriminator").HasMaxLength(50);
             builder.Entity<Dog>().HasOne(d => d.Picture).WithOne(p => p.Dog).HasForeignKey<PictureDog>(p => p.DogId).OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<LostDog>().HasOne(d => d.Location).WithOne(l => l.LostDog).HasForeignKey<Location>(l => l.LostDogId).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<LostDog>().HasOne(d => d.Location).WithOne(l => l.LostDog).HasForeignKey<LocationDog>(l => l.LostDogId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<LostDog>().HasMany(d => d.Comments).WithOne(c => c.LostDog);
 
-            builder.Entity<LostDogComment>().HasOne(d => d.Picture).WithOne(p => p.LostDogComment).HasForeignKey<PictureComment>(p => p.LostDogCommentId).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<LostDogComment>().HasOne(d => d.Author).WithOne().HasForeignKey<LostDogComment>(c => c.AuthorId).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<LostDogComment>().HasOne(d => d.Picture).WithOne(p => p.LostDogComment).HasForeignKey<PictureComment>(p => p.LostDogCommentId).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
+            builder.Entity<LostDogComment>().HasOne(d => d.Author).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Shelter>().HasIndex(s => s.Name).IsUnique();
             builder.Entity<Shelter>().HasIndex(s => s.Email).IsUnique();

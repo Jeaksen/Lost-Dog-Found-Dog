@@ -10,9 +10,9 @@ namespace Backend.DTOs.Dogs
 
         public int LostDogId { get; set; }
 
-        public int Text { get; set; }
+        public string Text { get; set; }
 
-        public int LocationDto { get; set; }
+        public LocationDto LocationDto { get; set; }
 
         public GetAccountDto Author { get; set; }
 

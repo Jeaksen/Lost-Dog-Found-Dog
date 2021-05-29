@@ -246,18 +246,14 @@ namespace Backend.DataAccess.LostDogs
             try
             {
                 var dogResp = await GetLostDogDetails(dogId);
-                var lostDog = await dbContext.LostDogs.FindAsync(dogId);
-                if (lostDog == null)
-                {
-                    response.Successful = false;
-                    response.Message = $"Failed to find dog {dogId}";
-                } 
-                else
+                if (dogResp.Successful)
                 {
                     dbContext.LostDogs.Remove(dogResp.Data);
                     dbContext.SaveChanges();
                     response.Message = $"Lost Dog with id {dogId} was deleted";
-                }
+                } 
+                else
+                    response = dogResp;
             }
             catch (Exception e)
             {
@@ -268,93 +264,68 @@ namespace Backend.DataAccess.LostDogs
         }
 
 
-        //public async Task<RepositoryResponse<LostDogComment>> AddLostDogComment(LostDogComment comment)
-        //{
-        //    var response = new RepositoryResponse<LostDogComment>();
-        //    try
-        //    {
-        //        var lostDog = await dbContext.LostDogs.FindAsync(comment.DogId);
-        //        if (lostDog == null)
-        //        {
-        //            response.Successful = false;
-        //            response.Message = $"Failed to find dog with id {comment.DogId}";
-        //        } 
-        //        else
-        //        {
-        //            lostDog.Comments.Add(comment);
-        //            dbContext.SaveChanges();
-        //            // Does the ID change?
-        //            response.Data = lostDog.Comments.Last();
-        //            response.Message = $"Comment for Lost Dog with id {comment.DogId} was added";
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        response.Successful = false;
-        //        response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
-        //    }
-        //    return response;
-        //}
+        public async Task<RepositoryResponse<LostDogComment>> AddLostDogComment(LostDogComment comment)
+        {
+            var response = new RepositoryResponse<LostDogComment>();
+            try
+            {
+                var lostDog = await dbContext.LostDogs.FindAsync(comment.LostDogId);
+                if (lostDog == null)
+                {
+                    response.Successful = false;
+                    response.Message = $"Failed to find dog with id {comment.LostDogId}";
+                }
+                else
+                {
+                    if (comment.Location == null)
+                        throw new ArgumentException("LostDog comment location can not be null");
+                    lostDog.Comments.Add(comment);
+                    dbContext.SaveChanges();
+                    response.Data = lostDog.Comments.Last();
+                    response.Message = $"Comment with id {lostDog.Comments.Last().Id} for Lost Dog with id {comment.LostDogId} was added";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
+            }
+            return response;
+        }
 
-        //public async Task<RepositoryResponse<List<LostDogComment>>> GetLostDogComments(int dogId)
-        //{
-        //    var response = new RepositoryResponse<List<LostDogComment>> ();
-        //    try
-        //    {
-        //        var comments =  await dbContext.LostDogComments.Where(c => c.DogId == dogId).ToListAsync();
-        //        response.Data = comments;
-        //        response.Message = $"Found {comments.Count} Lost Dogs Comments";
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        response.Successful = false;
-        //        response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
-        //    }
-        //    return response;
-        //}
+        public async Task<RepositoryResponse> DeleteLostDogComment(int dogId, int commentId)
+        {
+            var response = new RepositoryResponse();
+            try
+            {
+                var dogResp = await GetLostDogDetails(dogId);
+                if (dogResp.Successful)
+                {
+                    if (dogResp.Data.Comments.RemoveAll(c => c.Id == commentId) == 1)
+                    {
+                        dbContext.SaveChanges();
+                        response.Message = $"Lost Dog with id {dogId} was deleted";
+                    }
+                    else
+                    {
+                        response.Successful = false;
+                        response.Message = $"Comment with id {commentId} was not found for lost dog with id {dogId}!";
+                    }
 
-        //public async Task<RepositoryResponse<LostDogComment>> EditLostDogComment(LostDogComment comment)
-        //{
-        //    var response = new RepositoryResponse<LostDogComment>();
-        //    try
-        //    {
-        //        var lostDog = await dbContext.LostDogs.FindAsync(comment.DogId);
-        //        if (lostDog == null)
-        //        {
-        //            response.Successful = false;
-        //            response.Message = $"Failed to find dog {comment.DogId}";
-        //        }
-        //        else
-        //        {
-        //            int index = lostDog.Comments.FindIndex(c => c.Id == comment.Id);
-        //            if (index == -1)
-        //            {
-        //                response.Successful = false;
-        //                response.Message = $"Failed to comment for dog {comment.DogId} with id {comment.Id}";
-        //            } 
-        //            else
-        //            {
-        //                lostDog.Comments[index] = comment;
-        //                dbContext.SaveChanges();
-        //                response.Data = comment;
-        //                response.Message = $"Comment for Lost Dog with id {comment.DogId} was edited";
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        response.Successful = false;
-        //        response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
-        //    }
-        //    return response;
-        //}
-
+                }
+                else
+                    response = dogResp;
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
+            }
+            return response;
+        }
 
         private List<PropertyInfo> GetNotNullProperties<T>(T obj) => obj.GetType().GetProperties().Where(p => p.GetValue(obj) != null).ToList();
 
         private List<PropertyInfo> GetSimpleProperties<T>(T obj) => obj.GetType().GetProperties().Where(p => !p.PropertyType.IsClass || p.PropertyType == typeof(string)).ToList();
-
-       
-
     }
 }

@@ -21,8 +21,10 @@ namespace Backend
             CreateMap<GetAccountDto, Account>().ForMember(a => a.UserName, opt => opt.MapFrom(dto => dto.Name));
             CreateMap<Account, GetAccountDto>().ForMember(dto => dto.Name, opt => opt.MapFrom(a => a.UserName));
 
-            CreateMap<LocationDto, Location>();
-            CreateMap<Location, LocationDto>();
+            CreateMap<LocationDto, LocationDog>();
+            CreateMap<LocationDog, LocationDto>();
+            CreateMap<LocationDto, LocationComment>();
+            CreateMap<LocationComment, LocationDto>();
 
             CreateMap<PictureComment, GetPictureDto>();
             CreateMap<PictureDog, GetPictureDto>();

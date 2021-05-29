@@ -18,6 +18,54 @@ namespace Backend.Tests.LostDogs
             lostDogRepository = databaseAuthFixture.LostDogRepository;
         }
 
+        private LostDog GetValidDog()
+        {
+            return new LostDog()
+            {
+                Breed = "dogdog",
+                Age = 5,
+                Size = "Large, very large",
+                Color = "Orange but a bit yellow and green dots",
+                SpecialMark = "tattoo of you on the neck",
+                Name = "Cat",
+                Picture = new PictureDog()
+                {
+                    FileName = "photo",
+                    FileType = "png",
+                    Data = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+                },
+                HairLength = "Long",
+                EarsType = "Short",
+                TailLength = "None",
+                Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
+                DateLost = new DateTime(2021, 3, 20),
+                OwnerId = 1,
+                Comments = new List<LostDogComment>()
+            };
+        }
+
+        private LostDogComment GetValidComment()
+        {
+            return new LostDogComment()
+            {
+                Text = "nice dog",
+                AuthorId = 1,
+                Location = new LocationComment()
+                {
+                    City = "Warsaw",
+                    District = "Mokotów"
+                },
+                Picture = new PictureComment()
+                {
+                    FileName = "photo",
+                    FileType = "png",
+                    Data = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+
+                }
+            };
+        }
+
         [Fact]
         public async void AddingLostDogSuccessfulForValidDogInfo()
         {
@@ -39,7 +87,7 @@ namespace Backend.Tests.LostDogs
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -68,7 +116,7 @@ namespace Backend.Tests.LostDogs
                 HairLength = "Long",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -115,7 +163,7 @@ namespace Backend.Tests.LostDogs
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -170,7 +218,7 @@ namespace Backend.Tests.LostDogs
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -204,7 +252,7 @@ namespace Backend.Tests.LostDogs
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -244,7 +292,7 @@ namespace Backend.Tests.LostDogs
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -277,7 +325,7 @@ namespace Backend.Tests.LostDogs
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -300,7 +348,7 @@ namespace Backend.Tests.LostDogs
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Czarna", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Czarna", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -316,6 +364,138 @@ namespace Backend.Tests.LostDogs
 
             Assert.True(filteringResult.Successful && filteringResult2.Successful && filteringResult3.Successful && filteringResult4.Successful && !filteringResult5.Successful);
             Assert.True(filteringResult.Data[0].Id == filteringResult2.Data[0].Id && filteringResult.Data[^1].Id == filteringResult3.Data[0].Id && filteringResult3.Data[0].Id == filteringResult4.Data[0].Id);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentSuccessfulForValidCommentAndExistingDog()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentFailsForValidCommentAndNotExistingDog()
+        {
+            var comment = GetValidComment();
+            comment.LostDogId = -1;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.False(commentResult.Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentSuccessfulForCommentWithoutPicture()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            comment.Picture = null;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentFailsForCommentWithoutLocation()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            comment.Location = null;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.False(commentResult.Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentFailsForCommentWithoutText()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            comment.Text = null;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.False(commentResult.Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentFailsForCommentWithNonExistingAuthor()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            comment.AuthorId = -1;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.False(commentResult.Successful);
+        }
+
+        [Fact]
+        public async void DeleteLostDogCommentSuccessfulForExistingDogAndComment()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.DeleteLostDogComment(commentResult.Data.LostDogId, commentResult.Data.Id);
+            Assert.True(removeResult.Successful);
+        }
+
+        [Fact]
+        public async void DeleteLostDogCommentFailsForNotExistingDog()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.DeleteLostDogComment(-1, commentResult.Data.Id);
+            Assert.False(removeResult.Successful);
+        }
+
+        [Fact]
+        public async void DeleteLostDogCommentFailsForNotExistingComment()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.DeleteLostDogComment(commentResult.Data.LostDogId, -1);
+            Assert.False(removeResult.Successful);
+        }
+
+        [Fact]
+        public async void DeleteLostDogCommentFailsForCommentAddedToAnotherDog()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var saveDog2 = GetValidDog();
+            var result2 = await lostDogRepository.AddLostDog(saveDog2);
+            Assert.True(result2.Successful);
+            var comment = GetValidComment();
+            comment.LostDogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.DeleteLostDogComment(result2.Data.Id, commentResult.Data.Id);
+            Assert.False(removeResult.Successful);
         }
     }
 }
