@@ -11,6 +11,7 @@ import RegisterNewDog from './RegisterNewDog';
 import DogDetails from './DogDetails';
 import UserHome from './UserHome'
 import FoundDog from './FoundDog';
+import FoundDog2 from './FoundDog_oldV';
 import {Backend_Switch} from './Helpers/Backend'
 import LoadingPage from './Helpers/LoadingPage'
 import FilteredDogList from './FilteredDogList'
@@ -185,7 +186,7 @@ ViewContent = (indx,item)=>{
   //console.log("ITEM: " + item);
   if(indx==0)
   {
-    return (<ExamplePage />);
+    return (<FoundDog2 Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>);
   }
   else if(indx==1)
   {

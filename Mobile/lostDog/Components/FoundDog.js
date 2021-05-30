@@ -1,14 +1,29 @@
 import * as React from 'react';
-import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity, Image,ScrollView,SafeAreaView } from 'react-native';
+import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity, Image,ScrollView,SafeAreaView,Animated } from 'react-native';
 import found from '../Assets/found.png'
 import serach from '../Assets/search.png'
-const {width, height} = Dimensions.get("screen")
+import PicturePage from './InfoPages/PicturePage.js'
+import LocationPage from './InfoPages/LocationPage.js'
+import BreedPage from './InfoPages/BreedPage.js'
+import AgePage from './InfoPages/AgePage.js'
+import SizePage from './InfoPages/SizePage.js';
+import ColorPage from './InfoPages/ColorPage.js';
+import TimePage from './InfoPages/TimePage.js';
 
+const {width, height} = Dimensions.get("screen")
+const speed=300;
+const delta=100;
+var pos_Left=-delta;
+var pos_right=delta;
+var moveDirection=1;
 
 export default class FoundDog extends React.Component {
     state={
         // Copied from other page most of this is not usefull
+        image: null,
         breed: "",
+
+
         ageFrom: "",
         ageTo: "",
         size: "",
@@ -18,9 +33,58 @@ export default class FoundDog extends React.Component {
         locationDistrict: "",
         dateLostBefore: "",
         dateLostAfter: "",
+
+        //For ui:
+        index: 1,
+        switchAnim: new Animated.Value(0),
+        fadeAnim: new Animated.Value(1),
+    }
+
+    ChildrenRef={
+        moveToNext: () => this.moveToNext(),
+        SetData: (Data,value) => this.SetData(Data,value),
+        setBreed: (x) => this.setBreed(x),
+        setPicture: (p) => this.setPicture(p),
       }
-    
-      SearchButton=()=>{
+
+      setPicture=(p)=>{
+        console.log("picture is set: "+ p)
+        this.setState({image: p})
+      }
+      setBreed=(x)=>{
+        console.log("Breed is set: "+ x)
+        this.setState({breed: x})
+      }
+
+
+    moveToNext =()=>
+    {
+        this.fading();
+        this.moving();
+    }
+    fading =() =>
+    {
+        Animated.timing(this.state.fadeAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start(
+            ()=>{Animated.timing(this.state.fadeAnim,{toValue:  1,duration: speed,useNativeDriver: true}).start();}
+        )
+    }
+    moving =() =>{
+        console.log(" --- moveToNext")
+        Animated.timing(this.state.switchAnim,{toValue:  pos_Left,duration: speed,useNativeDriver: true}).start(
+        ()=>{
+          //change View
+          this.setState({index: this.state.index+1})
+          Animated.timing(this.state.switchAnim,{toValue:  pos_right,duration: 1,useNativeDriver: true}).start(
+            () =>{Animated.timing(this.state.switchAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start();}
+          );
+        })
+      }
+
+    SetData = (Data,value)=>{
+
+    }
+
+    SearchButton=()=>{
         data ={
           breed: this.state.breed,
           ageFrom: this.state.ageFrom,
@@ -36,36 +100,57 @@ export default class FoundDog extends React.Component {
         console.log("Wysyłam dane: "+ data);
         this.props.Navi.swtichPage(8,data);
       }
+
+    ViewContent = ()=>
+    {
+        if(this.state.index==1)
+        {
+          return (<PicturePage ParentRef={this.ChildrenRef}/>);
+        }
+        else if(this.state.index==2)
+        {
+          return (<LocationPage ParentRef={this.ChildrenRef}/>);
+        }
+        else if(this.state.index==3)
+        {
+          return (<TimePage ParentRef={this.ChildrenRef}/>);
+        }
+        else if(this.state.index==4)
+        {
+          return (<BreedPage ParentRef={this.ChildrenRef}/>);
+        }
+        else if(this.state.index==5)
+        {
+          return (<AgePage ParentRef={this.ChildrenRef}/>);
+        }
+        else if(this.state.index==6)
+        {
+          return (<SizePage ParentRef={this.ChildrenRef}/>);
+        }
+        else if(this.state.index==7)
+        {
+          return (<ColorPage ParentRef={this.ChildrenRef}/>);
+        } 
+    }
+
   render(){
+    const switchAnim={
+        transform: [
+            {
+            translateX:this.state.switchAnim,
+            },
+        ],
+        opacity: this.state.fadeAnim,
+    }
     return(
         <View style={styles.content}>
-            <View style={[{flexDirection: 'row', width: 300, margin: 20}]}>
-                <Image source={found} style={[styles.Icon,{width: 150,height:150}]}/>
-                <Text  style={[{ width: 200,fontSize: 30, fontWeight: 'bold', textAlignVertical: 'center'}]}> What kind of dog did you seen ?</Text>
-            </View>
-            <SafeAreaView style={[{height: '30%'}]}>
-                <ScrollView >
-                {/* String data */}
-                    <TextInput style={styles.inputtext} placeholder="Name"              onChangeText={(x) => this.setState({name: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Breed"             onChangeText={(x) => this.setState({breed: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Age From"          onChangeText={(x) => this.setState({ageFrom: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Age To"            onChangeText={(x) => this.setState({ageTo: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Size"              onChangeText={(x) => this.setState({size: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Color"             onChangeText={(x) => this.setState({color: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Location city"     onChangeText={(x) => this.setState({locationCity: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Location district" onChangeText={(x) => this.setState({locationDistrict: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="Before lost date"  onChangeText={(x) => this.setState({dateLostBefore: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="After lost date"   onChangeText={(x) => this.setState({dateLostAfter: x})}/>
-                    <Text style={styles.normText}>When the dog was lost?</Text>
-                    <TextInput style={styles.inputtext} placeholder="Data"          onChangeText={(x) => this.setState({dateLost: x})}/>
-                    <Text style={styles.normText}>Localization:</Text>
-                    <TextInput style={styles.inputtext} placeholder="City"          onChangeText={(x) => this.setState({LocationCity: x})}/>
-                    <TextInput style={styles.inputtext} placeholder="District"      onChangeText={(x) => this.setState({LocationDistinct: x})}/>
-                </ScrollView>
-            </SafeAreaView>
-            <TouchableOpacity style={[styles.Center,{margin: 20}]} onPress={() => this.SearchButton()}>
-                <Image source={serach} style={[styles.Icon,{width: 80,height:80}]}/>
-            </TouchableOpacity>
+            <View style={[{flexDirection: 'row', width: 150, margin: 20}]}>
+                <Image source={found} style={[styles.Icon,{width: 100, height:100}]}/>
+                <Text  style={[{ width: '100%', fontSize: 25, fontWeight: 'bold', textAlignVertical: 'center', color: '#99481f'}]}> What kind of dog have you seen ?</Text>
+            </View> 
+            <Animated.View style={[styles.PageHolder,switchAnim]}>
+                {this.ViewContent()}
+            </Animated.View>
         </View>
   )
   }
@@ -78,46 +163,15 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         alignSelf: 'center',
         },
-  inputtext: {
-    fontSize: 16,
-    height: 30,
-    width: width*0.5,
-    borderColor: '#000000',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 5,
-    marginVertical: 10,
-  },
-  content: {
-    marginHorizontal: 30,
-    height: '100%',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    marginVertical: 'auto',
-  },
-  loginButton:{
-    marginTop: 20,
-    backgroundColor: 'black',
-    width: width*0.2,
-    height: height*0.05,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-},
-logintext:{
-    marginTop: 'auto',
-    marginBottom: 'auto',
-    fontSize: 15,
-    color: 'white',
-    textAlign: 'center',
-},
-inputtext: {
-    fontSize: 16,
-    height: 30,
-    width: width*0.5,
-    borderColor: '#000000',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 5,
-    marginVertical: 10,
-  },
+    content: {
+        marginHorizontal: 30,
+        height: '100%',
+        width: '80%',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginVertical: 'auto',
+    },
+    PageHolder:{
+        height: '60%'
+    }
 });

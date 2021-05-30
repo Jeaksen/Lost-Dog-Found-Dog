@@ -15,7 +15,6 @@ export default class DogList extends React.Component {
   }
 
   getDogList = ()=>{
-
     this.props.Navi.RunOnBackend("getDogList",null).then((responseData)=>{
       //console.log(responseData)
       this.setState({DogList: responseData});
