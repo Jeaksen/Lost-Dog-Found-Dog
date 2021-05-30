@@ -130,7 +130,7 @@ namespace Backend.Services.Shelters
                         picture.CopyTo(ms);
                         data = ms.ToArray();
                     }
-                    shelterDog.Picture = new Picture()
+                    shelterDog.Picture = new PictureDog()
                     {
                         FileName = picture.FileName,
                         FileType = picture.ContentType,

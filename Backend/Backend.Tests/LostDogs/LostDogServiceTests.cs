@@ -185,12 +185,119 @@ namespace Backend.Tests.LostDogs
                 ContentType = "image/jpeg"
             };
             var dogDto = new UploadLostDogDto();
-            var dog = mapper.Map<LostDog>(dogDto);
             repo.Setup(o => o.UpdateLostDog(It.IsAny<LostDog>())).Returns(Task.FromResult(new RepositoryResponse<LostDog>() { Successful = false }));
             security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns((IFormFile f) => new ServiceResponse());
             var service = new LostDogService(repo.Object, security.Object, mapper, logger);
 
             Assert.False((await service.UpdateLostDog(dogDto, picture, 1)).Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentSuccessfulForSuccessfulResponses()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            using var memoryStream = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+            var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", "filename")
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
+            };
+            var commentDto = new UploadCommentDto();
+            repo.Setup(o => o.AddLostDogComment(It.IsAny<LostDogComment>())).Returns(Task.FromResult(new RepositoryResponse<LostDogComment>()));
+            security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns(new ServiceResponse());
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.True((await service.AddLostDogComment(commentDto, picture)).Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentFailsForSecurityError()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            using var memoryStream = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+            var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", "filename")
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
+            };
+            var commentDto = new UploadCommentDto();
+            repo.Setup(o => o.AddLostDogComment(It.IsAny<LostDogComment>())).Returns(Task.FromResult(new RepositoryResponse<LostDogComment>()));
+            security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns(new ServiceResponse() { Successful = false });
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.AddLostDogComment(commentDto, picture)).Successful);
+        }
+
+        [Fact]
+        public async void AddLostDogCommentFailsForRepositoryError()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            using var memoryStream = new MemoryStream(new byte[] { 1, 2, 3, 4 });
+            var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", "filename")
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "image/jpeg"
+            };
+            var commentDto = new UploadCommentDto();
+            repo.Setup(o => o.AddLostDogComment(It.IsAny<LostDogComment>())).Returns(Task.FromResult(new RepositoryResponse<LostDogComment>() { Successful = false }));
+            security.Setup(s => s.IsPictureValid(It.IsAny<IFormFile>())).Returns(new ServiceResponse());
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.AddLostDogComment(commentDto, picture)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteLostDogCommentSuccessfulForSuccessfulResponses()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            repo.Setup(o => o.DeleteLostDogComment(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.True((await service.DeleteLostDogComment(1, 1)).Successful);
+        }
+
+        [Fact]
+        public async void DeleteLostDogCommentSuccessfulForRepoError()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            repo.Setup(o => o.DeleteLostDogComment(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.DeleteLostDogComment(1, 1)).Successful);
+        }
+
+        [Fact]
+        public async void GetLostDogCommentSuccessfulForSuccessfulResponses()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            repo.Setup(o => o.GetLostDogComment(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDogComment>()));
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.True((await service.GetLostDogComment(1, 1)).Successful);
+        }
+
+        [Fact]
+        public async void GetLostDogCommentSuccessfulForRepoError()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            repo.Setup(o => o.GetLostDogComment(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDogComment>() { Successful = false }));
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.GetLostDogComment(1, 1)).Successful);
         }
     }
 }

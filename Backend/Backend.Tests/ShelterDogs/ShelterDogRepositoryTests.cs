@@ -30,7 +30,7 @@ namespace Backend.Tests.ShelterDogs
                 Color = "Orange but a bit yellow and green dots",
                 SpecialMark = "tattoo of you on the neck",
                 Name = "Cat",
-                Picture = new Picture()
+                Picture = new PictureDog()
                 {
                     FileName = "photo",
                     FileType = "png",

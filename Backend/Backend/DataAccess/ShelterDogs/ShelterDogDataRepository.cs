@@ -21,6 +21,57 @@ namespace Backend.DataAccess.ShelterDogs
             this.logger = logger;
         }
 
+        public async Task<RepositoryResponse<ShelterDog>> GetShelterDogDetails(int dogId)
+        {
+            var response = new RepositoryResponse<ShelterDog>();
+            try
+            {
+                var dog = await dbContext.ShelterDogs
+                                            .Where(ld => ld.Id == dogId)
+                                            .Include(dog => dog.Behaviors)
+                                            .Include(dog => dog.Picture)
+                                            .SingleOrDefaultAsync();
+                if (dog == default)
+                {
+                    response.Successful = false;
+                    response.Message = $"Dog with id {dogId} was not found";
+                }
+                else
+                {
+                    response.Data = dog;
+                    response.Message = $"Shelter Dog with id {dogId} was found";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to find dog: {e.Message}  {e.InnerException?.Message}";
+            }
+            return response;
+        }
+
+        public async Task<RepositoryResponse<List<ShelterDog>, int>> GetShelterDogs(int shelterId, int page, int size)
+        {
+            var response = new RepositoryResponse<List<ShelterDog>, int>();
+            try
+            {
+                var query = dbContext.ShelterDogs
+                            .Where(dog => dog.ShelterId == shelterId)
+                            .Include(dog => dog.Behaviors)
+                            .Include(dog => dog.Picture).OrderBy(d => d.Id);
+
+                response.Metadata = (int)Math.Ceiling(await query.CountAsync() / (double)size);
+                response.Data = await query.Skip(page * size).Take(size).ToListAsync();
+                response.Message = $"Found {response.Data.Count} Shelter Dogs";
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to get shelter dogs: {e.Message} {e.InnerException?.Message}";
+            }
+            return response;
+        }
+
         public async Task<RepositoryResponse<ShelterDog>> AddShelterDog(ShelterDog shelterDog)
         {
             var response = new RepositoryResponse<ShelterDog>();
@@ -64,57 +115,6 @@ namespace Backend.DataAccess.ShelterDogs
             {
                 response.Successful = false;
                 response.Message = $"Failed to delete dog: {e.Message}  {e.InnerException?.Message}";
-            }
-            return response;
-        }
-
-        public async Task<RepositoryResponse<ShelterDog>> GetShelterDogDetails(int dogId)
-        {
-            var response = new RepositoryResponse<ShelterDog>();
-            try
-            {
-                var dog = await dbContext.ShelterDogs
-                                            .Where(ld => ld.Id == dogId)
-                                            .Include(dog => dog.Behaviors)
-                                            .Include(dog => dog.Picture)
-                                            .SingleOrDefaultAsync();
-                if (dog == default)
-                {
-                    response.Successful = false;
-                    response.Message = $"Dog with id {dogId} was not found";
-                }
-                else
-                {
-                    response.Data = dog;
-                    response.Message = $"Shelter Dog with id {dogId} was found";
-                }
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = $"Failed to find dog: {e.Message}  {e.InnerException?.Message}";
-            }
-            return response;
-        }
-
-        public async Task<RepositoryResponse<List<ShelterDog>, int>> GetShelterDogs(int shelterId, int page, int size)
-        {
-            var response = new RepositoryResponse<List<ShelterDog>, int>();
-            try
-            {
-                var query = dbContext.ShelterDogs
-                            .Where(dog => dog.ShelterId == shelterId)
-                            .Include(dog => dog.Behaviors)
-                            .Include(dog => dog.Picture);
-
-                response.Metadata = (int)Math.Ceiling(await query.CountAsync() / (double)size);
-                response.Data = await query.Skip(page * size).Take(size).ToListAsync();
-                response.Message = $"Found {response.Data.Count} Shelter Dogs";
-            }
-            catch (Exception e)
-            {
-                response.Successful = false;
-                response.Message = $"Failed to get shelter dogs: {e.Message} {e.InnerException?.Message}";
             }
             return response;
         }
