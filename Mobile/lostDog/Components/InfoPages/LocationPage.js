@@ -12,21 +12,47 @@ const {width, height} = Dimensions.get("screen")
 
 export default class LocationPage extends React.Component {
 
+    state={
+        manuall: false,
+        locationCity: "",
+        locationDistrict: "",
+    }
     _getLocation = async () =>{
-        const{status}  = Permissions.askAsync(Permissions.Location);
-
-        if(status !=='granted')
+        try
         {
-            console.log("Permission not granted !");
-            Alert.alert(
-                "No permissions",
-                "I can not take your localization becouse I don't have permission"
-              );
+            const{status}  = Permissions.askAsync(Permissions.Location);
+
+            if(status !=='granted')
+            {
+                console.log("Permission not granted !");
+                Alert.alert(
+                    "No permissions",
+                    "I can not take your localization becouse I don't have permission"
+                );
+            }
+            else
+            {
+                const userLocation = await Location.getCurrentPositionAsync()
+                console.log(userLocation);
+            }
+        }
+        catch(error)
+        {
+
         }
 
-        const userLocation = await Location.getCurrentPositionAsync()
-        console.log(userLocation);
-
+    }
+    setManually=()=>{
+        this.setState({manuall: true})
+    }
+    save=()=>{
+        this.props.ParentRef.setPicture(
+            {
+                locationCity: this.state.locationCity,
+                locationDistrict: this.state.locationDistrict,
+            }
+        )
+        this.goToNext()
     }
     goToNext=()=>{
         this.props.ParentRef.moveToNext();
@@ -36,22 +62,34 @@ export default class LocationPage extends React.Component {
     return(
         <View style={styles.content}>
           <Text style={styles.Title}>Step 2/7 - Location</Text>
-          <View>
-            <TouchableOpacity style={styles.Button} onPress={() => this._getLocation()}>
-                <Image style={[styles.ButtonIcon,{marginLeft: '5%'}]} source={GpsIcon} />
-                <Text style={styles.ButtonText} >Get my location</Text>
-            </TouchableOpacity>
+          {
+            !this.state.manuall?     
+            <View>
+                <TouchableOpacity style={styles.Button} onPress={() => this._getLocation()}>
+                    <Image style={[styles.ButtonIcon,{marginLeft: '5%'}]} source={GpsIcon} />
+                    <Text style={styles.ButtonText} >Get my location</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
-                <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={WrittingIcon} />
-                <Text style={styles.ButtonText} >Enter Manually</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.Button} onPress={() => this.setManually()}>
+                    <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={WrittingIcon} />
+                    <Text style={styles.ButtonText} >Enter Manually</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
-                <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={SkipIcon} />
-                <Text style={styles.ButtonText} >Skip</Text>
-            </TouchableOpacity>
-          </View>
+                <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
+                    <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={SkipIcon} />
+                    <Text style={styles.ButtonText} >Skip</Text>
+                </TouchableOpacity>
+            </View>
+            :
+            <View style={{marginTop: 10}}>
+                <TextInput style={styles.inputtext} placeholder="City ..."      onChangeText={(x) => this.setState({locationCity: x})}/>
+                <TextInput style={styles.inputtext} placeholder="District ..."  onChangeText={(x) => this.setState({locationDistrict: x})}/>
+                <TouchableOpacity style={styles.Button} onPress={() => this.save()}>
+                  <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={SkipIcon} />
+                  <Text style={styles.ButtonText}>Continue</Text>
+                </TouchableOpacity>
+            </View>
+            }
         </View>
   )
   }
@@ -94,5 +132,15 @@ const styles = StyleSheet.create({
         width: 35,
         height:35,
         alignSelf: 'center',
-    }
+    },
+    inputtext: {
+        fontSize: 16,
+        height: 30,
+        width: width*0.5,
+        borderColor: '#000000',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingLeft: 5,
+        marginVertical: 10,
+      },
 });

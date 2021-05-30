@@ -9,6 +9,7 @@ export default class LocationPage extends React.Component {
 
     state={
         KeyboardIsOpen: false,
+        OtherBreed: "",
     }
 
     goToNext=()=>{
@@ -18,6 +19,9 @@ export default class LocationPage extends React.Component {
     accept=(data)=>{
       this.props.ParentRef.setBreed(data)
       this.goToNext()
+    }
+    save=(data)=>{
+
     }
 
   componentDidMount() {
@@ -90,8 +94,8 @@ export default class LocationPage extends React.Component {
                     <Text style={styles.ButtonText}>Poodle</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.Button} onPress={() => this.accept("Shih Tzu")}>
-                    <Text style={styles.ButtonText}>Shih Tzu</Text>
+                <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
+                    <Text style={styles.ButtonText}>Skip</Text>
                 </TouchableOpacity>
               </View>
           </View>
@@ -99,13 +103,13 @@ export default class LocationPage extends React.Component {
             <View></View>
             }
           
-          <TextInput style={styles.inputtext} placeholder="Other ..." onChangeText={(x) => this.accept(x)}/>
+          <TextInput style={styles.inputtext} placeholder="Other ..." onChangeText={(x) => this.setState({OtherBreed: x})}/>
 
           {
               !this.state.KeyboardIsOpen?
               <View></View>:
               <View>
-                    <TouchableOpacity style={styles.ButtonLong} onPress={() => this.goToNext()}>
+                    <TouchableOpacity style={styles.ButtonLong} onPress={() => this.accept(this.state.OtherBreed)}>
                         <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={SkipIcon} />
                         <Text style={styles.ButtonLongText}>Continue</Text>
                     </TouchableOpacity>

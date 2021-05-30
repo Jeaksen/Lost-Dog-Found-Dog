@@ -22,19 +22,18 @@ export default class FoundDog extends React.Component {
         // Copied from other page most of this is not usefull
         image: null,
         breed: "",
-
-
-        ageFrom: "",
-        ageTo: "",
-        size: "",
-        color: "",
-        name: "",
         locationCity: "",
         locationDistrict: "",
         dateLostBefore: "",
         dateLostAfter: "",
+        ageFrom: "",
+        ageTo: "",
+        size: "",
+        color: "",
+
 
         //For ui:
+        canMove: true,
         index: 1,
         switchAnim: new Animated.Value(0),
         fadeAnim: new Animated.Value(1),
@@ -45,7 +44,13 @@ export default class FoundDog extends React.Component {
         SetData: (Data,value) => this.SetData(Data,value),
         setBreed: (x) => this.setBreed(x),
         setPicture: (p) => this.setPicture(p),
-      }
+        setLocation: (x) => this.setLocation(x),
+        setDate: (x) => this.setDate(x),
+        setAge: (x) => this.setAge(x),
+        setSize: (x) => this.setSize(x),
+        setColor: (x) => this.setColor(x),
+        completed: (x) =>this.completed(),
+        }
 
       setPicture=(p)=>{
         console.log("picture is set: "+ p)
@@ -55,12 +60,48 @@ export default class FoundDog extends React.Component {
         console.log("Breed is set: "+ x)
         this.setState({breed: x})
       }
-
-
+      setLocation=(x)=>{
+        this.setState({locationCity: x.locationCity})
+        this.setState({locationDistrict: x.locationDistrict})
+      }
+      setDate=(x)=>{
+        this.setState({dateLostBefore: x.dateLostBefore})
+        this.setState({dateLostAfter: x.dateLostAfter})
+      }
+      setAge=(x)=>{
+        this.setState({ageFrom: x.ageFrom})
+        this.setState({ageTo: x.ageTo})
+      }
+      setSize=(x)=>{
+        this.setState({size: x})
+      }
+      setColor=(x)=>{
+        this.setState({color: x})
+        this.completed()
+      }
+      completed=()=>{
+        var data ={
+          breed: this.state.breed,
+          ageFrom: this.state.ageFrom,
+          ageTo: this.state.ageTo,
+          size: this.state.size,
+          color: this.state.color,
+          locationCity: this.state.locationCity,
+          locationDistrict: this.state.locationDistrict,
+          dateLostBefore: this.state.dateLostBefore,
+          dateLostAfter: this.state.dateLostAfter,
+        }
+        console.log("Wysyłam dane: "+ data);
+        this.props.Navi.swtichPage(8,data);
+      }
     moveToNext =()=>
     {
+      if (this.state.canMove)
+      {
+        this.setState({canMove: false})
         this.fading();
-        this.moving();
+        this.moving();   
+      }
     }
     fading =() =>
     {
@@ -75,7 +116,9 @@ export default class FoundDog extends React.Component {
           //change View
           this.setState({index: this.state.index+1})
           Animated.timing(this.state.switchAnim,{toValue:  pos_right,duration: 1,useNativeDriver: true}).start(
-            () =>{Animated.timing(this.state.switchAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start();}
+            () =>{Animated.timing(this.state.switchAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start(
+              this.setState({canMove: true})
+            );}
           );
         })
       }

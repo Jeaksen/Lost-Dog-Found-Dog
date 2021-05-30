@@ -224,10 +224,6 @@ const getFilteredDogList = (data,url,Token,id) =>
     {
         newUrl+='filter.color='+data.color+'&'
     }
-    if(data.name!="")
-    {
-        newUrl+='filter.name='+data.name+'&'
-    }
     if(data.locationCity!="")
     {
         newUrl+='filter.location.city='+data.locationCity+'&'

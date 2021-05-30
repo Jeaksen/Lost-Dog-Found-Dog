@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity,Image } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import ClockIcon from '../../Assets/clock.png';
 import CalendarIcon from '../../Assets/calendar.png';
 import SkipIcon from '../../Assets/skip.png';
@@ -12,16 +13,55 @@ export default class TimePage extends React.Component {
     
   state={
     timeRange: false,
+    dateFrom: new Date(),
+    dateTo: new Date(),
+
+    selectFromFlag: false,
+    selectToFlag: false,
   }
 
+  save=()=>{
+    this.props.ParentRef.setDate(
+        {
+            dateLostBefore: this.format(this.state.dateFrom),
+            dateLostAfter: this.format(this.state.dateTo),
+        }
+    )
+    this.goToNext()
+    }
   goToNext=()=>{
     this.props.ParentRef.moveToNext();
-}
+    }
 
-    Calendar = ()=>{
+    Calendar = async()=>{
         this.setState({timeRange: true})
-      }
+    }
+    onChange = (event, selectedDate) => {
+        console.log(event)
+        console.log(selectedDate)
+        this.setState({dateFrom: selectedDate})
+      };
 
+      format= (date)=>{
+          var result =date.getFullYear()
+          if(date.getMonth()<10)
+          {
+            result=result + "-0"+date.getMonth()
+          }
+          else
+          {
+            result=result + "-"+date.getMonth()
+          }
+          if(date.getDate()<10)
+          {
+            result=result + "-0"+date.getDate()
+          }
+          else
+          {
+            result=result + "-"+date.getDate()
+          }
+          return result
+      }
   render(){
     return(
         <View style={styles.content}>
@@ -29,7 +69,7 @@ export default class TimePage extends React.Component {
             {
               !this.state.timeRange?
             <View>
-                <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={styles.Button} onPress={() => this.save()}>
                     <Image style={[styles.ButtonIcon,{marginLeft: '5%'}]} source={ClockIcon} />
                     <Text style={styles.ButtonText} >I see him now</Text>
                 </TouchableOpacity>
@@ -38,12 +78,48 @@ export default class TimePage extends React.Component {
                     <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={CalendarIcon} />
                     <Text style={styles.ButtonText} >I saw him before</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
+                    <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={SkipIcon} />
+                    <Text style={styles.ButtonText} >Skip</Text>
+                </TouchableOpacity>
             </View>:
 
             <View style={{marginTop: 10}}>
-                <TextInput style={styles.inputtext} placeholder="From ..."/>
-                <TextInput style={styles.inputtext} placeholder="To ..."/>
-                <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={styles.Button} onPress={() => {this.setState({selectFromFlag: true})}}>
+                    <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={CalendarIcon} />
+                    <Text style={styles.ButtonText} >From</Text>
+                </TouchableOpacity>
+                {this.state.selectFromFlag?
+                    <DateTimePicker
+                    testID="dateFromPicker"
+                    value={this.state.dateFrom}
+                    display="calendar"
+                    onChange={(event, selectedDate) => 
+                        {
+                            this.setState({selectFromFlag: false})
+                            this.setState({dateFrom: selectedDate})}
+                        }
+                    />:<View/>}
+
+                <TouchableOpacity style={styles.Button} onPress={() => {this.setState({selectToFlag: true})}}>
+                    <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={CalendarIcon} />
+                    <Text style={styles.ButtonText} >To</Text>
+                </TouchableOpacity>
+                {this.state.selectToFlag?
+                    <DateTimePicker
+                    testID="dateFromPicker"
+                    value={this.state.dateTo}
+                    display="calendar"
+                    onChange={(event, selectedDate) => 
+                        {
+                            this.setState({selectToFlag: false})
+                            this.setState({dateTo: selectedDate})}
+                        }
+                    />:<View/>}
+
+                <Text style={{alignSelf: 'center'}}>{this.format(this.state.dateFrom)}   -   {this.format(this.state.dateTo)}</Text>
+                <TouchableOpacity style={styles.Button} onPress={() => this.save()}>
                         <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={SkipIcon} />
                         <Text style={styles.ButtonText}>Continue</Text>
                 </TouchableOpacity>

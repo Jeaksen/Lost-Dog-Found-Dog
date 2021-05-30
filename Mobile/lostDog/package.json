@@ -8,6 +8,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^3.5.0",
     "expo": "~40.0.0",
     "expo-image-picker": "~9.2.0",
     "expo-location": "~10.0.0",
@@ -24,6 +25,7 @@
     "react-native-reanimated": "~1.13.0",
     "react-native-screens": "~2.15.0",
     "react-native-unimodules": "~0.12.0",
+    "react-native-universal-datepicker-ios": "^1.0.2",
     "react-native-web": "~0.13.12",
     "yarnpkg": "^0.15.1"
   },

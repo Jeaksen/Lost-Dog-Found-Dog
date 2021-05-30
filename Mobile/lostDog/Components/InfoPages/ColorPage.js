@@ -7,8 +7,13 @@ const {width, height} = Dimensions.get("screen")
 
 export default class ColorPage extends React.Component {
 
-    state={
-        KeyboardIsOpen: false,
+    save=(x)=>
+    {
+        this.props.ParentRef.setColor(x)
+        //this.goToNext()
+    }
+    other=()=>{
+        this.props.ParentRef.completed()
     }
     goToNext=()=>{
         this.props.ParentRef.moveToNext();
@@ -20,43 +25,43 @@ export default class ColorPage extends React.Component {
           <Text style={styles.Title}>Step 7/7 - Color</Text>
             <View style={styles.grid3x3}>
               <View>
-              <TouchableOpacity style={[styles.Button,{backgroundColor: '#444444'}]} onPress={() => this.goToNext()}>
+              <TouchableOpacity style={[styles.Button,{backgroundColor: '#444444'}]} onPress={() => this.save("Black")}>
                     <Text style={styles.ButtonText}>Black</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.Button,{backgroundColor: 'brown'}]} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: 'brown'}]} onPress={() => this.save("Brown")}>
                     <Text style={styles.ButtonText}>Brown</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.Button,{backgroundColor: '#dc5019'}]} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: '#dc5019'}]} onPress={() => this.save("Red")}>
                     <Text style={styles.ButtonText}>Red</Text>
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity style={[styles.Button,{backgroundColor: '#e4e4e4'}]} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: '#e4e4e4'}]} onPress={() => this.save("White")}>
                     <Text style={[styles.ButtonText,{color: 'black'}]}>White</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.Button,{backgroundColor: 'gold'}]} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: 'gold'}]} onPress={() => this.save("Gold")}>
                     <Text style={[styles.ButtonText,{color: 'black'}]}>Gold</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.Button,{backgroundColor: '#ffd96c'}]} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: '#ffd96c'}]} onPress={() => this.save("Yellow")}>
                     <Text style={[styles.ButtonText,{color: 'black'}]}>Yellow</Text>
                 </TouchableOpacity>
 
               </View>
               <View>
-                <TouchableOpacity style={[styles.Button,{backgroundColor: 'grey'}]} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: 'grey'}]} onPress={() => this.save("Grey")}>
                     <Text style={styles.ButtonText}>Grey</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.Button,{backgroundColor: '#ccaf8f'}]} onPress={() => this.goToNext()}>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: '#ccaf8f'}]} onPress={() => this.save("Cream")}>
                     <Text style={styles.ButtonText}>Cream</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.Button,{backgroundColor: '#326b8c'}]} onPress={() => this.goToNext()}>
-                    <Text style={styles.ButtonText}>Blue</Text>
+                <TouchableOpacity style={[styles.Button,{backgroundColor: '#326b8c'}]} onPress={() => this.other()}>
+                    <Text style={styles.ButtonText}>Skip</Text>
                 </TouchableOpacity>
               </View>
           </View>

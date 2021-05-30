@@ -1984,6 +1984,13 @@
     sudo-prompt "^9.0.0"
     wcwidth "^1.0.1"
 
+"@react-native-community/datetimepicker@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-3.5.0.tgz#f0e9443990b997589b565bb2f04dbb170ecc30dc"
+  integrity sha512-d+qI4iQYnB5ekA6hhMzoWjNGLWju+zG/T5kXZrfx+XtSeU0HB8flGNJwWOZc8pDAdKatrDHkfwtGb4wZ0aNjKg==
+  dependencies:
+    invariant "^2.2.4"
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.2"
   resolved "https://registry.npmjs.org/@sinonjs/commons/-/commons-1.8.2.tgz"
@@ -7156,6 +7163,11 @@ react-native-unimodules@~0.12.0:
     unimodules-permissions-interface "~5.4.0"
     unimodules-sensors-interface "~5.4.0"
     unimodules-task-manager-interface "~5.4.0"
+
+react-native-universal-datepicker-ios@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-universal-datepicker-ios/-/react-native-universal-datepicker-ios-1.0.2.tgz#42281af869c532985f6b468ed355f325539209f6"
+  integrity sha512-4tOmtCLXzKRbNtf8bUQrz/GAF/D+8peG0LDo3+gxtumKF8hjDEg8CJvc1Vn7m3X7SVUrHtpGyCYlI4fIq2GR6Q==
 
 react-native-web@~0.13.12:
   version "0.13.18"
