@@ -16,5 +16,6 @@ namespace Backend.DataAccess.LostDogs
 
         public Task<RepositoryResponse<LostDogComment>> AddLostDogComment(LostDogComment comment);
         public Task<RepositoryResponse> DeleteLostDogComment(int dogId, int commentId);
+        public Task<RepositoryResponse<LostDogComment>> GetLostDogComment(int dogId, int commentId);
     }
 }

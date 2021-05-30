@@ -18,9 +18,8 @@ namespace Backend.Models.Dogs.LostDogs
         [Required]
         public byte[] Data { get; set; }
 
-        public LostDogComment LostDogComment { get; set; }
-
-        public int LostDogCommentId { get; set; }
+        [Required]
+        public int CommentId { get; set; }
 
         public override string ToString() => FileName;
     }

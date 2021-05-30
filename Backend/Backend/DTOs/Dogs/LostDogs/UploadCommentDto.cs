@@ -8,12 +8,12 @@ namespace Backend.DTOs.Dogs
         public string Text { get; set; }
 
         [Required]
-        public LocationDto LocationDto { get; set; }
+        public LocationDto Location { get; set; }
 
         [Required]
         public int AuthorId { get; set; }
 
         [Required]
-        public int LostDogId { get; set; }
+        public int DogId { get; set; }
     }
 }

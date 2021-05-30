@@ -17,9 +17,6 @@ namespace Backend.Models.Dogs.LostDogs
         public string District { get; set; }
 
         [Required]
-        public LostDogComment Comment { get; set; }
-
-        [Required]
         public int CommentId { get; set; }
 
         public int CompareTo(object obj)

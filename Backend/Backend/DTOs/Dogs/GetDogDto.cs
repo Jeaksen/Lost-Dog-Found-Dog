@@ -1,5 +1,4 @@
-﻿using Backend.Models.Dogs;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Backend.DTOs.Dogs
 {

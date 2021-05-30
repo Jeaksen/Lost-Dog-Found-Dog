@@ -35,12 +35,13 @@ namespace Backend.DataAccess
             builder.Entity<Account>().HasOne(a => a.Shelter).WithOne().HasForeignKey<Account>(a => a.ShelterId).IsRequired(false);
 
             builder.Entity<Dog>().Property("Discriminator").HasMaxLength(50);
-            builder.Entity<Dog>().HasOne(d => d.Picture).WithOne(p => p.Dog).HasForeignKey<PictureDog>(p => p.DogId).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Dog>().HasOne(d => d.Picture).WithOne().HasForeignKey<PictureDog>(p => p.DogId).OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<LostDog>().HasOne(d => d.Location).WithOne(l => l.LostDog).HasForeignKey<LocationDog>(l => l.LostDogId).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<LostDog>().HasMany(d => d.Comments).WithOne(c => c.LostDog);
+            builder.Entity<LostDog>().HasOne(d => d.Location).WithOne().HasForeignKey<LocationDog>(l => l.DogId).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<LostDog>().HasMany(d => d.Comments).WithOne().OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<LostDogComment>().HasOne(d => d.Picture).WithOne(p => p.LostDogComment).HasForeignKey<PictureComment>(p => p.LostDogCommentId).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
+            builder.Entity<LostDogComment>().HasOne(d => d.Picture).WithOne().HasForeignKey<PictureComment>(p => p.CommentId).OnDelete(DeleteBehavior.Cascade).IsRequired(false);
+            builder.Entity<LostDogComment>().HasOne(d => d.Location).WithOne().HasForeignKey<LocationComment>(l => l.CommentId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<LostDogComment>().HasOne(d => d.Author).WithMany().OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Shelter>().HasIndex(s => s.Name).IsUnique();

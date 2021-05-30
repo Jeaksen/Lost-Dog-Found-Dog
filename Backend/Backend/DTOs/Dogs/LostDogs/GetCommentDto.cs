@@ -8,11 +8,11 @@ namespace Backend.DTOs.Dogs
     {
         public int Id { get; set; }
 
-        public int LostDogId { get; set; }
+        public int DogId { get; set; }
 
         public string Text { get; set; }
 
-        public LocationDto LocationDto { get; set; }
+        public LocationDto Location { get; set; }
 
         public GetAccountDto Author { get; set; }
 

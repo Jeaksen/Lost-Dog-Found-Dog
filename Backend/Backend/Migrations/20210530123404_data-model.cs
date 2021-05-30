@@ -140,8 +140,9 @@ namespace Backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
-                    LostDogId = table.Column<int>(type: "int", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DogId = table.Column<int>(type: "int", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LostDogId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -168,14 +169,14 @@ namespace Backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     District = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LostDogId = table.Column<int>(type: "int", nullable: false)
+                    DogId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LostDogLocations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LostDogLocations_Dogs_LostDogId",
-                        column: x => x.LostDogId,
+                        name: "FK_LostDogLocations_Dogs_DogId",
+                        column: x => x.DogId,
                         principalTable: "Dogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -211,14 +212,14 @@ namespace Backend.Migrations
                     FileName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     FileType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    LostDogCommentId = table.Column<int>(type: "int", nullable: false)
+                    CommentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CommentPictures", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CommentPictures_LostDogComments_LostDogCommentId",
-                        column: x => x.LostDogCommentId,
+                        name: "FK_CommentPictures_LostDogComments_CommentId",
+                        column: x => x.CommentId,
                         principalTable: "LostDogComments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -244,9 +245,9 @@ namespace Backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommentPictures_LostDogCommentId",
+                name: "IX_CommentPictures_CommentId",
                 table: "CommentPictures",
-                column: "LostDogCommentId",
+                column: "CommentId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -281,9 +282,9 @@ namespace Backend.Migrations
                 column: "LostDogId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LostDogLocations_LostDogId",
+                name: "IX_LostDogLocations_DogId",
                 table: "LostDogLocations",
-                column: "LostDogId",
+                column: "DogId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

@@ -15,10 +15,7 @@ namespace Backend.Models.Dogs.LostDogs
         public Account Author { get; set; }
 
         [Required]
-        public int LostDogId { get; set; }
-
-        [Required]
-        public LostDog LostDog { get; set; }
+        public int DogId { get; set; }
 
         [Required]
         public string Text { get; set; }

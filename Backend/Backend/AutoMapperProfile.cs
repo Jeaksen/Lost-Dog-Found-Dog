@@ -30,6 +30,7 @@ namespace Backend
             CreateMap<PictureDog, GetPictureDto>();
 
             CreateMap<LostDog, GetLostDogDto>().ForMember(dto => dto.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(b => b.Behavior)));
+            CreateMap<LostDog, GetLostDogWithCommentsDto>().ForMember(dto => dto.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(b => b.Behavior)));
             CreateMap<UploadLostDogDto, LostDog>().ForMember(dog => dog.Behaviors, opt => opt.MapFrom(dto => dto.Behaviors.Select(s => new DogBehavior() { Behavior = s })));
 
             CreateMap<UploadCommentDto, LostDogComment>();

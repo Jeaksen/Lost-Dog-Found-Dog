@@ -82,10 +82,10 @@ namespace Backend.Services.LostDogs
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<GetLostDogDto>> GetLostDogDetails(int dogId)
+        public async Task<ServiceResponse<GetLostDogWithCommentsDto>> GetLostDogDetails(int dogId)
         {
             var repoResponse = await lostDogDataRepository.GetLostDogDetails(dogId);
-            var serviceResponse = mapper.Map<RepositoryResponse<LostDog>, ServiceResponse<GetLostDogDto>>(repoResponse);
+            var serviceResponse = mapper.Map<ServiceResponse<GetLostDogWithCommentsDto>>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
@@ -150,7 +150,7 @@ namespace Backend.Services.LostDogs
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LostDogComment>> AddLostDogComment(UploadCommentDto commentDto, IFormFile picture)
+        public async Task<ServiceResponse<GetCommentDto>> AddLostDogComment(UploadCommentDto commentDto, IFormFile picture)
         {
             var comment = mapper.Map<LostDogComment>(commentDto);
 
@@ -174,7 +174,7 @@ namespace Backend.Services.LostDogs
                     };
                 }
                 else
-                    return new ServiceResponse<LostDogComment>()
+                    return new ServiceResponse<GetCommentDto>()
                     {
                         Successful = false,
                         StatusCode = StatusCodes.Status400BadRequest,
@@ -183,7 +183,7 @@ namespace Backend.Services.LostDogs
             }
 
             var repoResponse = await lostDogDataRepository.AddLostDogComment(comment);
-            var serviceResponse = mapper.Map<ServiceResponse<LostDogComment>>(repoResponse);
+            var serviceResponse = mapper.Map<ServiceResponse<GetCommentDto>>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
 
@@ -194,6 +194,15 @@ namespace Backend.Services.LostDogs
         {
             var repoResponse = await lostDogDataRepository.DeleteLostDogComment(dogId, commentId);
             var serviceResponse = mapper.Map<ServiceResponse>(repoResponse);
+            if (!serviceResponse.Successful)
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetCommentDto>> GetLostDogComment(int dogId, int commentId)
+        {
+            var repoResponse = await lostDogDataRepository.GetLostDogComment(dogId, commentId);
+            var serviceResponse = mapper.Map<ServiceResponse<GetCommentDto>>(repoResponse);
             if (!serviceResponse.Successful)
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;

@@ -373,7 +373,7 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.True(commentResult.Successful);
         }
@@ -382,7 +382,7 @@ namespace Backend.Tests.LostDogs
         public async void AddLostDogCommentFailsForValidCommentAndNotExistingDog()
         {
             var comment = GetValidComment();
-            comment.LostDogId = -1;
+            comment.DogId = -1;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.False(commentResult.Successful);
         }
@@ -394,7 +394,7 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             comment.Picture = null;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.True(commentResult.Successful);
@@ -407,7 +407,7 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             comment.Location = null;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.False(commentResult.Successful);
@@ -420,7 +420,7 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             comment.Text = null;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.False(commentResult.Successful);
@@ -433,7 +433,7 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             comment.AuthorId = -1;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.False(commentResult.Successful);
@@ -446,10 +446,10 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.True(commentResult.Successful);
-            var removeResult = await lostDogRepository.DeleteLostDogComment(commentResult.Data.LostDogId, commentResult.Data.Id);
+            var removeResult = await lostDogRepository.DeleteLostDogComment(commentResult.Data.DogId, commentResult.Data.Id);
             Assert.True(removeResult.Successful);
         }
 
@@ -460,7 +460,7 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.True(commentResult.Successful);
             var removeResult = await lostDogRepository.DeleteLostDogComment(-1, commentResult.Data.Id);
@@ -474,10 +474,10 @@ namespace Backend.Tests.LostDogs
             var result = await lostDogRepository.AddLostDog(saveDog);
             Assert.True(result.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.True(commentResult.Successful);
-            var removeResult = await lostDogRepository.DeleteLostDogComment(commentResult.Data.LostDogId, -1);
+            var removeResult = await lostDogRepository.DeleteLostDogComment(commentResult.Data.DogId, -1);
             Assert.False(removeResult.Successful);
         }
 
@@ -491,11 +491,71 @@ namespace Backend.Tests.LostDogs
             var result2 = await lostDogRepository.AddLostDog(saveDog2);
             Assert.True(result2.Successful);
             var comment = GetValidComment();
-            comment.LostDogId = result.Data.Id;
+            comment.DogId = result.Data.Id;
             var commentResult = await lostDogRepository.AddLostDogComment(comment);
             Assert.True(commentResult.Successful);
             var removeResult = await lostDogRepository.DeleteLostDogComment(result2.Data.Id, commentResult.Data.Id);
             Assert.False(removeResult.Successful);
         }
+
+        [Fact]
+        public async void GetLostDogCommentSuccessfulForExistingDogAndComment()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.DogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.GetLostDogComment(commentResult.Data.DogId, commentResult.Data.Id);
+            Assert.True(removeResult.Successful);
+        }
+
+        [Fact]
+        public async void GetLostDogCommentFailsForNotExistingDog()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.DogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.GetLostDogComment(-1, commentResult.Data.Id);
+            Assert.False(removeResult.Successful);
+        }
+
+        [Fact]
+        public async void GetLostDogCommentFailsForNotExistingComment()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var comment = GetValidComment();
+            comment.DogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.GetLostDogComment(commentResult.Data.DogId, -1);
+            Assert.False(removeResult.Successful);
+        }
+
+        [Fact]
+        public async void GetLostDogCommentFailsForCommentAddedToAnotherDog()
+        {
+            var saveDog = GetValidDog();
+            var result = await lostDogRepository.AddLostDog(saveDog);
+            Assert.True(result.Successful);
+            var saveDog2 = GetValidDog();
+            var result2 = await lostDogRepository.AddLostDog(saveDog2);
+            Assert.True(result2.Successful);
+            var comment = GetValidComment();
+            comment.DogId = result.Data.Id;
+            var commentResult = await lostDogRepository.AddLostDogComment(comment);
+            Assert.True(commentResult.Successful);
+            var removeResult = await lostDogRepository.GetLostDogComment(result2.Data.Id, commentResult.Data.Id);
+            Assert.False(removeResult.Successful);
+        }
     }
 }
+

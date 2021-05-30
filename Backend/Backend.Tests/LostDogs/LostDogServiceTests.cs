@@ -275,5 +275,29 @@ namespace Backend.Tests.LostDogs
 
             Assert.False((await service.DeleteLostDogComment(1, 1)).Successful);
         }
+
+        [Fact]
+        public async void GetLostDogCommentSuccessfulForSuccessfulResponses()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            repo.Setup(o => o.GetLostDogComment(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDogComment>()));
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.True((await service.GetLostDogComment(1, 1)).Successful);
+        }
+
+        [Fact]
+        public async void GetLostDogCommentSuccessfulForRepoError()
+        {
+            var repo = new Mock<ILostDogRepository>();
+            var security = new Mock<ISecurityService>();
+
+            repo.Setup(o => o.GetLostDogComment(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<LostDogComment>() { Successful = false }));
+            var service = new LostDogService(repo.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.GetLostDogComment(1, 1)).Successful);
+        }
     }
 }
