@@ -1,5 +1,4 @@
-﻿using Backend.Models.Dogs;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Backend.DTOs.Dogs
 {
@@ -19,7 +18,7 @@ namespace Backend.DTOs.Dogs
 
         public string Name { get; set; }
 
-        public Picture Picture { get; set; }
+        public GetPictureDto Picture { get; set; }
 
         public string HairLength { get; set; }
 

@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Backend.DataAccess;
 using Backend.DataAccess.LostDogs;
+using Backend.DataAccess.ShelterDogs;
 using Backend.DataAccess.Shelters;
 using Backend.DTOs.Authentication;
 using Backend.Models.Authentication;
 using Backend.Models.Dogs;
 using Backend.Models.Dogs.LostDogs;
+using Backend.Models.Shelters;
 using Backend.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -35,6 +37,7 @@ namespace Backend.Tests
         public IAccountService AccountService => new AccountService(UserManager, RoleManager, configuration, Mapper, LoggerFactory.CreateLogger<AccountService>());
         public ILostDogRepository LostDogRepository => new LostDogDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<LostDogDataRepository>());
         public IShelterRepository ShelterRepository => new ShelterDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<ShelterDataRepository>());
+        public IShelterDogRepository ShelterDogRepository => new ShelterDogDataRepository(new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlite("Filename=AuthTest.db").Options), LoggerFactory.CreateLogger<ShelterDogDataRepository>());
 
         public DatabaseFixture()
         {
@@ -123,7 +126,7 @@ namespace Backend.Tests
                 Color = "Orange but a bit yellow and green dots",
                 SpecialMark = "tattoo of you on the neck",
                 Name = "Cat",
-                Picture = new Picture()
+                Picture = new PictureDog()
                 {
                     FileName = "photo",
                     FileType = "png",
@@ -133,7 +136,7 @@ namespace Backend.Tests
                 EarsType = "Short",
                 TailLength = "None",
                 Behaviors = new List<DogBehavior>() { new DogBehavior() { Behavior = "Angry" } },
-                Location = new Location() { City = "Biała", District = "Lol ther's none" },
+                Location = new LocationDog() { City = "Biała", District = "Lol ther's none" },
                 DateLost = new DateTime(2021, 3, 20),
                 OwnerId = 1,
                 Comments = new List<LostDogComment>()
@@ -141,6 +144,22 @@ namespace Backend.Tests
             if (LostDogRepository.AddLostDog(saveDogDog).Result == null)
                 throw new ApplicationException("Could not seed the database with a dog assigned to user");
 
+            var shelter = new Shelter()
+            {
+                IsApproved = true,
+                Name = $"VeryNiceShelter-1",
+                PhoneNumber = $"2111111111",
+                Email = $"sheltermock1@gmail.com",
+                Address = new Address
+                {
+                    City = "Gdańsk",
+                    PostCode = "12-345",
+                    Street = "Bursztynowa",
+                    BuildingNumber = "123"
+                }
+            };
+            if (ShelterRepository.AddShelter(shelter).Result == null)
+                throw new ApplicationException("Could not seed the database with a shelter");
         }
 
 

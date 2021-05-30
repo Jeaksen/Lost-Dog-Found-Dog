@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LostDogFromBackend } from '../../models/lost-dog-from-backend';
 import { LostDogService } from '../../services/lost-dog-service';
-import { AuthenticationService } from '../../services/authentication-service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { AuthenticationService } from '../../services/authentication-service'
 import { UserService } from 'src/app/services/user-service';
 import { UserDetailsData } from 'src/app/models/data';
 
@@ -25,10 +24,10 @@ export class HomePageComponent implements OnInit {
     private authenticationService: AuthenticationService) { }
 
   getLostDogs(): void {
-    console.log(localStorage.getItem('userId')!)
     this.lostDogService.getUserLostDogs(+localStorage.getItem('userId')!)
       .subscribe(response => {
         this.lostDogs = response.data;
+        console.log("Count: " + this.lostDogs.length);
       });
   }
 

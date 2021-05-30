@@ -11,7 +11,7 @@ namespace Backend.DataAccess.Shelters
 
         public Task<RepositoryResponse<Shelter>> GetShelter(int id);
 
-        public Task<RepositoryResponse> DeleteShelterWithoutDogs(int id);
+        public Task<RepositoryResponse> DeleteShelter(int id);
 
         public Task<RepositoryResponse<List<Shelter>, int>> GetShelters(string name, string sort, int page, int size);
     }

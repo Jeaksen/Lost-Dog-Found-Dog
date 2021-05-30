@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.Dogs
+namespace Backend.Models.Dogs.LostDogs
 {
-    public class Picture
+    public class PictureComment
     {
         [Required]
         [MaxLength(150)]
@@ -18,7 +18,9 @@ namespace Backend.Models.Dogs
         [Required]
         public byte[] Data { get; set; }
 
-        public override string ToString() => FileName;
+        [Required]
+        public int CommentId { get; set; }
 
+        public override string ToString() => FileName;
     }
 }

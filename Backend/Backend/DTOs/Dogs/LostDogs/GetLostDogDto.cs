@@ -1,6 +1,4 @@
-﻿using Backend.Models.Dogs.LostDogs;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace Backend.DTOs.Dogs
 {
@@ -13,7 +11,5 @@ namespace Backend.DTOs.Dogs
         public bool IsFound { get; set; } = false;
 
         public int OwnerId { get; set; }
-
-        public List<LostDogComment> Comments { get; set; }
     }
 }

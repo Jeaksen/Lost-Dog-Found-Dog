@@ -2,18 +2,16 @@
 
 namespace Backend.DTOs.Dogs
 {
-    public class AddLostDogCommentDto
+    public class UploadCommentDto
     {
+        [Required]
+        public string Text { get; set; }
 
         [Required]
-        public int Text { get; set; }
+        public LocationDto Location { get; set; }
 
         [Required]
-        public int Location { get; set; }
-
-        [Required]
-        [Display(Name = "authorId")]
-        public int AccountId { get; set; }
+        public int AuthorId { get; set; }
 
         [Required]
         public int DogId { get; set; }

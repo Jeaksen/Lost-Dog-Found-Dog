@@ -31,6 +31,9 @@ import { RegisterUserComponent } from './Components/register-user/register-user.
 import { EditLostDogComponent } from './Components/edit-lost-dog/edit-lost-dog.component';
 import { EditContactInfoComponent } from './Components/edit-contact-info/edit-contact-info.component';
 import { FilterLostDogsComponent } from './Components/filter-lost-dogs/filter-lost-dogs.component';
+import { ShelterEmployeeHomePageComponent } from './Components/shelter-employee-home-page/shelter-employee-home-page.component';
+import { ShelterEmployeeNavbarComponent } from './Components/shelter-employee-navbar/shelter-employee-navbar.component';
+import { SeeSheltersListComponent } from './Components/see-shelters-list/see-shelters-list.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { FilterLostDogsComponent } from './Components/filter-lost-dogs/filter-lo
     RegisterUserComponent,
     EditLostDogComponent,
     EditContactInfoComponent,
-    FilterLostDogsComponent
+    FilterLostDogsComponent,
+    ShelterEmployeeHomePageComponent,
+    ShelterEmployeeNavbarComponent,
+    SeeSheltersListComponent
   ],
   imports: [
     BrowserModule,
