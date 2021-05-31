@@ -1,6 +1,6 @@
 <div style="overflow: hidden;">
     <a [routerLinkActive]="['active']" [routerLink]="['/shelter-employee-home']">HOME</a>
-    <a [routerLinkActive]="['active']" [routerLink]="['/register-shelter-dog']">ADD DOG</a>
+    <a [routerLinkActive]="['active']" [routerLink]="['/register-shelter-dog', shelterID]">ADD DOG</a>
     <!-- <a [routerLinkActive]="['active']" >EDIT SHELTER INFO</a> -->
     <div style="float: right;">
         <a (click)="onClick()" [routerLink]="['/login']">LOG OUT</a>

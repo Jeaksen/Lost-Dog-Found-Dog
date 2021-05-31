@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'shelter-employee-home', component: ShelterEmployeeHomePageComponent },
   { path: 'lost-dog-details/:dogId', component: LostDogDetailsComponent },
   { path: 'shelter-details/:shelterId', component: ShelterDetailsComponent },
-  { path: 'register-shelter-dog', component: RegisterShelterDogComponent },
+  { path: 'register-shelter-dog/:shelterId', component: RegisterShelterDogComponent },
 ];
 
 @NgModule({
