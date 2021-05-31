@@ -1,9 +1,9 @@
-<mat-card id="card" style="text-align: center;">
+<mat-card id="card" class="register-panel">
     <h1>
         Register
     </h1>
     <form [formGroup]="registerUserForm" (ngSubmit)="onSubmit()">
-        <mat-form-field  appearance="standard">
+        <mat-form-field  appearance="outline">
             <mat-label>Username</mat-label>
             <input type="text" matInput formControlName="username" placeholder="Username">
             <mat-error *ngIf="registerUserForm.get('username')?.hasError('required')">
@@ -11,7 +11,7 @@
             </mat-error>
         </mat-form-field><br>
 
-        <mat-form-field  appearance="standard">
+        <mat-form-field  appearance="outline">
             <mat-label>E-mail</mat-label>
             <input type="email" matInput formControlName="email" placeholder="E-mail">
             <mat-error *ngIf="registerUserForm.get('email')?.hasError('email') && !registerUserForm.get('email')?.hasError('required')">
@@ -22,7 +22,7 @@
             </mat-error>
         </mat-form-field><br>
 
-        <mat-form-field  appearance="standard">
+        <mat-form-field  appearance="outline">
             <mat-label>Phone number</mat-label>
             <input type="tel" matInput formControlName="phoneNumber" placeholder="Phone number">
             <mat-error *ngIf="registerUserForm.get('phoneNumber')?.hasError('pattern') && !registerUserForm.get('phoneNumber')?.hasError('required')">
@@ -34,7 +34,7 @@
         </mat-form-field><br>
 
         <div formGroupName="passwords">
-            <mat-form-field  appearance="standard">
+            <mat-form-field  appearance="outline">
                 <mat-label>Password</mat-label>
                 <input matInput type="password" formControlName="password" placeholder="Password">
                 <mat-error *ngIf="registerUserForm.get('passwords')?.get('password')?.hasError('required')">
@@ -42,7 +42,7 @@
                 </mat-error>
             </mat-form-field><br>
     
-            <mat-form-field  appearance="standard">
+            <mat-form-field  appearance="outline">
                 <mat-label>Confirm Password</mat-label>
                 <input matInput type="password" formControlName="confirmPassword" placeholder="Confirm Password">
                 <mat-error *ngIf="registerUserForm.get('passwords')?.get('confirmPassword')?.hasError('required')">
@@ -51,7 +51,7 @@
             </mat-form-field><br>
         </div>
 
-        <button mat-raised-button type="submit" [disabled]="!registerUserForm.valid" color="primary">
+        <button mat-raised-button type="submit" [disabled]="!registerUserForm.valid" style="margin-top: 10px;">
             Sign up
         </button>
     </form>

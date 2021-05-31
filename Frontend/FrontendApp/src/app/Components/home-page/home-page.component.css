@@ -61,14 +61,16 @@ div:nth-child(1) {
 .list-button {
     margin-top: 50px;
     margin-bottom: auto;
+    padding-left: 8px;
     position: absolute;
     right: 20px;
 }
 .list-button2 {
     margin-top: 50px;
     margin-bottom: auto;
+    padding-left: 8px;
     position: absolute;
-    right: 155px;
+    right: 180px;
 }
 .register-button {
     margin-left: auto; 

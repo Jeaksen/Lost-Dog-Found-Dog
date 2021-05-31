@@ -53,8 +53,8 @@ export class LostDogService {
             );
     }
 
-    getUserLostDogs(userId: number): Observable<LostDogsResponse> {
-        return this.http.get<LostDogsResponse>(this.url + `lostdogs?ownerId=${userId}`)
+    getUserLostDogs(userId: string): Observable<LostDogsResponse> {
+        return this.http.get<LostDogsResponse>(this.url + `lostdogs?filter.ownerId=${userId}`)
             .pipe(
                 tap(_ => {
                     this.log('fetched lost dogs');

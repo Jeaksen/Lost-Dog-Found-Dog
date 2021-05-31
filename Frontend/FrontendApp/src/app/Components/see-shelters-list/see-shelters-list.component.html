@@ -15,9 +15,9 @@
                             {{shelter.address.city}}, {{shelter.address.street}} {{shelter.address.buildingNumber}}
                         </label>
                     </div>
-                    <!-- <button mat-raised-button class="list-button" disabled="True">
-                        View
-                    </button> -->
+                    <button mat-raised-button (click)="onViewShelterClick(shelter.id!)" class="list-button">
+                        <mat-icon>info</mat-icon> View
+                    </button>
                 </mat-list-item>
             </mat-list>
         </mat-card>

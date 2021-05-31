@@ -18,18 +18,20 @@
                         <label class="lost-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</label>
                         <label style="font-size: 20px; margin-top: 7px;">Location: {{lostdog.location.city}}, {{lostdog.location.district}} </label>
                     </div>
-                    <button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id!)" mat-raised-button class="list-button">
-                        Mark as Found
+                    <button mat-raised-button [disabled]="lostdog.isFound" (click)="onMarkAsFoundClick(lostdog.id!)" class="list-button">
+                        <mat-icon>check</mat-icon> Mark as Found
                     </button>
-                    <button mat-raised-button (click)="onEditDetailsClick(lostdog.id!)" class="list-button2" [disabled]="lostdog.isFound">
-                        Edit Details
+                    <button mat-raised-button [disabled]="lostdog.isFound" (click)="onEditDetailsClick(lostdog.id!)" class="list-button2">
+                        <mat-icon>edit</mat-icon> Edit
                     </button>
                 </mat-list-item>
             </mat-list>
         </mat-card>
         <div class="register-button">
-            <button mat-raised-button (click)="onRegisterLostDogClick()">Register Lost Dog</button>
-            <button mat-raised-button (click)="onEditContactInfoClick()">Edit Contact Info</button>
+            <button mat-raised-button (click)="onRegisterLostDogClick()" style="padding-left: 8px;">
+                <mat-icon>add</mat-icon> Register Lost Dog</button>
+            <button mat-raised-button (click)="onEditContactInfoClick()" style="padding-left: 8px;">
+                <mat-icon>edit</mat-icon> Edit Contact Info</button>
         </div>
     </div>
 </div>

@@ -13,6 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from  '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -74,6 +75,7 @@ import { ShelterDetailsComponent } from './Components/shelter-details/shelter-de
     MatNativeDateModule,
     MatRadioModule,
     MatPaginatorModule,
+    MatIconModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -92,6 +94,7 @@ import { ShelterDetailsComponent } from './Components/shelter-details/shelter-de
     MatNativeDateModule,
     MatRadioModule,
     MatPaginatorModule,
+    MatIconModule,
   ]
 })
 export class AppModule { }

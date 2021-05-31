@@ -30,4 +30,8 @@ export class SeeSheltersListComponent implements OnInit {
     this.getShelters();
   }
 
+  onViewShelterClick(shelterId: number) {
+    this.router.navigate(['/shelter-details', shelterId]);
+  }
+
 }

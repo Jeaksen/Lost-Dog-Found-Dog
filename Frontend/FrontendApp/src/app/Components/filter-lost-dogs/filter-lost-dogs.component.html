@@ -3,30 +3,7 @@
     <h1 style="text-align: center;">Lost Dogs registered in the system</h1>
 
     <div class="grid">
-        <div></div>
-        <mat-card style="margin-left: 15px; margin-bottom: 15px;">
-            <form [formGroup]="sortingForm" (ngSubmit)="onSubmit()" class="sort-form">
-                <Label class="sort-label">Sort by</Label>
-                <mat-form-field appearance="outline">
-                    <mat-select formControlName="sort" (selectionChange)="onSortingSetChangedHandler($event, 'sort')" placeholder="Date Lost">
-                        <mat-option *ngFor="let feature of sortFeatures" [value]="feature.value">
-                            {{feature.viewValue}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            
-                <Label class="sort-label">Order</Label>
-                <mat-radio-group aria-label="Select sorting option" formControlName="option">
-                    <mat-radio-button value="ASC">Ascending</mat-radio-button>
-                    <mat-radio-button value="DESC">Descending</mat-radio-button>
-                </mat-radio-group>
-            
-                <button mat-raised-button class="filter-button" style="margin-left: 100px;" type="submit">Sort</button>
-                <button mat-raised-button class="filter-button" (click)="onClearSortForm()">Cancel</button>
-            </form>
-        </mat-card>
-
-        <mat-card style="max-height: 750px;">  
+        <mat-card style="max-height: 750px; grid-row-start: 1; grid-row-end: 3;">  
             <h1 style="text-align: center;">Filters</h1>
             <form [formGroup]="filterForm" (ngSubmit)="onSubmit()" class="filter-grid">
                 <div class="filter-row">
@@ -108,21 +85,51 @@
             </form>
         </mat-card>
 
+        <mat-card style="margin-left: 15px; margin-bottom: 15px;">
+            <form [formGroup]="sortingForm" (ngSubmit)="onSubmit()" class="sort-form">
+                <div style="margin: auto; margin-top: 15px;">
+                    <label class="sort-label">Sort by</label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName="sort" (selectionChange)="onSortingSetChangedHandler($event, 'sort')" placeholder="Date Lost">
+                            <mat-option *ngFor="let feature of sortFeatures" [value]="feature.value">
+                                {{feature.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div style="margin: auto;">
+                    <label class="sort-label">Order</label>
+                    <mat-radio-group aria-label="Select sorting option" formControlName="option">
+                        <mat-radio-button value="ASC">Ascending</mat-radio-button>
+                        <mat-radio-button value="DESC">Descending</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div style="margin: auto;">
+                    <button mat-raised-button class="filter-button" style="margin-left: 100px;" type="submit">Sort</button>
+                    <button mat-raised-button class="filter-button" (click)="onClearSortForm()">Cancel</button>
+                </div>
+            </form>
+        </mat-card>
+
         <mat-card class="list-panel">
             <div class="paginator">
-                <div *ngIf="lostDogs?.length" class="pagination">
-                    <mat-form-field appearance="outline" style="margin-right:30px;">
-                        <mat-select formControlName="pageSizes" (selectionChange)="onPageSizeChangedHandler($event, 'pageSizes')"placeholder="10" >
+                <div *ngIf="lostDogs?.length">
+                    <label style="margin-right: 20px; font-size: large;">Dogs per page: </label>
+                    <mat-form-field appearance="outline" style="margin-right:30px; max-width:80px;">
+                        <mat-select (selectionChange)="onPageSizeChangedHandler($event)" placeholder="10" >
                             <mat-option *ngFor="let size of sizeOptions" [value]="size">
                                 {{size}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                  <button mat-raised-button (click)="onChangePageClick(1, true)">First</button>
-                  <button mat-raised-button (click)="onChangePageClick(-1, false)" [disabled]="currentPage == 1 ? true : false">Previous</button>
-                  <a style="margin-left:20px; margin-right: 10px;">{{currentPage}}</a>
-                  <button mat-raised-button (click)="onChangePageClick(1, false)" [disabled]="currentPage == allPagesCount ? true : false">Next</button>
-                  <button mat-raised-button (click)="onChangePageClick(allPagesCount!, true)">Last</button>
+                    <button mat-icon-button (click)="onChangePageClick(1, true)"><mat-icon>skip_previous</mat-icon></button>
+                    <button mat-icon-button (click)="onChangePageClick(-1, false)" [disabled]="currentPage == 1 ? true : false">
+                        <mat-icon>keyboard_arrow_left</mat-icon></button>
+                    <a style="margin-left:15px; margin-right: 15px;">{{currentPage}}</a>
+                    <button mat-icon-button (click)="onChangePageClick(1, false)" [disabled]="currentPage == allPagesCount ? true : false">
+                        <mat-icon>keyboard_arrow_right</mat-icon></button>
+                    <button mat-icon-button (click)="onChangePageClick(allPagesCount!, true)">
+                        <mat-icon>skip_next</mat-icon></button>
                 </div>
             </div>
             <h2 *ngIf="lostDogs?.length == 0" style="text-align: center;">No results</h2>
@@ -135,6 +142,12 @@
                         <label class="lost-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</label>
                         <label style="font-size: 20px;">Location: {{lostdog.location.city}}, {{lostdog.location.district}} </label>
                     </div>
+                    <button mat-raised-button (click)="onAddCommentClick(lostdog.id!)" class="list-button">
+                        <mat-icon>add_comment</mat-icon> Comment
+                    </button>
+                    <button mat-raised-button (click)="onViewDogDetailsClick(lostdog.id!)" class="list-button2">
+                        <mat-icon>info</mat-icon> View details
+                    </button>
                 </mat-list-item>
             </mat-list>
         </mat-card>

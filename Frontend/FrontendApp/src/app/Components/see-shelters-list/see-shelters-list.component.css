@@ -41,3 +41,10 @@
     justify-content:stretch;
 }
 
+.list-button {
+    margin-top: 50px;
+    margin-bottom: auto;
+    padding-left: 8px;
+    position: absolute;
+    right: 30px;
+}
