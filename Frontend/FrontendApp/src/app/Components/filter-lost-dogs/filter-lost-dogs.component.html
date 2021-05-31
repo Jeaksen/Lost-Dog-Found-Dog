@@ -135,17 +135,14 @@
             <h2 *ngIf="lostDogs?.length == 0" style="text-align: center;">No results</h2>
             <mat-list dense class="mat-list">
                 <mat-list-item *ngFor="let lostdog of lostDogs">
-                    <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=100 max-height=150
+                    <img [src]="'data:' + lostdog.picture!.fileType + ';base64,' + lostdog.picture!.data" width=100 max-height=100
                     style="margin-top: 60px;">
                     <div class="item-grid">
                         <label style="font-size: 20px;">{{lostdog.name}} ({{lostdog.breed}}) </label>
                         <label class="lost-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</label>
                         <label style="font-size: 20px;">Location: {{lostdog.location.city}}, {{lostdog.location.district}} </label>
                     </div>
-                    <button mat-raised-button (click)="onAddCommentClick(lostdog.id!)" class="list-button">
-                        <mat-icon>add_comment</mat-icon> Comment
-                    </button>
-                    <button mat-raised-button (click)="onViewDogDetailsClick(lostdog.id!)" class="list-button2">
+                    <button mat-raised-button (click)="onViewDogDetailsClick(lostdog.id!)" class="list-button">
                         <mat-icon>info</mat-icon> View details
                     </button>
                 </mat-list-item>

@@ -178,11 +178,7 @@ export class FilterLostDogsComponent implements OnInit {
 
   //---- Comments + details -----
   onViewDogDetailsClick(dogId: number) {
-    this.router.navigate(['/dog-details', dogId]);
+    this.router.navigate(['/lost-dog-details', dogId]);
   } 
-
-  onAddCommentClick(dogId: number) {
-
-  }
 
 }
