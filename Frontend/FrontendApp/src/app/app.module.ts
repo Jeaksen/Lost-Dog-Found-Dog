@@ -37,6 +37,7 @@ import { ShelterEmployeeNavbarComponent } from './Components/shelter-employee-na
 import { SeeSheltersListComponent } from './Components/see-shelters-list/see-shelters-list.component';
 import { ShelterDetailsComponent } from './Components/shelter-details/shelter-details.component';
 import { LostDogDetailsComponent } from './Components/lost-dog-details/lost-dog-details.component';
+import { RegisterShelterDogComponent } from './Components/register-shelter-dog/register-shelter-dog.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { LostDogDetailsComponent } from './Components/lost-dog-details/lost-dog-
     ShelterEmployeeNavbarComponent,
     SeeSheltersListComponent,
     ShelterDetailsComponent,
-    LostDogDetailsComponent
+    LostDogDetailsComponent,
+    RegisterShelterDogComponent
   ],
   imports: [
     BrowserModule,

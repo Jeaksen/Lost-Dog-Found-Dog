@@ -1,1 +1,36 @@
-<p>shelter-details works!</p>
+<div class="shelter-page"  *ngIf="shelter">
+    <div class="grid">
+        <mat-card>
+            <h1 class="shelter-name">{{shelter.name}}</h1>
+            <h3>Email: {{shelter.email}}</h3>
+            <h3>Phone number: {{shelter.phoneNumber}}</h3>
+            <h3>Address: {{shelter.address.street}} {{shelter.address.buildingNumber}}</h3>
+            <h3 style="margin-left: 105px;">{{shelter.address.postCode}}, {{shelter.address.city}}</h3>
+            <div style="display:flex; justify-content: center;">
+                <button mat-raised-button (click)="onBackToSheltersClick()" class="button1">
+                    <mat-icon>arrow_back</mat-icon> Back
+                </button>
+            </div>
+        </mat-card>
+        <mat-card style="margin-left: 15px;">
+            <h1 style="font-size: 28px; text-align: center;">Dogs from {{shelter.name}} Shelter</h1>
+            <h2 *ngIf="shelterDogs?.length == 0" style="text-align: center;">No results</h2>
+            <mat-list dense class="mat-list">
+                <mat-list-item *ngFor="let shelterdog of shelterDogs">
+                    <img [src]="'data:' + shelterdog.picture!.fileType + ';base64,' + shelterdog.picture!.data" width=100 max-height=100
+                    style="margin-top: 60px;">
+                    <div class="item-grid">
+                        <label style="font-size: 20px;">{{shelterdog.name}} ({{shelterdog.breed}}) </label>
+                        <!-- <label class="lost-label">Lost on {{shelterdog.dateLost | date:'dd-MM-yyyy'}}</label>
+                        <label style="font-size: 20px;">Location: {{shelterdog.location.city}}, {{shelterdog.location.district}} </label> -->
+                    </div>
+                    <button mat-raised-button (click)="onViewDogDetailsClick(shelterdog.id!)" class="list-button">
+                        <mat-icon>info</mat-icon> View details
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </mat-card>
+    </div>
+    
+
+</div>
