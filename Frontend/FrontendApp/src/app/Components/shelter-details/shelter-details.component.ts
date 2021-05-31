@@ -37,6 +37,7 @@ export class ShelterDetailsComponent implements OnInit {
   }
 
   onViewDogDetailsClick(dogID: number) {
-    //this.router.navigate(['/shelter-dog-details']);
+    let prev = 'shelter-details/' + this.shelterID;
+    this.router.navigate(['/shelter-dog-details', this.shelterID, dogID, {previousUrl: prev}]);
   }
 }

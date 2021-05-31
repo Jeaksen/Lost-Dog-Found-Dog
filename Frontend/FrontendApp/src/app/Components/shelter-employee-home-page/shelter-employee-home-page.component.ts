@@ -39,7 +39,7 @@ export class ShelterEmployeeHomePageComponent implements OnInit {
   }
 
   onViewDetailsClick(dogID: number) {
-
+    this.router.navigate(['/shelter-dog-details', this.shelterID, dogID, {previousUrl: 'shelter-employee-home'}]);
   }
 
   onDeleteShelterDogClick(dogID: number) {

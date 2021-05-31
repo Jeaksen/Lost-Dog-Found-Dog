@@ -12,6 +12,7 @@ import { ShelterEmployeeHomePageComponent } from './Components/shelter-employee-
 import { ShelterDetailsComponent } from './Components/shelter-details/shelter-details.component';
 import { LostDogDetailsComponent } from './Components/lost-dog-details/lost-dog-details.component';
 import { RegisterShelterDogComponent } from './Components/register-shelter-dog/register-shelter-dog.component';
+import { ShelterDogDetailsComponent } from './Components/shelter-dog-details/shelter-dog-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'lost-dog-details/:dogId', component: LostDogDetailsComponent },
   { path: 'shelter-details/:shelterId', component: ShelterDetailsComponent },
   { path: 'register-shelter-dog/:shelterId', component: RegisterShelterDogComponent },
+  { path: 'shelter-dog-details/:shelterId/:dogId', component: ShelterDogDetailsComponent },
 ];
 
 @NgModule({
