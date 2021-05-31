@@ -15,7 +15,7 @@
 
 .item-grid {
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: auto;
     grid-template-rows: 1fr 1fr;
     margin-left: 30px;
     margin-top: 50px;
@@ -34,16 +34,16 @@
 }
 
 .list-button {
-    margin-top: 50px;
+    margin-top: 60px;
     margin-bottom: auto;
     padding-left: 8px;
     position: absolute;
-    right: 20px;
+    right: 30px;
 }
 .list-button2 {
-    margin-top: 50px;
+    margin-top: 60px;
     margin-bottom: auto;
     padding-left: 8px;
     position: absolute;
-    right: 180px;
+    right: 140px;
 }

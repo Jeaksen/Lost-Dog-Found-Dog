@@ -15,8 +15,7 @@
                     style="margin-top: 60px;">
                     <div class="item-grid">
                         <label style="font-size: 20px;">{{dog.name}} ({{dog.breed}}) </label>
-                        <!-- <label class="lost-label">Lost on {{lostdog.dateLost | date:'dd-MM-yyyy'}}</label>
-                        <label style="font-size: 20px; margin-top: 7px;">Location: {{lostdog.location.city}}, {{lostdog.location.district}} </label> -->
+                        <label style="font-size: 20px; margin-top: 7px;">Age: {{dog.age}}</label>
                     </div>
                     <button mat-raised-button (click)="onDeleteShelterDogClick(dog.id!)" class="list-button">
                         <mat-icon>cancel</mat-icon> Delete

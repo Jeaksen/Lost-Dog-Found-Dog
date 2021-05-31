@@ -21,8 +21,7 @@
                     style="margin-top: 60px;">
                     <div class="item-grid">
                         <label style="font-size: 20px;">{{shelterdog.name}} ({{shelterdog.breed}}) </label>
-                        <!-- <label class="lost-label">Lost on {{shelterdog.dateLost | date:'dd-MM-yyyy'}}</label>
-                        <label style="font-size: 20px;">Location: {{shelterdog.location.city}}, {{shelterdog.location.district}} </label> -->
+                        <label style="font-size: 20px; margin-top: 7px;">Age: {{shelterdog.age}} </label>
                     </div>
                     <button mat-raised-button (click)="onViewDogDetailsClick(shelterdog.id!)" class="list-button">
                         <mat-icon>info</mat-icon> View details
