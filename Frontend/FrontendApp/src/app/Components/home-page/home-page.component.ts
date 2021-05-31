@@ -24,7 +24,7 @@ export class HomePageComponent implements OnInit {
     private authenticationService: AuthenticationService) { }
 
   getLostDogs(): void {
-    this.lostDogService.getUserLostDogs(+localStorage.getItem('userId')!)
+    this.lostDogService.getUserLostDogs(localStorage.getItem('userId')!)
       .subscribe(response => {
         this.lostDogs = response.data;
         console.log("Count: " + this.lostDogs.length);

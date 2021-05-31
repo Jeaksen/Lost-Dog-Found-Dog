@@ -1,12 +1,13 @@
 .filter-page {
     padding: 3px 19px;
     margin-top:20px;
+    min-width: 1250px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: 1fr 4fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: 120px auto;
     margin-bottom: 15px;
 }
 .filter-grid {
@@ -23,14 +24,15 @@
 
 .item-grid {
     display: grid;
-    grid-template-columns: 1.6fr 1fr;
+    grid-template-columns: 1.3fr 1fr;
     grid-template-rows: 1fr 1fr;
     margin-left: 30px;
     margin-top: 45px;
 }
 .sort-form {
     text-align: center; 
-    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
 }
 .list-panel {
     grid-column-start: 2;
@@ -72,11 +74,20 @@
 }
 
 .list-button {
-    margin-top:5px;
-    margin-bottom: 5px;
+    margin-top: 50px;
+    margin-bottom: auto;
+    padding-left: 8px;
     position: absolute;
     right: 20px;
 }
+.list-button2 {
+    margin-top: 50px;
+    margin-bottom: auto;
+    padding-left: 8px;
+    position: absolute;
+    right: 150px;
+}
+
 .lost-label {
     font-size: 24px;
     grid-row-start: 1;
@@ -88,8 +99,7 @@
     color: red;
 }
 .sort-label {
-    margin-right: 30px;
-    margin-left: 100px;
+    margin-right: 20px;
     font-size: large;
     font-weight: 500;
     border: 1px solid black;
@@ -111,15 +121,3 @@ Label {
     text-align: center;
     margin-bottom: 30px;
 }
-/* .page-item-first {
-
-}
-.page-item-previous {
-
-}
-.page-item-next {
-
-}
-.page-item-last {
-
-} */

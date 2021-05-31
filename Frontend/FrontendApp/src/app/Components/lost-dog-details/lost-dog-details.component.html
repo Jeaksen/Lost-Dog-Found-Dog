@@ -1,0 +1,44 @@
+<div class="details-page" *ngIf="lostDog">
+    <div class="grid">
+        <h1 style="font-size: 36px; text-align: center;">{{lostDog.name}}</h1>
+        <div></div>
+        <mat-card class="container">
+            <img [src]="url" id="dog_img" class="dog-image">
+        </mat-card>
+        <mat-card style="margin-left: 45px;">
+            <div class="info-grid">
+                <div class="info-column">
+                    <h3>Breed: {{lostDog.breed}}</h3>
+                    <h3>Age: {{lostDog.age}}</h3>
+                    <h3>Size: {{lostDog.size}}</h3>
+                    <h3>Color: {{lostDog.color}}</h3>
+                    <h3>Hair Length: {{lostDog.hairLength}}</h3>
+                    <h3>Ears Type: {{lostDog.earsType}}</h3>
+                    <h3>Tail Length: {{lostDog.tailLength}}</h3>
+                </div>
+                <div class="info-column">
+                    <h3 style=" color: red;">Lost on: {{lostDog.dateLost}}</h3>
+                    <h3></h3>
+                    <h3>City: {{lostDog.location.city}}</h3>
+                    <h3>District: {{lostDog.location.district}}</h3>
+                    <h3></h3>
+                    <h3>Special Marks: {{lostDog.specialMark}}</h3>
+                    <h3>Behaviour: {{lostDog.behaviors}}</h3>
+                    <button mat-raised-button (click)="onBackToListClick()" class="button1">
+                        <mat-icon>arrow_back</mat-icon> Back
+                    </button>
+                    <button mat-raised-button (click)="onAddCommentClick()" class="button1">
+                        <mat-icon>add_comment</mat-icon> Comment
+                    </button>
+                </div>
+            </div>
+        </mat-card>
+        <div class="comment-section">
+            <h1 class="comment-label">Comment Section</h1>
+            <mat-card>
+            </mat-card>
+        </div>
+        
+    </div>
+</div>
+

@@ -1,7 +1,7 @@
 app-root {
     height: 100%;
     width: 100%;
-    min-width:1100px;
+    min-width: 1100px;
     min-height: 600px;
 
     display: grid;

@@ -164,7 +164,7 @@ export class FilterLostDogsComponent implements OnInit {
   onSortingSetChangedHandler(event: MatSelectChange, controlName: string) {
     this.sortingForm.get(controlName)?.setValue(event.value);
   }
-  onPageSizeChangedHandler(event: MatSelectChange, controlName: string) {
+  onPageSizeChangedHandler(event: MatSelectChange) {
     this.currentSize = event.value;
     this.onSubmit();
   }
@@ -175,5 +175,10 @@ export class FilterLostDogsComponent implements OnInit {
     else this.currentPage += pageNum;
     this.onSubmit();
   }
+
+  //---- Comments + details -----
+  onViewDogDetailsClick(dogId: number) {
+    this.router.navigate(['/lost-dog-details', dogId]);
+  } 
 
 }
