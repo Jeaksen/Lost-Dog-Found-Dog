@@ -46,7 +46,7 @@ export class ShelterEmployeeHomePageComponent implements OnInit {
     this.shelterService.deleteShelterDog(this.shelterID, dogID).subscribe(
       response => {
         console.log(response);
-        window.location.reload();
+        this.getShelterDogs();
     });
   }
 
