@@ -38,6 +38,8 @@ import { SeeSheltersListComponent } from './Components/see-shelters-list/see-she
 import { ShelterDetailsComponent } from './Components/shelter-details/shelter-details.component';
 import { LostDogDetailsComponent } from './Components/lost-dog-details/lost-dog-details.component';
 import { LostDogCommentComponent } from './Components/lost-dog-comment/lost-dog-comment.component';
+import { RegisterShelterDogComponent } from './Components/register-shelter-dog/register-shelter-dog.component';
+import { ShelterDogDetailsComponent } from './Components/shelter-dog-details/shelter-dog-details.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,8 @@ import { LostDogCommentComponent } from './Components/lost-dog-comment/lost-dog-
     SeeSheltersListComponent,
     ShelterDetailsComponent,
     LostDogDetailsComponent,
+    RegisterShelterDogComponent,
+    ShelterDogDetailsComponent,
     LostDogCommentComponent
   ],
   imports: [
