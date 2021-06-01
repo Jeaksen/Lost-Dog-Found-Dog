@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { LostDogsResponse, PostLostDogResponse, MarkLostDogAsFoundResponse } from '../models/responses';
+import { LostDogsResponse, PostLostDogResponse, MarkLostDogAsFoundResponse, PostCommentResponse, BaseResponse } from '../models/responses';
 import { environment } from '../environments/environment-dev';
 import { Observable, of } from "rxjs";
 
@@ -86,7 +86,7 @@ export class LostDogService {
             );
     }
 
-    MarkLostDogAsFound(lostDogId: number): Observable<MarkLostDogAsFoundResponse> {
+    markLostDogAsFound(lostDogId: number): Observable<MarkLostDogAsFoundResponse> {
         return this.http.put<MarkLostDogAsFoundResponse>(this.url + `lostdogs/${lostDogId}/found`, '', this.httpOptions)
             .pipe(
                 tap(_ => {
@@ -94,6 +94,28 @@ export class LostDogService {
                     console.log(_);
                 }),
                 catchError(this.handleError<MarkLostDogAsFoundResponse>('postLostDog', undefined))
+            );
+    }
+
+    addCommentToLostDog(lostDogComment: FormData, lostDogId: number): Observable<PostCommentResponse> {
+        return this.http.post<PostCommentResponse>(`${this.url}lostdogs/${lostDogId}/comments`, lostDogComment)
+            .pipe(
+                tap(_ => {
+                    this.log('posted a comment');
+                    console.log(_);
+                }),
+                catchError(this.handleError<PostCommentResponse>('postComment'))
+            );
+    }
+
+    deleteComment(lostDogId: number, commentId: number): Observable<BaseResponse> {
+        return this.http.delete<BaseResponse>(`${this.url}lostdogs/${lostDogId}/comments/${commentId}`)
+            .pipe(
+                tap(_ => {
+                    this.log('deleted a comment');
+                    console.log(_);
+                }),
+                catchError(this.handleError<BaseResponse>('deleteComment'))
             );
     }
 

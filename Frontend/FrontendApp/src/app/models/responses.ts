@@ -1,8 +1,8 @@
-import { LoginData, RegisterUserData, UserDetailsData } from './data';
+import { CommentData, LoginData, RegisterUserData, UserDetailsData } from './data';
 import { LostDogFromBackend } from './lost-dog-from-backend';
 import { Shelter } from './shelter';
 
-interface BaseResponse {
+export interface BaseResponse {
     statusCode: number;
     successful: boolean;
     message: string;
@@ -35,4 +35,8 @@ export interface UserDetailsResponse extends BaseResponse {
 
 export interface GetSheltersResponse extends BaseResponse {
     data: Shelter[];
+}
+
+export interface PostCommentResponse extends BaseResponse {
+    data: CommentData;
 }
