@@ -1,5 +1,6 @@
 import { Location } from './location'
 import { Picture } from 'src/app/models/picture';
+import { CommentData } from './data';
 
 export interface LostDogFromBackend {
     id?: number;
@@ -18,4 +19,5 @@ export interface LostDogFromBackend {
     dateLost: string;
     picture?: Picture;
     isFound: boolean;
+    comments: CommentData[];
 }

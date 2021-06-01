@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LostDogService } from 'src/app/services/lost-dog-service';
-import { LostDog } from 'src/app/models/lost-dog';
 import { LostDogFromBackend } from '../../models/lost-dog-from-backend';
 
 
@@ -15,12 +13,14 @@ export class LostDogDetailsComponent implements OnInit {
   url!: any;
   lostDogID!: number;
   lostDog?: LostDogFromBackend;
+  isAddingComment: boolean = false;
+  userId: number = +localStorage.getItem('userId')!;
   
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private lostDogService: LostDogService,
-    private datepipe: DatePipe) { }
+    private lostDogService: LostDogService
+  ) { }
 
   ngOnInit(): void {
     this.lostDogID = parseInt(this.activatedRoute.snapshot.paramMap.get('dogId')!);
@@ -35,6 +35,27 @@ export class LostDogDetailsComponent implements OnInit {
   }
 
   onAddCommentClick(): void {
+    this.isAddingComment = true;
+  }
 
+  onSubmitComment(): void {
+    this.isAddingComment = false;
+    this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
+      this.lostDog = response.data;
+      this.url = 'data:' + this.lostDog!.picture!.fileType + ';base64,' + this.lostDog!.picture!.data;
+    });
+  }
+
+  onCancelComment(): void {
+    this.isAddingComment = true;
+  }
+
+  deleteComment(commentId: number): void {
+    this.lostDogService.deleteComment(this.lostDogID, commentId).subscribe(response => {
+      this.lostDogService.getLostDogByID(this.lostDogID).subscribe(response => {
+        this.lostDog = response.data;
+        this.url = 'data:' + this.lostDog!.picture!.fileType + ';base64,' + this.lostDog!.picture!.data;
+      });
+    })
   }
 }

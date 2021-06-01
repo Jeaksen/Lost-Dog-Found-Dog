@@ -1,0 +1,47 @@
+.mainDiv {
+    padding: 3px 19px;
+    width: 100%;
+}
+
+.commentForm {
+    display: grid;
+    /* grid-template-rows: 1fr 1fr 1fr; */
+    grid-template-rows: 100px 100px 100px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.textForm {
+    /* grid-row: 0;
+    grid-column: 0; */
+    width: 80%;
+}
+
+.upload-button {
+    position:absolute; 
+    margin-left:-50px;
+    left:50%;
+    width:100px;
+    bottom:10px;
+    height: 30px;
+    text-align: center;
+    line-height: 2em;
+    /* z-index:-1; */
+}
+
+.img-input {
+    opacity: 0; 
+    position:absolute; 
+    left:0px; 
+    top:0px; 
+    bottom: 0px;
+    font-size: 16px;
+    width:100px;
+    height:30px;
+}
+
+.images-list {
+    height: 100% !important; 
+    /* margin-bottom: 15px; */
+    text-align: center;
+    justify-content: center;
+}

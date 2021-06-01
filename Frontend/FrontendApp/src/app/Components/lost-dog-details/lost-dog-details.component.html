@@ -33,10 +33,30 @@
                 </div>
             </div>
         </mat-card>
+
+        <div *ngIf="isAddingComment" class="comment-section">
+            <app-lost-dog-comment [lostDogID]="lostDogID" (onSubmitComment)="onSubmitComment()"
+                (onCancelComment)="onCancelComment()"></app-lost-dog-comment>
+        </div>
+
         <div class="comment-section">
             <h1 class="comment-label">Comment Section</h1>
-            <mat-card>
-            </mat-card>
+            <mat-list>
+                <mat-list-item *ngFor="let comment of lostDog.comments">
+                    <div style="margin-top: 30px;">
+                        Seen by: {{comment.author.name}}. Contact: {{comment.author.email}} or {{comment.author.phoneNumber}}.<br>
+                        City: {{comment.location.city}}. District: {{comment.location.district}}.<br>
+                        Remarks: {{comment.text}}
+                    </div>
+                    <button mat-raised-button *ngIf="comment.author.id === userId" (click)="deleteComment(comment.id)"
+                        style="position: absolute; right: 20px;">
+                        <mat-icon>delete</mat-icon> Delete
+                    </button>
+                    <img *ngIf="comment.picture" 
+                        [src]="'data:' + comment.picture!.fileType + ';base64,' + comment.picture!.data" width=100 height="85x"
+                        style="position: absolute; right: 200px; margin-top: 50px;">
+                </mat-list-item>
+            </mat-list>
         </div>
         
     </div>
