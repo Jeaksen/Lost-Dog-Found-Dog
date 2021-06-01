@@ -38,6 +38,7 @@ export default class Background extends React.Component {
             }
         ],
     };
+    
     return(
   <ImageBackground style={styles.BackImage} source={backImage}>
         <Animated.View style={[styles.row, {marginLeft: '70%'},{transform: [{translateY: this.state.IdleAnim.interpolate({inputRange: [-1, 1],outputRange: [-50, 50]})}]}]}>

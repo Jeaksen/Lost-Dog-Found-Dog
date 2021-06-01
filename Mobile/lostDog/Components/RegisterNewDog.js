@@ -4,6 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import addDogIcon from '../Assets/addDogIcon.png';
 import camera from '../Assets/camera.png';
 import gallery from '../Assets/gallery.png';
+import AppIcon from '../Assets/AppIcon.png'
+import newDog from '../Assets/newdog.png'
 
 
 const {width, height} = Dimensions.get("screen")
@@ -68,24 +70,44 @@ export default class RegisterNewDog extends React.Component {
       name: "photo.jpg"
     };
 
+    var dog={
+      breed: this.state.breed,
+      age: this.state.age,
+      size: this.state.size,
+      color: this.state.color,
+      specialMark: this.state.specialMark,
+      name: this.state.name,
+      hairLength: this.state.hairLength,
+      tailLength: this.state.tailLength,
+      earsType: this.state.earsType,
+      behaviors: [this.state.behaviour1,this.state.behaviour2],
+      location: {
+        city:this.state.LocationCity,
+        district: this.state.LocationDistinct
+      },
+      dateLost: this.state.dateLost,
+      ownerId: this.props.Navi.id
+    }
+    console.log("DOG :::::")
+    console.log(dog)
     const data = new FormData();
-    data.append('breed', this.state.breed);
-    data.append('age', this.state.age);
-    data.append('size', this.state.size);
-    data.append('color', this.state.color);
-    data.append('specialMark', this.state.specialMark);
-    data.append('name', this.state.name);
-    data.append('hairLength', this.state.hairLength);
-    data.append('tailLength', this.state.tailLength);
-    data.append('earsType', this.state.earsType);
-    data.append('behaviors', this.state.behaviour1);
-    data.append('behaviors', this.state.behaviour2);
-    data.append('location.City', this.state.LocationCity);
-    data.append('location.District', this.state.LocationDistinct);
-    data.append('dateLost', this.state.dateLost);
-    data.append('ownerId', this.props.id);
+    data.append("dog",JSON.stringify(dog));
     data.append('picture', photo);    
     console.log("Data form sended");
+
+    console.log(data)
+    this.props.Navi.RunOnBackend("registerNewDog",data).then((responseData)=>{
+      //console.log(responseData)
+      console.log("succes new dog added !")
+      this.props.Navi.swtichPage(3,null);
+    }).catch((x)=>
+        console.log("Login Error" + (x))
+      )
+    return 0;
+
+
+
+
     fetch(url, {
         method: "POST",
         headers: {
@@ -104,12 +126,12 @@ export default class RegisterNewDog extends React.Component {
     return(
         <View style={styles.content}>
         {/* Icon */}
-        <View style={[styles.row, {margin: 5}]}>
-            <Image source={addDogIcon} style={styles.icon} tintColor='black'/>
+        <View style={[{flexDirection: 'row', width: 300, margin: 30}]}>
+                <Image source={newDog} style={[styles.Icon,{width: 150,height:150}]}/>
+                <Text  style={[{ width: 200,fontSize: 30, fontWeight: 'bold', textAlignVertical: 'center'}]}>What kind of dog have you lost?</Text>
         </View>
-        
-            <SafeAreaView>
-                <ScrollView >
+            <SafeAreaView style={[{height: '66%',width: 230}, styles.Center]}>
+                <ScrollView>
                 {/* String data */}
                     <TextInput style={styles.inputtext} placeholder="Dog Name"      onChangeText={(x) => this.setState({name: x})}/>
                     <TextInput style={styles.inputtext} placeholder="Breed"         onChangeText={(x) => this.setState({breed: x})}/>
@@ -156,7 +178,12 @@ export default class RegisterNewDog extends React.Component {
 
 
 const styles = StyleSheet.create({
-    
+  Center:{
+    marginLeft: 'auto', 
+    marginRight: 'auto',
+    alignSelf: 'center',
+    textAlignVertical: 'center',
+    },
   content: {
     height: '80%',
     alignSelf: 'center',

@@ -14,12 +14,13 @@ import Brain from '../Assets/brain.png';
 import SkipIcon from '../Assets/skip.png';
 import success from '../Assets/success.png';
 import notify from '../Assets/notify.png';
+import ShelterIcon from '../Assets/animal-shelter.png'
 
 const {width, height} = Dimensions.get("screen")
 const stc = require('string-to-color');
 
 
-export default class DogDetails extends React.Component {
+export default class DogDetailShelter extends React.Component {
 
   state={
     data: null,
@@ -31,78 +32,17 @@ export default class DogDetails extends React.Component {
 
    componentDidMount(){
     this.setState({data: this.props.item})
+    console.log(this.state.data)
   }
 
   toUri = (picture) =>{
     return "data:" + picture.fileType+";base64,"+picture.data
   }
 
-  SetDogAsFound=(id)=>{
-    //var token = 'Bearer ' + this.props.token 
-    console.log("SetDogAsFound" + this.props.token + " id: " + this.state.data.id)
-    fetch(this.props.Navi.URL + 'lostdogs/'+this.state.data.id+'/found', {
-        method: 'PUT', 
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': '*/*',
-            'Authorization': this.props.token ,
-        },
-    })
-    .then(response=>{return response.json();})
-        .then(responseData => {
-          console.log("ADD COMENT RESPONSE DATA:")  
-          console.log(responseData)  
-          if (responseData.successful==false) {
-            console.log("ERROR")  
-            console.log(responseData)  
-            return null;
-            }
-            else
-            {
-              return (responseData.data);
-            }
-            })
-      .catch((x)=>{
-        console.log(x)
-        reject(null)
-        return null;
-      })
-      .finally(()=>{this.props.Navi.swtichPage(3)})
-  }
   PutDataFailed=()=>{
     console.log("Set data as found Failed");
   }
 
-  ButtonRound=(l1,l2,callback)=>{
-      return(
-          <TouchableOpacity onPress={callback}>
-            <View style={{ backgroundColor: 'green', margin: 3, borderRadius: 60, height: 73,width: 73, borderColor: 'green', justifyContent: 'center'}}>
-              <View style={{alignSelf: 'center', padding: 5}}>
-                  <Text style={{color: 'white', fontSize: 13}}>{l1}</Text>
-                  {l2!=null? 
-                  <Text style={{color: 'white', fontSize: 13}}>{l2}</Text>:null}
-              </View>
-            </View>
-          </TouchableOpacity>
-      )
-  }
-
-  getFoundInfo=()=>{
-    return(
-      <View>
-        <Text style={{fontSize: 13, margin: 5}}>
-        We are thrilled to hear{'\n'}
-        your puppy is found!{'\n'}
-        Don't forget to hug{'\n'}
-        him from us and remember {'\n'}
-        to help others by posting{'\n'}
-        info everytime{'\n'}
-        you see
-        <Text style={{fontWeight: 'bold'}}> Lost Dog</Text>
-        </Text>
-      </View>
-    )
-  }
 
   Date=(x)=>{
     if(this.validate(x)) return (<View></View>)
@@ -127,7 +67,7 @@ Time=(x)=>{
      return(
      <View style={styles.Info}>
          <Image style={[styles.InfoIcon,{marginLeft: '5%'}]} source={GpsIcon} />
-         <Text style={styles.InfoText} >In the city: {x}</Text>
+         <Text style={styles.InfoText} >{x}</Text>
      </View>
      )
  }
@@ -179,12 +119,9 @@ Time=(x)=>{
 }
 
 ListOfDogs=()=>{
-  this.props.Navi.swtichPage(3,null);
+  this.props.Navi.swtichPage(10,this.state.data.shelter);
 }
 
-showComments=()=>{
-  this.props.Navi.swtichPage(13,{dogId: this.state.data.id, backItem: this.state.data});
-}
  
   render(){
     return(
@@ -192,54 +129,30 @@ showComments=()=>{
       {
         this.state.data!=null?
         <View>
-            <Text style={{fontWeight: 'bold', fontSize: 30}}>{this.state.data.name}</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 30}}>{this.state.data.dog.name}</Text>
             <View style={{flexDirection: 'row', height: 0.3*height}}>
               {/*Picture*/
-                this.state.data.picture.data!=null? 
-                <Image source={{uri: this.toUri(this.state.data.picture)}} style={styles.dogPic}/> 
+                this.state.data.dog.picture.data!=null? 
+                <Image source={{uri: this.toUri(this.state.data.dog.picture)}} style={styles.dogPic}/> 
                 : <View/>
               }
-              {
-                this.state.data.isFound==false?
-                <View>
-                  <TouchableOpacity style={styles.Button} onPress={() => this.SetDogAsFound()}>
-                    <Image style={[styles.ButtonIcon,{marginLeft: '5%'}]} source={success} />
-                    <Text style={styles.ButtonText} >Set dog as found</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.Button} onPress={() => this.showComments()}>
-                    <Image style={[styles.ButtonIcon,{marginLeft: '5%'}]} source={notify} />
-                    <Text style={styles.ButtonText} >Show where he was seen</Text>
-                  </TouchableOpacity>
-                  {
-                    
-                  /*
-                  {this.ButtonRound('   Set dog ',' as  found ',this.SetDogAsFound)}
-                  {this.ButtonRound('Show','Comments',null)}
-                  {this.ButtonRound('Love Dog',null,null)}
-                  */
-                  }
-                </View>:
-                this.getFoundInfo(this.state.data.isFound)
-              }
+              <Image source={ShelterIcon} style={styles.dogPic}/> 
             </View>
             <SafeAreaView style={styles.Scrollcontainer}>
               <ScrollView style={styles.scrollView}>
                 <View>
-                        {this.Date(this.state.data.dateLost.split("T")[0])}
-                        {this.Time(this.state.data.dateLost.split("T")[1])}
-                        {this.LocationCity(this.state.data.location.city)}
-                        {this.LocationDistrict(this.state.data.location.district)}
-                        {this.OtherInfo(NormalDog,"Breed",this.state.data.breed)}
-                        {this.OtherInfo(Age,"Age",this.state.data.age)}
-                        {this.OtherInfo(Size,"Size",this.state.data.size)}
-                        {this.OtherInfo(Hair,"Hair",this.state.data.hairLength)}
-                        {this.OtherInfo(Ear,"Ears",this.state.data.earsType)}
-                        {this.OtherInfo(Tail,"Tail",this.state.data.tailLength)}
-                        {this.LongInfo(Mark,"Special mark",this.state.data.specialMark)}
+                        {this.LocationCity("In Shelter")}
+                        {this.OtherInfo(NormalDog,"Breed",this.state.data.dog.breed)}
+                        {this.OtherInfo(Age,"Age",this.state.data.dog.age)}
+                        {this.OtherInfo(Size,"Size",this.state.data.dog.size)}
+                        {this.OtherInfo(Hair,"Hair",this.state.data.dog.hairLength)}
+                        {this.OtherInfo(Ear,"Ears",this.state.data.dog.earsType)}
+                        {this.OtherInfo(Tail,"Tail",this.state.data.dog.tailLength)}
+                        {this.LongInfo(Mark,"Special mark",this.state.data.dog.specialMark)}
                         {
-                            this.state.data.behaviors.map((e, index)=><Text key={index}>{this.LongInfo(Brain,"-Behaviour",e)}</Text>)
+                            this.state.data.dog.behaviors.map((e, index)=><Text key={index}>{this.LongInfo(Brain,"-Behaviour",e)}</Text>)
                         }
-                        {this.Color(this.state.data.color)}
+                        {this.Color(this.state.data.dog.color)}
                         <Text style={{fontSize: 30, margin: 20, alignSelf: 'center',color: '#99481f'}}>-</Text>
                 </View>
               </ScrollView>

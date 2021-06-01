@@ -9,29 +9,54 @@ import ExamplePage from './ExamplePage';
 import DogList from './DogList';
 import RegisterNewDog from './RegisterNewDog';
 import DogDetails from './DogDetails';
+import UserHome from './UserHome'
+import FoundDog from './FoundDog';
+import FoundDog2 from './FoundDog_oldV';
+import {Backend_Switch} from './Helpers/Backend'
+import LoadingPage from './Helpers/LoadingPage'
+import FilteredDogList from './FilteredDogList'
+import ShelterList from './shelterList'
+import ShelterDetails from './ShelterDetails'
+import CommentDog from './CommentDog'
+import CommentPage from './CommentPage'
+import CommentListPage from './CommentListPage'
+import DogListShelter from './DogListShelter'
+import DogDetailShelter from './DogDetailShelter'
 
 const {width, height} = Dimensions.get("screen")
-const speed=350;
+const speed=250;
 const delta=100;
 var pos_Left=-delta;
 var pos_right=delta;
 var moveDirection=1;
 
 const Headers=[
-  /*Example page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}], 
-  /*Login page   */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],                                                    
-  /*Registe page */[{id: "1",title: "Sign in",},{id: "2",title: "Sign up",}],  
-  /*DogList page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
-  /*Register new dog page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
-  /*DogDetailed page */[{id: "1",title: "logout",},{id: "3",title: "DogList",},{id: "4",title: "Add Dog",}],
+  /*0 Example page */               [{id: "1",title: "logout",},  {id: "3",title: "DogList",},  {id: "4",title: "Add Dog",}], 
+  /*1 Login page   */               [{id: "1",title: "Sign in",}, {id: "2",title: "Sign up",}],                                                    
+  /*2 Registe page */               [{id: "1",title: "Sign in",}, {id: "2",title: "Sign up",}],  
+  /*3 DogList page */               [{id: "6",title: "User",},     {id: "4",title: "Add Dog",}],
+  /*4 Register new dog page */      [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
+  /*5 DogDetailed page */           [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*6 User Home page */             [{id: "7",title: "FoundDog",}, {id: "4",title: "Add Dog",},{id: "9",title: "Shelters",}],
+  /*7 Found Dog Page */             [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
+  /*8 Filtered Dog List */          [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
+  /*9 Shelter List */               [{id: "6",title: "User",},     {id: "7",title: "FoundDog",}],
+  /*10 ShelterDetailed page */      [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*11 DogDetailed page */          [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*12 Coment page */               [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*13 Coment page */               [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*14 List of dogs in shelter */   [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*15 Details of dog in shelter */ [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
 ]
 
 export default class Navigator extends React.Component {
   state={
     token: "",
     id: "",
+    BackendAvaible: true,
     switchAnim: new Animated.Value(0),
     fadeAnim: new Animated.Value(1),
+    loadAnim: new Animated.Value(0),
     navimMainPanel_pos: 0,
 
     currentViewItem: null,
@@ -42,12 +67,14 @@ export default class Navigator extends React.Component {
       URL: 'http://10.0.2.2:5000/',
       swtichPage: (pageID,item) => this.swtichPage(pageID,item),
       setToken: (token,id,mode) => this.setToken(token,id,mode),
+      RunOnBackend: (fun,data) => this.RunOnBackend(fun,data),
     }
     
     constructor(props)
     {
       super(props);
       this.HeaderRef = React.createRef();
+      this.LoadingRef = React.createRef();
     }
     //Keyboard:
     componentDidMount() {
@@ -64,12 +91,27 @@ export default class Navigator extends React.Component {
       this.HeaderRef.current.show()
     }
 
+
 fading =() =>
 {
   Animated.timing(this.state.fadeAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start(
     ()=>{Animated.timing(this.state.fadeAnim,{toValue:  1,duration: speed,useNativeDriver: true}).start();}
   )
 }
+
+loadingSwitch =(mode) =>
+{
+  if (mode==true)
+  {
+    //this.LoadingRef.current.runAnim()
+    Animated.timing(this.state.loadAnim,{toValue:  1,duration: speed,useNativeDriver: true}).start()
+  }
+  else
+  {
+    Animated.timing(this.state.loadAnim,{toValue:  0,duration: speed,useNativeDriver: true}).start()
+  }
+}
+
 leftAnim =(newIndx,item) =>{
   var pos_1;
   var pos_2;
@@ -104,7 +146,7 @@ moveLeft= (indx,item) =>{
 
 // Functions avaible in every component:
 swtichPage= (indx,item)=>{
-  console.log("SWITCH PAGE: "+indx + " ITEM: " + item)
+  //console.log("SWITCH PAGE: "+indx + " ITEM: " + item)
   if(indx != this.state.currentViewID)
     this.moveLeft(indx,item);
 }
@@ -121,11 +163,39 @@ else{
 }
 }
 
+
+RunOnBackend = (fun,data)=>
+{
+  if(this.state.BackendAvaible==false) return new Promise((resolve,reject)=>{reject("Backend is busy")})
+  this.setState({BackendAvaible: true});
+  console.log("------------- RunOnBackend started")
+  this.loadingSwitch(true)
+  return new Promise((resolve,reject)=>
+    {
+      Backend_Switch(fun,data,this.state.token,this.state.id).then(
+        (x)=>{
+          console.log("RunOnBackend Finished")
+          this.loadingSwitch(false)
+          this.setState({BackendAvaible: true});
+          resolve(x);
+          }
+        )
+        .catch(
+          (x)=>{
+            console.log("RunOnBackend Rejected")
+            this.loadingSwitch(false)
+            this.setState({BackendAvaible: true});
+            reject(x)
+          }
+        )
+    });
+}
+
 ViewContent = (indx,item)=>{
-  console.log("ITEM: " + item);
+  //console.log("ITEM: " + item);
   if(indx==0)
   {
-    return (<ExamplePage />);
+    return (<CommentPage Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>);
   }
   else if(indx==1)
   {
@@ -147,6 +217,46 @@ ViewContent = (indx,item)=>{
   {
     return (<DogDetails Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>);
   }
+  else if(indx==6)
+  {
+    return (<UserHome Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==7)
+  {
+    return (<FoundDog Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==8)
+  {
+    return (<FilteredDogList Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==9)
+  {
+    return (<ShelterList Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==10)
+  {
+    return (<ShelterDetails Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==11)
+  {
+    return (<CommentDog Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==12)
+  {
+    return (<CommentPage Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==13)
+  {
+    return (<CommentListPage Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==14)
+  {
+    return (<DogListShelter Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==15)
+  {
+    return (<DogDetailShelter Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
 }
 render(){
     const switchAnim={
@@ -157,6 +267,10 @@ render(){
       ],
       opacity: this.state.fadeAnim,
   };
+  const loadAnim={
+   // opacity: 1,
+    opacity: this.state.loadAnim,
+  }
     var _headerHeight = 3*height/20;
     return(
       <View>
@@ -164,6 +278,9 @@ render(){
         <Animated.View style={[styles.naviMainPanel,switchAnim]}>
           <View style={styles.pageContainer}>
             {this.ViewContent(this.state.currentViewID, this.state.currentViewItem)}
+            <Animated.View style={[{marginTop: -0.8*width},loadAnim]}>
+                <LoadingPage ref={this.LoadingRef}/>
+            </Animated.View>
           </View>
         </Animated.View>
         <View style={styles.naviHeaderPanel}>
@@ -175,6 +292,7 @@ render(){
 }
 
 const styles = StyleSheet.create({
+
   pageContainer: {
     backgroundColor: 'white',
     height: '100%', 
@@ -182,16 +300,14 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 80,
     alignContent: 'center',
-    
   },
   naviHeaderPanel: {
     marginTop: '5%',
     height: '10%',
     alignContent: 'center',
-    //backgroundColor: 'black',
   },
   naviMainPanel: {
-    marginTop: '5%',
+    marginTop: '13%',
     height: '80%',
     alignContent: 'center',
   }

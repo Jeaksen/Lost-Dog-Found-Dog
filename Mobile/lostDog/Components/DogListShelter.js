@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity ,ScrollView,SafeAreaView,FlatList} from 'react-native';
+import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity ,ScrollView,SafeAreaView,FlatList,Image} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import DogListItem from './Helpers/DogListItem';
+import DogListItemShelter from './Helpers/DogListItemShelter';
+import ShelterIcon from '../Assets/animal-shelter.png'
+
 const {width, height} = Dimensions.get("screen")
 
 
-export default class DogList extends React.Component {
+export default class DogListShelter extends React.Component {
   state={
     info: " normal ",
     image: null,
@@ -14,7 +16,7 @@ export default class DogList extends React.Component {
   }
 
   getDogList = ()=>{
-    this.props.Navi.RunOnBackend("getDogList",null).then((responseData)=>{
+    this.props.Navi.RunOnBackend("getShelterDogList",{id: this.props.item.id}).then((responseData)=>{
       //console.log(responseData)
       this.setState({DogList: responseData});
       console.log("succes list of dogs is ready")
@@ -51,16 +53,21 @@ export default class DogList extends React.Component {
    }
 
   dogSelected=(item)=>{
-    //console.log("Dog is selected " + item.id);
-    this.props.Navi.swtichPage(5,item);
+    console.log("Dog is selected " + item.id);
+    
+    this.props.Navi.swtichPage(15,{dog: item, shelter: this.props.item});
   }
   render(){
     return(
         <View style={styles.content}>
+            <View style={[{flexDirection: 'row', width: 0.8*width, margin: 0}]}>
+                    <Image source={ShelterIcon} style={{width: 100, height:100, margin: 20,}}/>
+                    <Text  style={[{ width: '70%', fontSize: 25, fontWeight: 'bold', textAlignVertical: 'center', color: '#99481f'}]}>Dogs in shelter {this.props.item.name}</Text>
+                </View>
            <FlatList
             data={this.state.DogList.length>0 ? this.state.DogList : []}
         
-            renderItem={({item}) => <DogListItem item={item} dogSelected={this.dogSelected}/>}
+            renderItem={({item}) => <DogListItemShelter item={item} dogSelected={this.dogSelected}/>}
             keyExtractor={(item) => item.id.toString()}
            />
         </View>
