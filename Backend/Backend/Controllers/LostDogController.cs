@@ -159,7 +159,7 @@ namespace Backend.Controllers
 
         [HttpDelete]
         [Route("{dogId}/comments/{commentId}")]
-        public async Task<IActionResult> AddLostDogComment([FromRoute] int dogId, [FromRoute] int commentId)
+        public async Task<IActionResult> DeleteLostDogComment([FromRoute] int dogId, [FromRoute] int commentId)
         {
             var savedComment = await lostDogService.GetLostDogComment(dogId, commentId);
             if (!savedComment.Successful)
