@@ -12,13 +12,30 @@ export default class DogListItem extends React.Component {
   }
 
   render(){
-    console.log(this.props.item)
+    //console.log(this.props.item)
     return(
-        <View>
-            <Text>{this.props.key}</Text>
-            <Text>{this.props.id}</Text>
-            <Text>{this.props.text}</Text>
-            <Text>{this.props.location}</Text>
+        <View style={styles.content}>
+            <View style={{flexDirection: 'row',alignContent: 'center',alignSelf: 'center', width: '80%', padding: 15}}>
+              <View>
+                <Text>{this.props.item.location.city}</Text>
+                <Text>{this.props.item.location.district}</Text>
+                <Text> </Text>
+              </View>
+              <View style={{width: '50%'}}/>
+              <View>
+                <Text style={{alignSelf: 'flex-end'}}>{this.props.item.author.name}</Text>
+                <Text style={{alignSelf: 'flex-end'}}>{this.props.item.author.email}</Text>
+                <Text style={{alignSelf: 'flex-end'}}>{this.props.item.author.phoneNumber}</Text>
+              </View>
+            </View>
+            <View style={{flexDirection: 'row',alignContent: 'center',}}>
+              {/*Picture*/
+                this.props.item.picture.data!=null? 
+                <Image source={{uri: this.toUri(this.props.item.picture)}} style={styles.dogPic}/> 
+                : <View/>
+              }
+              <Text style={styles.longText} >{this.props.item.text}</Text>
+            </View>
         </View>
   )
   }
@@ -28,9 +45,11 @@ export default class DogListItem extends React.Component {
 
 const styles = StyleSheet.create({
     content: {
-        alignSelf: 'center',
-        flex: 1,
-        flexDirection: 'row',
+      borderWidth: 1,
+        borderColor: '#feb26d',
+        borderRadius: 90,
+        padding: 10,
+        margin: 10,
       },
       text:{
         marginTop: 'auto',
@@ -48,5 +67,9 @@ const styles = StyleSheet.create({
     },
     statusBas:{
 
+    },
+    longText:{
+      width: '50%',
+      margin: 5,
     }
 });

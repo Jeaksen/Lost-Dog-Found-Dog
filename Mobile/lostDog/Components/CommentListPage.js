@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity ,ScrollView,SafeAreaView,FlatList} from 'react-native';
+import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity ,ScrollView,SafeAreaView,FlatList,Image} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import CommentListItem from './Helpers/CommentListItem';
+import SkipIcon from '../Assets/skip.png';
+
 const {width, height} = Dimensions.get("screen")
 
 
@@ -30,12 +32,21 @@ export default class CommentListPage extends React.Component {
     this.getCommentList();
    }
 
+   back=()=>{
+    this.props.Navi.swtichPage(3,null);
+   }
   render(){
     return(
         <View style={styles.content}>
-            {
-                this.state.CommentList.map((e, index)=><CommentListItem key={index} id={e.id} text={e.text} ></CommentListItem>)
-            }
+            <FlatList
+            data={this.state.CommentList.length>0 ? this.state.CommentList : []}
+            renderItem={({item}) => <CommentListItem item={item}/>}
+            keyExtractor={(item) => item.id.toString()}
+           />
+           <TouchableOpacity style={styles.Button} onPress={() => this.back()}>
+                    <Image style={[styles.ButtonIcon, {marginLeft: '5%', transform: [{ scaleX: -1 }]}]} source={SkipIcon} />
+                    <Text style={styles.ButtonText} >Back</Text>
+            </TouchableOpacity>
         </View>
   )
   }
@@ -80,4 +91,28 @@ Title:{
   textAlign: 'center',
   fontWeight: 'bold',
 },
+Button:{
+  backgroundColor: '#feb26d',
+  width: width*0.5,
+  height: height*0.06,
+  margin: 20,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  flexDirection: 'row',
+  alignContent: 'center',
+  borderRadius: 15,
+},
+ButtonText:{
+  marginTop: 'auto',
+  marginBottom: 'auto',
+  fontSize: 15,
+  color: 'white',
+  textAlign: 'center',
+  width: '75%',
+},
+ButtonIcon:{
+  width: 35,
+  height:35,
+  alignSelf: 'center',
+}
 });

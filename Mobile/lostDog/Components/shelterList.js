@@ -28,13 +28,14 @@ export default class shelterList extends React.Component {c
    }
    
    shelterSelected=(item)=>{
-    //console.log("Dog is selected " + item.id);
+    console.log("Shelter is selected " + item.id);
     this.props.Navi.swtichPage(10,item);
   }
 
   render(){
     return(
         <View style={styles.content}>
+            <Text  style={[{ width: '70%', fontSize: 25, fontWeight: 'bold', textAlignVertical: 'center', color: '#99481f', marginBottom: 20}]}>Shelters</Text>
            <FlatList
             data={this.state.ShelterList.length>0 ? this.state.ShelterList : []}
             renderItem={({item}) => <ShelterListItem item={item} shelterSelected={this.shelterSelected}/>}

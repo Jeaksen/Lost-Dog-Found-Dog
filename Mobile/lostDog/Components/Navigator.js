@@ -20,6 +20,8 @@ import ShelterDetails from './ShelterDetails'
 import CommentDog from './CommentDog'
 import CommentPage from './CommentPage'
 import CommentListPage from './CommentListPage'
+import DogListShelter from './DogListShelter'
+import DogDetailShelter from './DogDetailShelter'
 
 const {width, height} = Dimensions.get("screen")
 const speed=250;
@@ -32,17 +34,19 @@ const Headers=[
   /*0 Example page */               [{id: "1",title: "logout",},  {id: "3",title: "DogList",},  {id: "4",title: "Add Dog",}], 
   /*1 Login page   */               [{id: "1",title: "Sign in",}, {id: "2",title: "Sign up",}],                                                    
   /*2 Registe page */               [{id: "1",title: "Sign in",}, {id: "2",title: "Sign up",}],  
-  /*3 DogList page */               [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "4",title: "Add Dog",}],
-  /*4 Register new dog page */      [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
-  /*5 DogDetailed page */           [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
-  /*6 User Home page */             [{id: "1",title: "logout",},  {id: "7",title: "FoundDog",}, {id: "4",title: "Add Dog",},{id: "9",title: "Shelters",}],
-  /*7 Found Dog Page */             [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
-  /*8 Filtered Dog List */          [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
-  /*9 Shelter List */               [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",}],
-  /*10 ShelterDetailed page */      [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
-  /*11 DogDetailed page */          [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
-  /*12 Coment page */               [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
-  /*13 Coment page */               [{id: "1",title: "logout",},  {id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*3 DogList page */               [{id: "6",title: "User",},     {id: "4",title: "Add Dog",}],
+  /*4 Register new dog page */      [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
+  /*5 DogDetailed page */           [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*6 User Home page */             [{id: "7",title: "FoundDog",}, {id: "4",title: "Add Dog",},{id: "9",title: "Shelters",}],
+  /*7 Found Dog Page */             [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
+  /*8 Filtered Dog List */          [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "9",title: "Shelters",}],
+  /*9 Shelter List */               [{id: "6",title: "User",},     {id: "7",title: "FoundDog",}],
+  /*10 ShelterDetailed page */      [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*11 DogDetailed page */          [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*12 Coment page */               [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*13 Coment page */               [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*14 List of dogs in shelter */   [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
+  /*15 Details of dog in shelter */ [{id: "6",title: "User",},     {id: "7",title: "FoundDog",},{id: "4",title: "Add Dog",}],
 ]
 
 export default class Navigator extends React.Component {
@@ -244,6 +248,14 @@ ViewContent = (indx,item)=>{
   else if(indx==13)
   {
     return (<CommentListPage Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==14)
+  {
+    return (<DogListShelter Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
+  }
+  else if(indx==15)
+  {
+    return (<DogDetailShelter Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>)
   }
 }
 render(){

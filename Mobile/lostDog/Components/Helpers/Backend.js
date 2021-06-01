@@ -50,6 +50,11 @@ export const Backend_Switch =(FunName,Data,Token,Id)=>
                 .catch((x)=> {reject(x)})
                 .then((x)=>  {resolve(x)})
                 break;
+            case "getShelterDogList":
+                getShelterDogList(Data,URL,Token)
+                .catch((x)=> {reject(x)})
+                .then((x)=>  {resolve(x)})
+                break;
         }
     });
 }
@@ -401,5 +406,46 @@ const getComment = (data,url,Token) =>
                 return null;
             })
             
+      });
+}
+
+const getShelterDogList = (data,url,Token,id) =>
+{
+    console.log("getDogList")
+    console.log("id owner: " + id)
+    //console.log(data)
+    return new Promise((resolve, reject) => {
+        fetch(url+ 'shelters/'+data.id+'/dogs?page=0&size=20', 
+        {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'Authorization': Token,
+            },
+            })
+            .then(response=>{
+                //console.log(response)
+                return response.json();
+            })
+            .then(responseData => {
+                if (responseData.successful ==false) {
+                    console.log("ERROR")  
+                    console.log(responseData)  
+                    reject(responseData.message)
+                    return null;
+                }
+                else
+                {
+                    console.log(responseData)
+                    resolve(responseData.data)
+                    return (responseData.data);
+                }
+                })
+            .catch((x)=>{
+                console.log("CATCH REJECT")
+                reject(null)
+                return null;
+            })
       });
 }
