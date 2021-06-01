@@ -95,6 +95,7 @@ export default class RegisterNewDog extends React.Component {
     data.append('picture', photo);    
     console.log("Data form sended");
 
+    console.log(data)
     this.props.Navi.RunOnBackend("registerNewDog",data).then((responseData)=>{
       //console.log(responseData)
       console.log("succes new dog added !")

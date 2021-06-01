@@ -1,68 +1,41 @@
 import * as React from 'react';
 import { View, StyleSheet,Text,TextInput,Dimensions,TouchableOpacity ,ScrollView,SafeAreaView,FlatList} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import DogListItem from './Helpers/DogListItem';
+import CommentListItem from './Helpers/CommentListItem';
 const {width, height} = Dimensions.get("screen")
 
 
-export default class DogList extends React.Component {
+export default class CommentListPage extends React.Component {
   state={
     info: " normal ",
-    image: null,
-
-    DogList: [],
+    CommentList: [],
   }
 
-  getDogList = ()=>{
-    this.props.Navi.RunOnBackend("getDogList",null).then((responseData)=>{
+  getCommentList = ()=>{
+      const data={
+        dogId: this.props.item.dogId
+      }
+    this.props.Navi.RunOnBackend("getComment",data).then((responseData)=>{
       //console.log(responseData)
-      this.setState({DogList: responseData});
-      console.log("succes list of dogs is ready")
+      this.setState({CommentList: responseData.comments});
+      console.log("succes list of comments is ready")
+      console.log(this.state.CommentList[0].id)
     }).catch((x)=>
-        console.log("Login Error" + (x))
+        console.log("Comments Error" + (x))
       )
-  }
-
-  loadingDogListFailed=()=>{
-
-  }
-
-  pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      //console.log(result);
-      this.setState({image: result.uri});
-    }
-  };
-
-  getDogInfo = ()=>{
-    //console.log("getDogInfo Button");
   }
 
   constructor(props) {
     super(props);
-    this.getDogList();
+    this.getCommentList();
    }
 
-  dogSelected=(item)=>{
-    //console.log("Dog is selected " + item.id);
-    this.props.Navi.swtichPage(5,item);
-  }
   render(){
     return(
         <View style={styles.content}>
-           <FlatList
-            data={this.state.DogList.length>0 ? this.state.DogList : []}
-        
-            renderItem={({item}) => <DogListItem item={item} dogSelected={this.dogSelected}/>}
-            keyExtractor={(item) => item.id.toString()}
-           />
+            {
+                this.state.CommentList.map((e, index)=><CommentListItem key={index} id={e.id} text={e.text} ></CommentListItem>)
+            }
         </View>
   )
   }

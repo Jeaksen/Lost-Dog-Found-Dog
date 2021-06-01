@@ -90,6 +90,8 @@ export default class FoundDog extends React.Component {
           locationDistrict: this.state.locationDistrict,
           dateLostBefore: this.state.dateLostBefore,
           dateLostAfter: this.state.dateLostAfter,
+
+          picture: this.state.image,
         }
         console.log("Wysyłam dane: "+ data);
         this.props.Navi.swtichPage(8,data);

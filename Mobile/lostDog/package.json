@@ -27,6 +27,7 @@
     "react-native-unimodules": "~0.12.0",
     "react-native-universal-datepicker-ios": "^1.0.2",
     "react-native-web": "~0.13.12",
+    "string-to-color": "^2.2.2",
     "yarnpkg": "^0.15.1"
   },
   "devDependencies": {

@@ -46,7 +46,7 @@ export default class LocationPage extends React.Component {
         this.setState({manuall: true})
     }
     save=()=>{
-        this.props.ParentRef.setPicture(
+        this.props.ParentRef.setLocation(
             {
                 locationCity: this.state.locationCity,
                 locationDistrict: this.state.locationDistrict,

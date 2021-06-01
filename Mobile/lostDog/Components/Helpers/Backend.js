@@ -40,6 +40,16 @@ export const Backend_Switch =(FunName,Data,Token,Id)=>
                 .catch((x)=> {reject(x)})
                 .then((x)=>  {resolve(x)})
                 break;
+            case "addComment":
+                addComment(Data,URL,Token)
+                .catch((x)=> {reject(x)})
+                .then((x)=>  {resolve(x)})
+                break;
+            case "getComment":
+                getComment(Data,URL,Token)
+                .catch((x)=> {reject(x)})
+                .then((x)=>  {resolve(x)})
+                break;
         }
     });
 }
@@ -161,10 +171,10 @@ const registerNewDog = (data,url,Token) =>
 const getDogList = (data,url,Token,id) =>
 {
     console.log("getDogList")
-    console.log("data: ")
+    console.log("id owner: " + id)
     //console.log(data)
     return new Promise((resolve, reject) => {
-        fetch(url+ 'lostdogs?ownerId='+id, {
+        fetch(url+ 'lostdogs?filter.ownerId='+id, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -177,15 +187,15 @@ const getDogList = (data,url,Token,id) =>
                 return response.json();
             })
             .then(responseData => {
-                if (responseData.statusCode >= 400) {
+                if (responseData.successful ==false) {
                     console.log("ERROR")  
-                    //console.log(responseData)  
-                    reject(response.statusCode)
+                    console.log(responseData)  
+                    reject(responseData.message)
                     return null;
                 }
                 else
                 {
-                    //console.log("THEN RESOLVE")
+                    console.log(responseData)
                     resolve(responseData.data)
                     return (responseData.data);
                 }
@@ -315,5 +325,81 @@ const getShelterList = (data,url,Token,id) =>
                 reject(null)
                 return null;
             })
+      });
+}
+
+const addComment = (data,url,Token) =>
+{
+    console.log("ADDCOMMENT, wysyłam dane: ")
+    console.log(data.data)
+    console.log("Na adress: " + url+'lostdogs/'+data.dogId+'/comments')
+    return new Promise((resolve, reject) => {
+        fetch(url+'lostdogs/'+data.dogId+'/comments', {
+            method: "POST",
+            headers: {
+              'Accept': '*/*',
+              'Authorization': Token,
+            },
+              body: data.data,
+            })
+            .then(response=>{return response.json();})
+            .then(responseData => {
+                console.log("ADD COMENT RESPONSE DATA:")  
+                console.log(responseData)  
+                if (responseData.successful==false) {
+                    console.log("ERROR")  
+                    console.log(responseData)  
+                    reject(responseData.message)
+                    return null;
+                }
+                else
+                {
+                    resolve(responseData.data)
+                    return (responseData.data);
+                }
+                })
+            .catch((x)=>{
+                console.log(x)
+                reject(null)
+                return null;
+            })
+            
+      });
+}
+
+const getComment = (data,url,Token) =>
+{
+    console.log("GETCOMENTS")
+    return new Promise((resolve, reject) => {
+        fetch(url+ 'lostdogs/'+data.dogId, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'Authorization': Token,
+            },
+            })
+            .then(response=>{return response.json();})
+            .then(responseData => {
+                console.log("ADD COMENT RESPONSE DATA:")  
+                console.log(responseData)  
+                if (responseData.successful==false) {
+                    console.log("ERROR")  
+                    console.log(responseData)  
+                    reject(responseData.message)
+                    return null;
+                }
+                else
+                {
+                    resolve(responseData.data)
+                    return (responseData.data);
+                }
+                })
+            .catch((x)=>{
+                console.log(x)
+                reject(null)
+                return null;
+            })
+            
       });
 }

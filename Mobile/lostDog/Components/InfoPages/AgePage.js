@@ -46,7 +46,7 @@ export default class LocationPage extends React.Component {
             <TouchableOpacity style={styles.Button} onPress={() => this.goToNext()}>
                     <Image style={[styles.ButtonIcon, {marginLeft: '5%'}]} source={SkipIcon} />
                     <Text style={styles.ButtonText} >Skip</Text>
-                </TouchableOpacity>
+            </TouchableOpacity>
 
           </View>
         </View>
