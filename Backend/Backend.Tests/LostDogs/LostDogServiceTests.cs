@@ -265,7 +265,7 @@ namespace Backend.Tests.LostDogs
         }
 
         [Fact]
-        public async void DeleteLostDogCommentSuccessfulForRepoError()
+        public async void DeleteLostDogCommentFailsForRepoError()
         {
             var repo = new Mock<ILostDogRepository>();
             var security = new Mock<ISecurityService>();
@@ -289,7 +289,7 @@ namespace Backend.Tests.LostDogs
         }
 
         [Fact]
-        public async void GetLostDogCommentSuccessfulForRepoError()
+        public async void GetLostDogCommentFailsForRepoError()
         {
             var repo = new Mock<ILostDogRepository>();
             var security = new Mock<ISecurityService>();
