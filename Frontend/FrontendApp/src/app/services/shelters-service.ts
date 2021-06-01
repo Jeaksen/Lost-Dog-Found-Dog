@@ -2,6 +2,9 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { GetSheltersResponse } from '../models/responses';
+import { ShelterResponse } from '../models/responses';
+import { AllShelterDogsResponse } from '../models/responses';
+import { ShelterDogResponse } from '../models/responses';
 import { environment } from '../environments/environment-dev';
 import { Observable, of } from "rxjs";
 
@@ -28,6 +31,62 @@ export class SheltersService {
                     console.log(_);
                 }),
                 catchError(this.handleError<GetSheltersResponse>('getAllShelters', undefined))
+            );
+    }
+
+    getShelterByID(shelterID: number): Observable<ShelterResponse> {
+        return this.http.get<ShelterResponse>(this.url + 'shelters/' + shelterID)
+            .pipe(
+                tap(_ => {
+                    this.log('fetched shelter');
+                    console.log(_);
+                }),
+                catchError(this.handleError<ShelterResponse>('getShelterByID', undefined))
+            );
+    }
+
+    getAllShelterDogs(shelterID: number): Observable<AllShelterDogsResponse> {
+        return this.http.get<AllShelterDogsResponse>(this.url + `shelters/${shelterID}/dogs`)
+            .pipe(
+                tap(_ => {
+                    this.log('fetched all shelter dogs');
+                    console.log(_);
+                }),
+                catchError(this.handleError<AllShelterDogsResponse>('getAllShelterDogs', undefined))
+            );
+    }
+
+    getShelterDogByID(shelterID: number, dogID: number): Observable<ShelterDogResponse> {
+        return this.http.get<ShelterDogResponse>(this.url + `shelters/${shelterID}/dogs/${dogID}`)
+            .pipe(
+                tap(_ => {
+                    this.log('fetched shelter dog');
+                    console.log(_);
+                }),
+                catchError(this.handleError<ShelterDogResponse>('getShelterDogByID', undefined))
+            );
+    }
+
+    //-------------- ADD/DELETE --------------
+    postShelterDog(shelterID: number, shelterDog: FormData): Observable<ShelterDogResponse> {
+        return this.http.post<ShelterDogResponse>(this.url + `shelters/${shelterID}/dogs`, shelterDog)
+            .pipe(
+                tap(_ => {
+                    this.log('posted a shelter dog');
+                    console.log(_);
+                }),
+                catchError(this.handleError<ShelterDogResponse>('postShelterDog'))
+            );
+    }
+
+    deleteShelterDog(shelterID: number, dogID: number): Observable<ShelterDogResponse> {
+        return this.http.delete<ShelterDogResponse>(this.url + `shelters/${shelterID}/dogs/${dogID}`)
+            .pipe(
+                tap(_ => {
+                    this.log('deleted a shelter dog');
+                    console.log(_);
+                }),
+                catchError(this.handleError<ShelterDogResponse>('deleteShelterDog'))
             );
     }
 

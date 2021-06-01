@@ -1,0 +1,31 @@
+<div class="details-page" *ngIf="shelterDog">
+    <div class="grid">
+        <h1 style="font-size: 36px; text-align: center;">{{shelterDog.name}}</h1>
+        <div></div>
+        <mat-card class="container">
+            <img [src]="url" id="dog_img" class="dog-image">
+        </mat-card>
+        <mat-card style="margin-left: 45px;">
+            <div class="info-grid">
+                <div class="info-column">
+                    <h3>Breed: {{shelterDog.breed}}</h3>
+                    <h3>Age: {{shelterDog.age}}</h3>
+                    <h3>Size: {{shelterDog.size}}</h3>
+                    <h3>Special Marks: {{shelterDog.specialMark}}</h3>
+                    <h3>Behaviour: {{shelterDog.behaviors}}</h3>
+                </div>
+                <div class="info-column">
+                    <h3>Color: {{shelterDog.color}}</h3>
+                    <h3>Hair Length: {{shelterDog.hairLength}}</h3>
+                    <h3>Ears Type: {{shelterDog.earsType}}</h3>
+                    <h3>Tail Length: {{shelterDog.tailLength}}</h3>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:  center;">
+                <button mat-raised-button (click)="onBackToListClick()" class="button1">
+                    <mat-icon>arrow_back</mat-icon> Back
+                </button>
+            </div>
+        </mat-card>
+    </div>
+</div>

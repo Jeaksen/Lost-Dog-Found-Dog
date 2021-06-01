@@ -1,1 +1,31 @@
 <app-shelter-employee-navbar></app-shelter-employee-navbar>
+<div class="home-page"> 
+    <div class="container">
+        <h1>Welcome, {{this.shelter?.name}} Employee!</h1>
+        <div>
+        </div>
+    </div>
+    
+    <div class="grid">
+        <mat-card>
+            <h1 style="text-align: center;">Dogs from my Shelter</h1>
+            <mat-list dense class="mat-list">
+                <mat-list-item *ngFor="let dog of shelterDogs">
+                    <img [src]="'data:' + dog.picture!.fileType + ';base64,' + dog.picture!.data" width=100 max-height=150
+                    style="margin-top: 60px;">
+                    <div class="item-grid">
+                        <label style="font-size: 20px;">{{dog.name}} ({{dog.breed}}) </label>
+                        <label style="font-size: 20px; margin-top: 7px;">Age: {{dog.age}}</label>
+                    </div>
+                    <button mat-raised-button (click)="onDeleteShelterDogClick(dog.id!)" class="list-button">
+                        <mat-icon>cancel</mat-icon> Delete
+                    </button>
+                    <button mat-raised-button (click)="onViewDetailsClick(dog.id!)" class="list-button2">
+                        <mat-icon>info</mat-icon> View Details
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </mat-card>
+
+    </div>
+</div>

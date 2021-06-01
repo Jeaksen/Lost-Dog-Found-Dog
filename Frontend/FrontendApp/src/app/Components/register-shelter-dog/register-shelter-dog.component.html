@@ -1,0 +1,158 @@
+<div class="page-style">
+    <mat-card id="card" style="text-align: center;">
+        <h1 style="margin-bottom: 50px; font-size: 28px;">
+            Register Dog in {{shelter?.name}} Shelter
+        </h1>
+        <form [formGroup]="registerShelterDogForm" (ngSubmit)="onSubmit()" class="grid">
+            <div>
+                <div class="container">
+                    <label>Dog's name</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Name</mat-label>
+                        <input type="text" matInput formControlName="name" placeholder="Name">
+                        <mat-error *ngIf="registerShelterDogForm.get('name')?.hasError('required')">
+                            The name is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+    
+                <div class="container">
+                    <label>Breed</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Breed</mat-label>
+                        <input type="text" matInput formControlName="breed" placeholder="Breed">
+                        <mat-error *ngIf="registerShelterDogForm.get('breed')?.hasError('required')">
+                            Breed is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+    
+                <div class="container">
+                    <label>Age</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Age</mat-label>
+                        <input type="number" matInput formControlName="age" placeholder="Age">
+                        <mat-error *ngIf="registerShelterDogForm.get('age')?.hasError('required')">
+                            Age is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+
+                <div class="container">
+                    <label>Special marks</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Special marks</mat-label>
+                        <textarea matInput placeholder="Describe special marks" formControlName="specialMarks"></textarea> 
+                        <mat-error *ngIf="registerShelterDogForm.get('specialMarks')?.hasError('required')">
+                            Special marks are required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+    
+                <div class="container">
+                    <label>Behaviors</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Behaviors</mat-label>
+                        <textarea matInput placeholder="Describe special behaviors" formControlName="behavior"></textarea> 
+                        <mat-error *ngIf="registerShelterDogForm.get('behavior')?.hasError('required')">
+                            Behaviour is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+            </div>
+    
+            <div>
+                <div class="container">
+                    <label>Color</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Color</mat-label>
+                            <mat-select formControlName="color" (selectionChange)="onOptionSetChangedHandler($event, 'color')">
+                                <mat-option *ngFor="let color of dogColors" [value]="color">
+                                    {{color}}
+                                </mat-option>
+                            </mat-select>
+                        <mat-error *ngIf="registerShelterDogForm.get('color')?.hasError('required')">
+                            Color is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+        
+                <div class="container">
+                    <label>Ears</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Ears</mat-label>
+                            <mat-select formControlName="earsType" (selectionChange)="onOptionSetChangedHandler($event, 'earsType')">
+                                <mat-option *ngFor="let ears of dogEars" [value]="ears">
+                                    {{ears}}
+                                </mat-option>
+                            </mat-select>
+                        <mat-error *ngIf="registerShelterDogForm.get('ears')?.hasError('required')">
+                            Ears are required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+        
+                <div class="container">
+                    <label>Hair</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Hair</mat-label>
+                            <mat-select formControlName="hairLength" (selectionChange)="onOptionSetChangedHandler($event, 'hairLength')">
+                                <mat-option *ngFor="let hair of dogHair" [value]="hair">
+                                    {{hair}}
+                                </mat-option>
+                            </mat-select>
+                        <mat-error *ngIf="registerShelterDogForm.get('hair')?.hasError('required')">
+                            Hair is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+        
+                <div class="container">
+                    <label>Size</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Size</mat-label>
+                            <mat-select  formControlName="size" (selectionChange)="onOptionSetChangedHandler($event, 'size')">
+                                <mat-option *ngFor="let size of dogSizes" [value]="size">
+                                    {{size}}
+                                </mat-option>
+                            </mat-select>
+                        <mat-error *ngIf="registerShelterDogForm.get('size')?.hasError('required')">
+                            Size is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+        
+                <div class="container">
+                    <label>Tail</label>
+                    <mat-form-field  appearance="outline">
+                        <mat-label>Tail</mat-label>
+                            <mat-select formControlName="tailLength" (selectionChange)="onOptionSetChangedHandler($event, 'tailLength')">
+                                <mat-option *ngFor="let tail of dogTails" [value]="tail">
+                                    {{tail}}
+                                </mat-option>
+                            </mat-select>
+                        <mat-error *ngIf="registerShelterDogForm.get('tail')?.hasError('required')">
+                            Tail is required
+                        </mat-error>
+                    </mat-form-field><br>
+                </div>
+            </div>
+    
+            <div>
+                <mat-card class="images-list">
+                    <h2>Photo</h2>
+                    <img [src]="url" id="dog_img" style="position:relative; max-height: 80%; max-width:80%;">
+                    <button #file mat-raised-button class="upload-button">Upload
+                        <input type="file" accept="image/png, image/jpeg" (change)="processFile($event)" 
+                        class="img-input"/>
+                    </button>
+                </mat-card>
+            
+                <button mat-raised-button type="submit" [disabled]="!registerShelterDogForm.valid">
+                    Submit
+                </button>
+                <button mat-raised-button (click)="onCancel()">Cancel</button>
+            </div>
+        </form>
+    </mat-card>
+    </div>

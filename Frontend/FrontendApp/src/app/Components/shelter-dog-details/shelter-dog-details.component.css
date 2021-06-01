@@ -1,0 +1,46 @@
+.details-page {
+    padding: 3px 19px;
+    margin-top:20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto auto;
+    margin-bottom: 15px;
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    margin-bottom: 15px;
+}
+.info-column {
+    margin-left: 15px;
+    margin-top: 15px;
+}
+h3 {
+    font-size: 22px;
+}
+
+.container{
+    width:100%;
+    display:flex;
+    flex-wrap:wrap;
+    text-align:center;
+    justify-content: center;
+}
+.dog-image {
+    position:relative; 
+    height: 100%; 
+    width: auto;
+    margin: auto;
+    background-position: center;
+    max-height: 400px;
+    max-width: 550px;
+}
+.button1 {
+    margin-top: 50px;
+    margin-bottom: auto;
+    margin-right: 15px;
+    padding-left: 8px;
+}

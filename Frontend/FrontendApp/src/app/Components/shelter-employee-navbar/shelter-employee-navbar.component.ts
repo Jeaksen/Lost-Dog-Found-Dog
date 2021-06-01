@@ -7,10 +7,12 @@ import { AuthenticationService } from 'src/app/services/authentication-service';
   styleUrls: ['./shelter-employee-navbar.component.css']
 })
 export class ShelterEmployeeNavbarComponent implements OnInit {
+  shelterID!: number;
 
   constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.shelterID = +localStorage.getItem('userId')!
   }
 
   onClick() {
