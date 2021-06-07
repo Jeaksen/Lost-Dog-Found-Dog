@@ -42,13 +42,37 @@ namespace Backend.DataAccess.Shelters
             return response;
         }
 
+        public async Task<RepositoryResponse<Shelter>> ApproveShelter(int id)
+        {
+            var response = await GetShelter(id);
+
+            if (response.Successful)
+            {
+                try
+                {
+                    if (response.Data.IsApproved)
+                        throw new Exception("The shelter is already approved!");
+                    response.Data.IsApproved = true;
+                    await dbContext.SaveChangesAsync();
+                    response.Message = $"shelter with id {id} was approved";
+                }
+                catch (Exception e)
+                {
+                    response.Successful = false;
+                    response.Message = $"Failed to accept shelter with id {id}: {e.Message}  {e.InnerException?.Message}";
+                }
+            }
+
+            return response;
+        }
+
         public async Task<RepositoryResponse<List<Shelter>, int>> GetShelters(string name, string sort, int page, int size)
         {
             var response = new RepositoryResponse<List<Shelter>, int>();
             try
             {
                 IOrderedQueryable<Shelter> ordered;
-                var query = dbContext.Shelters.Include(s => s.Address).AsQueryable();
+                var query = dbContext.Shelters.Where(s => s.IsApproved).Include(s => s.Address).AsQueryable();
 
                 if (!string.IsNullOrEmpty(name))
                     query = query.Where(s => s.Name.StartsWith(name));
@@ -60,7 +84,7 @@ namespace Backend.DataAccess.Shelters
 
                 response.Metadata = (int)Math.Ceiling(await ordered.CountAsync() / (double)size);
                 response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
-                response.Message = $"Found {response.Data.Count} Lost Dogs";
+                response.Message = $"Found {response.Data.Count} shelters";
             }
             catch (Exception e)
             {
