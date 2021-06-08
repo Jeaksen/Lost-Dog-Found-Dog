@@ -44,7 +44,7 @@ namespace Backend.DataAccess.Shelters
 
         public async Task<RepositoryResponse<Shelter>> ApproveShelter(int id)
         {
-            var response = await GetShelter(id);
+            var response = await GetShelterApprovalInvariant(id);
 
             if (response.Successful)
             {
@@ -100,6 +100,34 @@ namespace Backend.DataAccess.Shelters
             try
             {
                 var shelter = await dbContext.Shelters
+                                            .Where(s => s.Id == id && s.IsApproved)
+                                            .Include(s => s.Address)
+                                            .SingleOrDefaultAsync();
+                if (shelter == default)
+                {
+                    response.Successful = false;
+                    response.Message = $"Shelter with id {id} was not found";
+                }
+                else
+                {
+                    response.Data = shelter;
+                    response.Message = $"Shelter with id {id} was found";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to find shelter: {e.Message}  {e.InnerException?.Message}";
+            }
+            return response;
+        }
+
+        public async Task<RepositoryResponse<Shelter>> GetShelterApprovalInvariant(int id)
+        {
+            var response = new RepositoryResponse<Shelter>();
+            try
+            {
+                var shelter = await dbContext.Shelters
                                             .Where(s => s.Id == id)
                                             .Include(s => s.Address)
                                             .SingleOrDefaultAsync();
@@ -128,17 +156,12 @@ namespace Backend.DataAccess.Shelters
             try
             {
                 var getResponse = await GetShelter(id);
-                if (response.Successful)
-                {
-                    dbContext.Remove(getResponse.Data);
-                    await dbContext.SaveChangesAsync();
-                    response.Message = $"Shelter with id {id} was deleted";
-                }
-                else
-                {
-                    response.Successful = false;
-                    response.Message = getResponse.Message;
-                }
+                if (!getResponse.Successful)
+                    throw new Exception(getResponse.Message);
+
+                dbContext.Remove(getResponse.Data);
+                await dbContext.SaveChangesAsync();
+                response.Message = $"Shelter with id {id} was deleted";
             }
             catch (Exception e)
             {
@@ -147,5 +170,7 @@ namespace Backend.DataAccess.Shelters
             }
             return response;
         }
+
+
     }
 }
