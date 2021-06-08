@@ -90,9 +90,11 @@ namespace Backend.Services.Shelters
                 {
                     serviceResponse.Data = null;
                     serviceResponse.Successful = false;
-                    serviceResponse.Message = $"Failed to accept shelter: {addAccountResult.Message}";
+                    serviceResponse.Message = $"Failed to approve shelter: {addAccountResult.Message}";
                 }
             }
+            else
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
 
             return serviceResponse;
         }
@@ -168,6 +170,8 @@ namespace Backend.Services.Shelters
                 else
                     serviceResponse.Message = $"Shelter with id {id} deleted";
             }
+            else
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
 
             return serviceResponse;
         }
