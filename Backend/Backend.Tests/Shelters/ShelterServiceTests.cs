@@ -117,6 +117,114 @@ namespace Backend.Tests.Shelters
         }
 
         [Fact]
+        public async void AddShelterWaitingForApprovalSuccessfulForSuccessfulRepoResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.AddShelter(It.IsAny<Shelter>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.True((await service.AddShelterWaitingForApproval(new ShelterDto())).Successful);
+        }
+
+        [Fact]
+        public async void AddShelterWaitingForApprovalFailsForFailedRepoResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.AddShelter(It.IsAny<Shelter>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Successful = false }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.AddShelterWaitingForApproval(new ShelterDto())).Successful);
+        }
+
+        [Fact]
+        public async void ApproveShelterSuccessfulForSuccessfulRepoAndAccountResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.ApproveShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            account.Setup(s => s.AddShelterAccount(It.IsAny<Shelter>())).Returns(Task.FromResult(new ServiceResponse<GetAccountDto>() {Data = new GetAccountDto() }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.True((await service.ApproveShelter(1)).Successful);
+        }
+
+        [Fact]
+        public async void ApproveShelterFailsForFailedRepoResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.ApproveShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Successful = false }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.ApproveShelter(1)).Successful);
+        }
+
+        [Fact]
+        public async void ApproveShelterFailsForFailedAccountResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.ApproveShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            account.Setup(s => s.AddShelterAccount(It.IsAny<Shelter>())).Returns(Task.FromResult(new ServiceResponse<GetAccountDto>() { Successful = false }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.ApproveShelter(1)).Successful);
+        }
+
+        [Fact]
+        public async void RejectShelterSuccessfulForSuccessfulRepoResponses()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.DeleteShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.True((await service.RejectShelter(1)).Successful);
+        }
+
+        [Fact]
+        public async void RejectShelterFailsForFailedGetRepoResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Successful = false }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.RejectShelter(1)).Successful);
+        }
+
+        [Fact]
+        public async void RejectShelterFailsForFailedDeleteRepoResponse()
+        {
+            var shelterRepo = new Mock<IShelterRepository>();
+            var shelterDogRepo = new Mock<IShelterDogRepository>();
+            var security = new Mock<ISecurityService>();
+            var account = new Mock<IAccountService>();
+            shelterRepo.Setup(r => r.DeleteShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
+
+            Assert.False((await service.RejectShelter(1)).Successful);
+        }
+
+        [Fact]
         public async void GetShelterSuccessfulForSuccessRepoResponse()
         {
             var shelterRepo = new Mock<IShelterRepository>();
@@ -149,7 +257,7 @@ namespace Backend.Tests.Shelters
             var shelterDogRepo = new Mock<IShelterDogRepository>();
             var security = new Mock<ISecurityService>();
             var account = new Mock<IAccountService>();
-            shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             shelterRepo.Setup(r => r.DeleteShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse()));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
@@ -164,7 +272,7 @@ namespace Backend.Tests.Shelters
             var shelterDogRepo = new Mock<IShelterDogRepository>();
             var security = new Mock<ISecurityService>();
             var account = new Mock<IAccountService>();
-            shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Successful = false }));
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Successful = false }));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
 
             Assert.False((await service.DeleteShelter(-1)).Successful);
@@ -177,7 +285,7 @@ namespace Backend.Tests.Shelters
             var shelterDogRepo = new Mock<IShelterDogRepository>();
             var security = new Mock<ISecurityService>();
             var account = new Mock<IAccountService>();
-            shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             shelterRepo.Setup(r => r.DeleteShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse() { Successful = false }));
             account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse()));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
@@ -192,7 +300,7 @@ namespace Backend.Tests.Shelters
             var shelterDogRepo = new Mock<IShelterDogRepository>();
             var security = new Mock<ISecurityService>();
             var account = new Mock<IAccountService>();
-            shelterRepo.Setup(r => r.GetShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
             shelterRepo.Setup(r => r.DeleteShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse() { Successful = false }));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);
