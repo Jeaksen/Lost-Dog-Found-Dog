@@ -1,0 +1,98 @@
+<mat-card *ngIf="isRegistering" class="register-panel">
+    <h1>
+        Register a shelter
+    </h1>
+    <h3>
+        Note: Your shelter will be visible in the service only after it is accepted by an administrator.
+    </h3>
+    <form [formGroup]="registerShelterForm" (ngSubmit)="onSubmit()">
+        <mat-form-field  appearance="outline">
+            <mat-label>Name</mat-label>
+            <input type="text" matInput formControlName="name" placeholder="Name">
+            <mat-error *ngIf="registerShelterForm.get('name')?.hasError('required')">
+                Name is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="outline">
+            <mat-label>E-mail</mat-label>
+            <input type="email" matInput formControlName="email" placeholder="E-mail">
+            <mat-error *ngIf="registerShelterForm.get('email')?.hasError('email') && !registerShelterForm.get('email')?.hasError('required')">
+                Please enter a valid email address
+            </mat-error>
+            <mat-error *ngIf="registerShelterForm.get('email')?.hasError('required')">
+                E-mail is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="outline">
+            <mat-label>Phone number</mat-label>
+            <input type="tel" matInput formControlName="phoneNumber" placeholder="Phone number">
+            <mat-error *ngIf="registerShelterForm.get('phoneNumber')?.hasError('pattern') && !registerShelterForm.get('phoneNumber')?.hasError('required')">
+                Please enter a valid phone number
+            </mat-error>
+            <mat-error *ngIf="registerShelterForm.get('phoneNumber')?.hasError('required')">
+                Phone number is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="outline">
+            <mat-label>City</mat-label>
+            <input type="text" matInput formControlName="city" placeholder="City">
+            <mat-error *ngIf="registerShelterForm.get('city')?.hasError('required')">
+                City is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="outline">
+            <mat-label>Street</mat-label>
+            <input type="text" matInput formControlName="street" placeholder="Street">
+            <mat-error *ngIf="registerShelterForm.get('street')?.hasError('required')">
+                Street is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="outline">
+            <mat-label>Post code</mat-label>
+            <input type="text" matInput formControlName="postCode" placeholder="Post code">
+            <mat-error *ngIf="registerShelterForm.get('postCode')?.hasError('required')">
+                Post code is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="outline">
+            <mat-label>Building number</mat-label>
+            <input type="text" matInput formControlName="buildingNumber" placeholder="Building number">
+            <mat-error *ngIf="registerShelterForm.get('buildingNumber')?.hasError('required')">
+                Building number is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <mat-form-field  appearance="outline">
+            <mat-label>Additional address line</mat-label>
+            <input type="text" matInput formControlName="additionalAddressLine" placeholder="Additional address line">
+            <mat-error *ngIf="registerShelterForm.get('additionalAddressLine')?.hasError('required')">
+                Additional address line is required
+            </mat-error>
+        </mat-form-field><br>
+
+        <button mat-raised-button type="submit" [disabled]="!registerShelterForm.valid" style="margin-top: 10px;">
+            Register
+        </button>
+    </form>
+</mat-card>
+
+<mat-card *ngIf="successfullyRegistered" id="card" class="message-panel">
+    <h1>
+        Your shelter was successfully registered, now you have to wait for the approval.
+    </h1>
+    <button mat-raised-button type="button" style="margin-top: 10px;" (click)="onBackClick()">
+        Go to login page
+    </button>
+</mat-card>
+
+<mat-card *ngIf="unsuccessfullyRegistered" id="card" class="message-panel">
+    <h1>
+        {{message}}
+    </h1>
+</mat-card>

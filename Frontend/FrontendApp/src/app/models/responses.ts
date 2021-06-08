@@ -53,3 +53,17 @@ export interface AllShelterDogsResponse extends BaseResponse {
 export interface PostCommentResponse extends BaseResponse {
     data: CommentData;
 }
+
+export interface RegisterShelterResponse extends BaseResponse {
+    data: Shelter;
+}
+
+// export interface RegisterShelterResponse extends BaseResponse {
+//     data: Shelter | null;
+// }
+
+// export interface RegisterShelterResponse extends BaseResponse {
+//     data: Shelter | null;
+//     successful: boolean;
+//     message: string;
+// }
