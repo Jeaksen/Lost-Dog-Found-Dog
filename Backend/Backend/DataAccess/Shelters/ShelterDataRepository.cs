@@ -42,13 +42,37 @@ namespace Backend.DataAccess.Shelters
             return response;
         }
 
+        public async Task<RepositoryResponse<Shelter>> ApproveShelter(int id)
+        {
+            var response = await GetShelterApprovalInvariant(id);
+
+            if (response.Successful)
+            {
+                try
+                {
+                    if (response.Data.IsApproved)
+                        throw new Exception("The shelter is already approved!");
+                    response.Data.IsApproved = true;
+                    await dbContext.SaveChangesAsync();
+                    response.Message = $"shelter with id {id} was approved";
+                }
+                catch (Exception e)
+                {
+                    response.Successful = false;
+                    response.Message = $"Failed to accept shelter with id {id}: {e.Message}  {e.InnerException?.Message}";
+                }
+            }
+
+            return response;
+        }
+
         public async Task<RepositoryResponse<List<Shelter>, int>> GetShelters(string name, string sort, int page, int size)
         {
             var response = new RepositoryResponse<List<Shelter>, int>();
             try
             {
                 IOrderedQueryable<Shelter> ordered;
-                var query = dbContext.Shelters.Include(s => s.Address).AsQueryable();
+                var query = dbContext.Shelters.Where(s => s.IsApproved).Include(s => s.Address).AsQueryable();
 
                 if (!string.IsNullOrEmpty(name))
                     query = query.Where(s => s.Name.StartsWith(name));
@@ -60,7 +84,7 @@ namespace Backend.DataAccess.Shelters
 
                 response.Metadata = (int)Math.Ceiling(await ordered.CountAsync() / (double)size);
                 response.Data = await ordered.Skip(page * size).Take(size).ToListAsync();
-                response.Message = $"Found {response.Data.Count} Lost Dogs";
+                response.Message = $"Found {response.Data.Count} shelters";
             }
             catch (Exception e)
             {
@@ -71,6 +95,34 @@ namespace Backend.DataAccess.Shelters
         }
 
         public async Task<RepositoryResponse<Shelter>> GetShelter(int id)
+        {
+            var response = new RepositoryResponse<Shelter>();
+            try
+            {
+                var shelter = await dbContext.Shelters
+                                            .Where(s => s.Id == id && s.IsApproved)
+                                            .Include(s => s.Address)
+                                            .SingleOrDefaultAsync();
+                if (shelter == default)
+                {
+                    response.Successful = false;
+                    response.Message = $"Shelter with id {id} was not found";
+                }
+                else
+                {
+                    response.Data = shelter;
+                    response.Message = $"Shelter with id {id} was found";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Successful = false;
+                response.Message = $"Failed to find shelter: {e.Message}  {e.InnerException?.Message}";
+            }
+            return response;
+        }
+
+        public async Task<RepositoryResponse<Shelter>> GetShelterApprovalInvariant(int id)
         {
             var response = new RepositoryResponse<Shelter>();
             try
@@ -103,18 +155,13 @@ namespace Backend.DataAccess.Shelters
             var response = new RepositoryResponse();
             try
             {
-                var getResponse = await GetShelter(id);
-                if (response.Successful)
-                {
-                    dbContext.Remove(getResponse.Data);
-                    await dbContext.SaveChangesAsync();
-                    response.Message = $"Shelter with id {id} was deleted";
-                }
-                else
-                {
-                    response.Successful = false;
-                    response.Message = getResponse.Message;
-                }
+                var getResponse = await GetShelterApprovalInvariant(id);
+                if (!getResponse.Successful)
+                    throw new Exception(getResponse.Message);
+
+                dbContext.Remove(getResponse.Data);
+                await dbContext.SaveChangesAsync();
+                response.Message = $"Shelter with id {id} was deleted";
             }
             catch (Exception e)
             {
@@ -123,5 +170,7 @@ namespace Backend.DataAccess.Shelters
             }
             return response;
         }
+
+
     }
 }

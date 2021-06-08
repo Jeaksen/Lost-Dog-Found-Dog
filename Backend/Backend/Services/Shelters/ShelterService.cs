@@ -65,6 +65,71 @@ namespace Backend.Services.Shelters
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<ShelterDto>> AddShelterWaitingForApproval(ShelterDto shelterDto)
+        {
+            var shelter = mapper.Map<Shelter>(shelterDto);
+            shelter.IsApproved = false;
+            var addShelterResult = await shelterRepository.AddShelter(shelter);
+            var serviceResponse = mapper.Map<ServiceResponse<ShelterDto>>(addShelterResult);
+            if (!serviceResponse.Successful)
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<ShelterDto, GetAccountDto>> ApproveShelter(int id)
+        {
+            var getResponse = await shelterRepository.ApproveShelter(id);
+            var serviceResponse = mapper.Map<ServiceResponse<ShelterDto, GetAccountDto>>(getResponse);
+            if (serviceResponse.Successful)
+            {
+                var addAccountResult = await accountService.AddShelterAccount(mapper.Map<Shelter>(getResponse.Data));
+                if (addAccountResult.Successful)
+                    serviceResponse.Metadata = addAccountResult.Data;
+                else
+                {
+                    serviceResponse.Data = null;
+                    serviceResponse.Successful = false;
+                    serviceResponse.Message = $"Failed to approve shelter: {addAccountResult.Message}";
+                }
+            }
+            else
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse> RejectShelter(int id)
+        {
+            var getReponse = await shelterRepository.GetShelterApprovalInvariant(id);
+            var serviceResponse = mapper.Map<ServiceResponse>(getReponse);
+
+            if (getReponse.Successful)
+            {
+                if (getReponse.Data.IsApproved)
+                {
+                    serviceResponse.Successful = false;
+                    serviceResponse.Message = $"Failed to reject shelter, it was already approved";
+                    serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+                }
+                else
+                {
+                    var repoResponse = await shelterRepository.DeleteShelter(id);
+                    serviceResponse = mapper.Map<ServiceResponse>(repoResponse);
+
+                    if (serviceResponse.Successful)
+                        serviceResponse.Message = $"Shelter with id {id} was rejected";
+                }
+            }
+            else
+            {
+                serviceResponse.Message = $"Failed to reject shelter! {getReponse.Message}";
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
+            }
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(string name, string sort, int page, int size)
         {
             var repoResponse = await shelterRepository.GetShelters(name, sort, page, size);
@@ -85,11 +150,13 @@ namespace Backend.Services.Shelters
 
         public async Task<ServiceResponse> DeleteShelter(int id)
         {
-            var getResponse = await GetShelter(id);
-            var serviceResponse = mapper.Map<ServiceResponse<ShelterDto>, ServiceResponse>(getResponse);
+            var getResponse = await shelterRepository.GetShelterApprovalInvariant(id);
+            var serviceResponse = mapper.Map<ServiceResponse>(getResponse);
             if (getResponse.Successful)
             {
-                var accountResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
+                var accountResponse = new ServiceResponse();
+                if (getResponse.Data.IsApproved)
+                    accountResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
                 var shelterResponse = await shelterRepository.DeleteShelter(id);
                 
                 if (!accountResponse.Successful  || !shelterResponse.Successful)
@@ -103,6 +170,8 @@ namespace Backend.Services.Shelters
                 else
                     serviceResponse.Message = $"Shelter with id {id} deleted";
             }
+            else
+                serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
 
             return serviceResponse;
         }
@@ -178,5 +247,6 @@ namespace Backend.Services.Shelters
                 serviceResponse.StatusCode = StatusCodes.Status400BadRequest;
             return serviceResponse;
         }
+
     }
 }
