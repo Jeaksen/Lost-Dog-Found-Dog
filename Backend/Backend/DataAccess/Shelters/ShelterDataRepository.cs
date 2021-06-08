@@ -155,7 +155,7 @@ namespace Backend.DataAccess.Shelters
             var response = new RepositoryResponse();
             try
             {
-                var getResponse = await GetShelter(id);
+                var getResponse = await GetShelterApprovalInvariant(id);
                 if (!getResponse.Successful)
                     throw new Exception(getResponse.Message);
 

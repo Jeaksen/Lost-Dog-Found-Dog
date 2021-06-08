@@ -300,7 +300,7 @@ namespace Backend.Tests.Shelters
             var shelterDogRepo = new Mock<IShelterDogRepository>();
             var security = new Mock<ISecurityService>();
             var account = new Mock<IAccountService>();
-            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() }));
+            shelterRepo.Setup(r => r.GetShelterApprovalInvariant(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse<Shelter>() { Data = new Shelter() { IsApproved = true } }));
             shelterRepo.Setup(r => r.DeleteShelter(It.IsAny<int>())).Returns(Task.FromResult(new RepositoryResponse()));
             account.Setup(s => s.DeleteAccount(null, It.IsAny<string>(), null)).Returns(Task.FromResult(new ServiceResponse() { Successful = false }));
             var service = new ShelterService(shelterRepo.Object, shelterDogRepo.Object, account.Object, security.Object, mapper, logger);

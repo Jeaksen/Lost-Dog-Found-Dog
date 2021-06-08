@@ -152,8 +152,10 @@ namespace Backend.Services.Shelters
             var serviceResponse = mapper.Map<ServiceResponse>(getResponse);
             if (getResponse.Successful)
             {
+                var accountResponse = new ServiceResponse();
+                if (getResponse.Data.IsApproved)
+                    accountResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
                 var shelterResponse = await shelterRepository.DeleteShelter(id);
-                var accountResponse = await accountService.DeleteAccount(email: getResponse.Data.Email);
                 
                 if (!accountResponse.Successful  || !shelterResponse.Successful)
                 {
