@@ -1,0 +1,28 @@
+version: "3.9"
+volumes:
+  lostdogs-sql: {}
+services:
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - "1433:1433"
+    volumes:
+      - lostdogs-sql:/var/opt/mssql
+    environment:
+        SA_PASSWORD: "SafePass66!"
+        ACCEPT_EULA: "Y"
+    restart: always
+  server:
+    container_name: server
+    restart: always
+    build: .
+    environment:
+      - WAIT_HOSTS=mssql:1433
+      - WAIT_HOSTS_TIMEOUT=600
+      - WAIT_SLEEP_INTERVAL=10
+      - WAIT_HOST_CONNECT_TIMEOUT=10
+    ports:
+        - "5000:80"
+    depends_on:
+        - mssql

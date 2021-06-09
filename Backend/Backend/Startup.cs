@@ -104,7 +104,7 @@ namespace Backend
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("Default"));
+                options.UseSqlServer(Configuration.GetConnectionString("Docker-Compose"));
             });
 
             services.AddAuthentication(options =>
@@ -178,6 +178,12 @@ namespace Backend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                  var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                  context.Database.Migrate();
+            }
+
             app.UseCors(x => x
                 .AllowAnyMethod()
                 .AllowAnyHeader()
