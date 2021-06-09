@@ -12,11 +12,16 @@ services:
     environment:
         SA_PASSWORD: "SafePass66!"
         ACCEPT_EULA: "Y"
-    restart: on-failure
+    restart: always
   server:
     container_name: server
-    restart: on-failure
+    restart: always
     build: .
+    environment:
+      - WAIT_HOSTS=mssql:1433
+      - WAIT_HOSTS_TIMEOUT=600
+      - WAIT_SLEEP_INTERVAL=10
+      - WAIT_HOST_CONNECT_TIMEOUT=10
     ports:
         - "5000:80"
     depends_on:
