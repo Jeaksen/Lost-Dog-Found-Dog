@@ -1,0 +1,19 @@
+.register-panel {
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding-top: 25px;
+    width: 400px;
+    height: 800px;
+}
+
+.message-panel {
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding-top: 25px;
+    width: 400px;
+    height: 200px;
+}
