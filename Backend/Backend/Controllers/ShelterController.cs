@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
-    [Authorize]
+    
     [Route("/shelters/")]
     [ApiController]
     public class ShelterController : ControllerBase
@@ -31,6 +31,7 @@ namespace Backend.Controllers
             this.mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetShelters([FromQuery] string name, [FromQuery] string sort,
@@ -42,6 +43,7 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{shelterId}")]
         public async Task<IActionResult> GetShelter(int shelterId)
@@ -52,16 +54,47 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddShelter([ModelBinder(BinderType = typeof(JsonModelBinder))] ShelterDto shelter)
         {
 
             var serviceResponse = await shelterService.AddShelter(shelter);
-            var controllerResponse = mapper.Map<ServiceResponse<ShelterDto, GetAccountDto>, ControllerResponse<ShelterDto, GetAccountDto>>(serviceResponse);
+            var controllerResponse = mapper.Map<ControllerResponse<ShelterDto, GetAccountDto>>(serviceResponse);
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddShelterWaitingForApproval([ModelBinder(BinderType = typeof(JsonModelBinder))] ShelterDto shelter)
+        {
+            var serviceResponse = await shelterService.AddShelterWaitingForApproval(shelter);
+            var controllerResponse = mapper.Map<ControllerResponse<ShelterDto>>(serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        }
+
+        [Authorize]
+        [HttpPost("approve/{shelterId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AcceptShelter(int shelterId)
+        {
+            var serviceResponse = await shelterService.ApproveShelter(shelterId);
+            var controllerResponse = mapper.Map<ControllerResponse<ShelterDto, GetAccountDto>>(serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        }
+
+        [Authorize]
+        [HttpPost("reject/{shelterId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> RejectShelter(int shelterId)
+        {
+
+            var serviceResponse = await shelterService.RejectShelter(shelterId);
+            var controllerResponse = mapper.Map<ControllerResponse>(serviceResponse);
+            return StatusCode(serviceResponse.StatusCode, controllerResponse);
+        }
+
+        [Authorize]
         [HttpDelete]
         [Route("{shelterId}")]
         public async Task<IActionResult> DeleteShelter(int shelterId)
@@ -72,6 +105,7 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{shelterId}/dogs")]
         public async Task<IActionResult> GetShelterDogs(int shelterId, [FromQuery] int page = 0, [FromQuery] int size = 10)
@@ -82,6 +116,7 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{shelterId}/dogs/{dogId}")]
         public async Task<IActionResult> GetShelterDogDetails(int dogId)
@@ -92,6 +127,7 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
+        [Authorize]
         [HttpPost]
         [Authorize(Roles = AccountRoles.Shelter)]
         [Route("{shelterId}/dogs")]
@@ -120,6 +156,7 @@ namespace Backend.Controllers
             return StatusCode(serviceResponse.StatusCode, controllerResponse);
         }
 
+        [Authorize]
         [HttpDelete]
         [Authorize(Roles = AccountRoles.Shelter)]
         [Route("{shelterId}/dogs/{dogId}")]

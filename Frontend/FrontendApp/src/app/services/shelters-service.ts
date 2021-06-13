@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { GetSheltersResponse } from '../models/responses';
+import { GetSheltersResponse, RegisterShelterResponse } from '../models/responses';
 import { ShelterResponse } from '../models/responses';
 import { AllShelterDogsResponse } from '../models/responses';
 import { ShelterDogResponse } from '../models/responses';
@@ -21,6 +21,17 @@ export class SheltersService {
     
     private log(message: string) {
         console.log(message);
+    }
+
+    registerNewShelter(shelter: FormData): Observable<RegisterShelterResponse> {
+        return this.http.post<RegisterShelterResponse>(this.url + `shelters`, shelter)
+            .pipe(
+                tap(_ => {
+                    this.log('posted a shelter dog');
+                    console.log(_);
+                }),
+                catchError(this.handleError<RegisterShelterResponse>('postShelterDog'))
+            );
     }
 
     getAllShelters(): Observable<GetSheltersResponse> {

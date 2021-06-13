@@ -13,10 +13,12 @@ import { ShelterDetailsComponent } from './Components/shelter-details/shelter-de
 import { LostDogDetailsComponent } from './Components/lost-dog-details/lost-dog-details.component';
 import { RegisterShelterDogComponent } from './Components/register-shelter-dog/register-shelter-dog.component';
 import { ShelterDogDetailsComponent } from './Components/shelter-dog-details/shelter-dog-details.component';
+import { ShelterRegisterComponent } from './Components/shelter-register/shelter-register.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'register', component: RegisterUserComponent },
+  { path: 'shelter-register', component: ShelterRegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomePageComponent },
   { path: 'register-lost-dog', component: RegisterLostDogComponent },

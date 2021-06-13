@@ -12,6 +12,12 @@ namespace Backend.Services.Shelters
     {
         public Task<ServiceResponse<ShelterDto, GetAccountDto>> AddShelter(ShelterDto shelterDto);
 
+        public Task<ServiceResponse<ShelterDto>> AddShelterWaitingForApproval(ShelterDto shelterDto);
+
+        public Task<ServiceResponse<ShelterDto, GetAccountDto>> ApproveShelter(int id);
+
+        public Task<ServiceResponse> RejectShelter(int id);
+
         public Task<ServiceResponse<ShelterDto>> GetShelter(int id);
 
         public Task<ServiceResponse<List<ShelterDto>, int>> GetShelters(string name, string sort, int page, int size);

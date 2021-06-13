@@ -58,4 +58,8 @@ export class LoginComponent implements OnInit {
   onSignUpClick() {
     this.router.navigate(['/register']);
   }
+
+  onShelterSignUpClick() {
+    this.router.navigate(['/shelter-register']);
+  }
 }

@@ -21,8 +21,8 @@ namespace Backend.Tests.Security
 
         [Theory]
         [InlineData(0)]
-        [InlineData(50)]
-        [InlineData(64)]
+        [InlineData(63)]
+        [InlineData(1023)]
         public void IsPictureValidFailsForFileWithTooSmallSize(int size)
         {
             using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, size).ToArray());
@@ -36,7 +36,7 @@ namespace Backend.Tests.Security
         }
 
         [Theory]
-        [InlineData(65)]
+        [InlineData(1024)]
         public void IsPictureValidSuccessfulForFileWithBigEnoughSize(int size)
         {
             using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, size).ToArray());
@@ -50,10 +50,10 @@ namespace Backend.Tests.Security
         }
 
         [Theory]
-        [InlineData("application/json")]
-        public void IsPictureValidFailsForFileWithInvalidMimeType(string mimeType)
+        [InlineData("application/json", 1024)]
+        public void IsPictureValidFailsForFileWithInvalidMimeType(string mimeType, int fileSize)
         {
-            using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, 150).ToArray());
+            using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, fileSize).ToArray());
             var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", "filename.jpg")
             {
                 Headers = new HeaderDictionary(),
@@ -64,11 +64,11 @@ namespace Backend.Tests.Security
         }
 
         [Theory]
-        [InlineData("image/png", "file.jpg")]
-        [InlineData("image/jpeg", "file.png")]
-        public void IsPictureValidFailsForFileWithInvalidExtension(string mimeType, string filename)
+        [InlineData("image/png", "file.jpg", 1024)]
+        [InlineData("image/jpeg", "file.png", 1024)]
+        public void IsPictureValidFailsForFileWithInvalidExtension(string mimeType, string filename, int fileSize)
         {
-            using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, 150).ToArray());
+            using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, fileSize).ToArray());
             var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", filename)
             {
                 Headers = new HeaderDictionary(),
@@ -79,12 +79,12 @@ namespace Backend.Tests.Security
         }
 
         [Theory]
-        [InlineData("image/png", "file.png")]
-        [InlineData("image/jpeg", "file.jpeg")]
-        [InlineData("image/jpeg", "file.jpg")]
-        public void IsPictureValidSuccessfulForFileWithValidExtension(string mimeType, string filename)
+        [InlineData("image/png", "file.png", 1024)]
+        [InlineData("image/jpeg", "file.jpeg", 1024)]
+        [InlineData("image/jpeg", "file.jpg", 1024)]
+        public void IsPictureValidSuccessfulForFileWithValidExtension(string mimeType, string filename, int fileSize)
         {
-            using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, 150).ToArray());
+            using var memoryStream = new MemoryStream(Enumerable.Repeat((byte)1, fileSize).ToArray());
             var picture = new FormFile(memoryStream, 0, memoryStream.Length, "name", filename)
             {
                 Headers = new HeaderDictionary(),

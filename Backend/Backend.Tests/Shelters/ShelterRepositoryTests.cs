@@ -151,6 +151,37 @@ namespace Backend.Tests.Shelters
         }
 
         [Fact]
+        public async void ApproveShelterSuccessfulForExistingNotApprovedShelter()
+        {
+            var addShelter = GetValidShelter();
+            addShelter.IsApproved = false;
+            var resultAdd = await shelterRepository.AddShelter(addShelter);
+            Assert.True(resultAdd.Successful);
+            var resultAprove = await shelterRepository.ApproveShelter(resultAdd.Data.Id);
+            Assert.True(resultAprove.Successful);
+        }
+
+        [Fact]
+        public async void ApproveShelterFailsForNotExistingShelter()
+        {
+            var resultAprove = await shelterRepository.ApproveShelter(-1);
+            Assert.False(resultAprove.Successful);
+        }
+
+        [Fact]
+        public async void ApproveShelterFailsForAlreadyApprovedShelter()
+        {
+            var addShelter = GetValidShelter();
+            addShelter.IsApproved = false;
+            var resultAdd = await shelterRepository.AddShelter(addShelter);
+            Assert.True(resultAdd.Successful);
+            var resultAprove = await shelterRepository.ApproveShelter(resultAdd.Data.Id);
+            Assert.True(resultAprove.Successful);
+            resultAprove = await shelterRepository.ApproveShelter(resultAdd.Data.Id);
+            Assert.False(resultAprove.Successful);
+        }
+
+        [Fact]
         public async void GetShelterFailsForNotExistingShelter()
         {
             var result = await shelterRepository.GetShelter(-1);

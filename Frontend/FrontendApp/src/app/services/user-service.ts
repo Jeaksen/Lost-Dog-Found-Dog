@@ -57,6 +57,10 @@ export class UserService {
             );
     }
 
+    // updateUserDetails(editInfoForm: FormData, userId: number): Observable<UserDetailsResponse> {
+    //     return this.http.put<UserDetailsResponse>(this.url + `user/${userId}`, editInfoForm, this.httpOptions);
+    // }
+
     /**
    * Handle Http operation that failed.
    * Let the app continue.
