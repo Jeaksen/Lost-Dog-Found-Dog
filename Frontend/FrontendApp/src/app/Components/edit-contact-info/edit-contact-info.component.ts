@@ -94,14 +94,15 @@ export class EditContactInfoComponent implements OnInit {
   onSubmit() {
     this.userService.updateUserDetails(
       this.constructEditInfoForm(),
-      this.userDetails!.id)
+      +localStorage.getItem('userId')!)
       .pipe(first())
       .subscribe(
         data => {
+          debugger
           this.router.navigate(['/home']);
         },
         error => {
-
+          debugger
         });
   }
 
