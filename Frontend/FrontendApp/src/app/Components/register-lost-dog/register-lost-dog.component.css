@@ -3,22 +3,23 @@
 }
 
 .mat-form-field {
-    width:250px;
+    width:200px;
     margin-left: auto;
     margin-right: 40px;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 0.9fr;
     grid-template-rows:    1fr;
 }
 
 label {
     text-align: left;
-    margin-top:30px;
+    margin-top: 20px;
     font-size: 18px;
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .container {
     display: flex;
