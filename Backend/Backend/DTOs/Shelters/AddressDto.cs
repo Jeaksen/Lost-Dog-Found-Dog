@@ -20,7 +20,8 @@ namespace Backend.DTOs.Shelters
         [MaxLength(20)]
         public string BuildingNumber { get; set; }
 
+        [Required]
         [MaxLength(200)]
-        public string AdditionalAddressLine { get; set; }
+        public string additionalAddressLine { get; set; }
     }
 }
