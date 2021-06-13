@@ -87,7 +87,9 @@ export class EditContactInfoComponent implements OnInit {
       this.editContactInfoForm.get('phoneNumber')?.value,
       this.editContactInfoForm.get('email')?.value
     );
-    data.append('userdata', JSON.stringify(userDetails));
+    // works only with our Backend
+    // data.append('userdata', JSON.stringify(userDetails));
+    data.append("userdata", new Blob([JSON.stringify(userDetails)], { type: "application/json", }), "");
     return data;
   }
 
@@ -98,11 +100,9 @@ export class EditContactInfoComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          debugger
           this.router.navigate(['/home']);
         },
         error => {
-          debugger
         });
   }
 

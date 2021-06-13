@@ -27,7 +27,6 @@ export class HomePageComponent implements OnInit {
     this.lostDogService.getUserLostDogs(localStorage.getItem('userId')!)
       .subscribe(response => {
         this.lostDogs = response.data;
-        console.log("Count: " + this.lostDogs.length);
       });
   }
 
@@ -58,7 +57,6 @@ export class HomePageComponent implements OnInit {
     if(confirm("Are you sure you want mark dog as found?")) {
     this.lostDogService.markLostDogAsFound(lostDogId)
       .subscribe(response => {
-        console.log(response);
         this.lostDogs!.find(dog => dog.id === lostDogId)!.isFound = true;
       });
     }

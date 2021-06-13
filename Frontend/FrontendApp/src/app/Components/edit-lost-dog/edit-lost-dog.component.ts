@@ -66,9 +66,7 @@ export class EditLostDogComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.editLostDogForm);
     this.lostDogService.putLostDog(this.constructForm(), this.lostDogID).subscribe(response => {
-      console.log(response)
       this.router.navigate(['/home']);
     });
   }
@@ -95,11 +93,12 @@ export class EditLostDogComponent implements OnInit {
       
     let data = new FormData();
     lostDog.ownerId = localStorage.getItem('userId')!;
-    data.append('dog', JSON.stringify(lostDog));
+    // works only with our Backend
+    // data.append('dog', JSON.stringify(lostDog));
+    data.append("dog", new Blob([JSON.stringify(lostDog)], { type: "application/json", }), "");
     if (this.isNewPictureChosen) {
       data.append('picture', this.selectedFile.file);
     }
-    console.log(data.forEach(val => console.log(val)));
     return data;
   }
 
@@ -116,7 +115,6 @@ export class EditLostDogComponent implements OnInit {
     const reader = new FileReader();
 
     reader.addEventListener('load', (even: any) => {
-      console.log(file);
       this.selectedFile = new ImageSnippet(even.target.result, file);
       this.isNewPictureChosen = true;
     });
@@ -124,7 +122,6 @@ export class EditLostDogComponent implements OnInit {
     reader.readAsDataURL(file);
     reader.onload = (event: any) => {
       this.url = reader.result;
-      //console.log(reader.result);
     }
   }
 
