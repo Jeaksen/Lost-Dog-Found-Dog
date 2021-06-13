@@ -1,6 +1,7 @@
 .page-style {
     padding: 3px 19px;
     margin-top: 20px;
+    min-width: 1220px;
 }
 
 .mat-raised-button {
@@ -8,34 +9,40 @@
 }
 
 .mat-form-field {
-    width:250px;
+    width:200px;
     margin-left: auto;
     margin-right: 40px;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 0.9fr 1fr;
     grid-template-rows:    500px;
+}
+.column-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows:    repeat(5, 1fr);
 }
 
 label {
     text-align: left;
-    margin-top:30px;
+    margin-top: 20px;
     font-size: 18px;
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .images-list {
     height: 85% !important; 
     margin-bottom: 15px;
     text-align: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .upload-button {
