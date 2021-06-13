@@ -8,7 +8,8 @@ namespace Backend.Services.Security
 {
     public class SecurityService : ISecurityService
     {
-        private readonly int MinimalPictureSize = 65;
+        private readonly int MinimalPictureSize = 1024; // 1KB
+        private readonly int MaximalPictureSize = 10 * 1024 * 1024; // 10MB
         private readonly List<string> AllowedPictureMimeTypes = new() { "image/png", "image/jpeg" };
         private readonly Dictionary<string, List<string>> ExtensionsForMimeType = new()
         {
@@ -21,7 +22,13 @@ namespace Backend.Services.Security
             var response = new ServiceResponse();
             if (picture.Length < MinimalPictureSize)
             {
-                response.Message = $"Picture has size smaller than {MinimalPictureSize}!";
+                response.Message = $"Picture has size smaller than {MinimalPictureSize / 1024} KB!";
+                response.Successful = false;
+                response.StatusCode = StatusCodes.Status400BadRequest;
+            }
+            else if (picture.Length > MaximalPictureSize)
+            {
+                response.Message = $"Picture has size bigger than {MaximalPictureSize / 1024 / 1024} MB!";
                 response.Successful = false;
                 response.StatusCode = StatusCodes.Status400BadRequest;
             }
