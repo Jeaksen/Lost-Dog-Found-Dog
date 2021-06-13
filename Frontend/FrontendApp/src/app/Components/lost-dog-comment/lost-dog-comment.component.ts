@@ -46,7 +46,9 @@ export class LostDogCommentComponent implements OnInit {
       location
     );
     let data = new FormData();
-    data.append('comment', JSON.stringify(comment));
+    // works only with our Backend
+    // data.append('comment', JSON.stringify(comment));
+    data.append("comment", new Blob([JSON.stringify(comment)], { type: "application/json", }), "");
     if (this.isPictureChosen) {
       data.append('picture', this.selectedFile.file);
     }

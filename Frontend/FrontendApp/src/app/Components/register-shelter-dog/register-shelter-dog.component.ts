@@ -49,17 +49,14 @@ export class RegisterShelterDogComponent implements OnInit {
 
   ngOnInit(): void {
     this.shelterID = parseInt(this.activatedRoute.snapshot.paramMap.get('shelterId')!);
-    this.shelterService.getShelterByID(this.shelterID)
-    .subscribe(response => {
+    this.shelterService.getShelterByID(this.shelterID).subscribe(response => {
       this.shelter = response.data;
     });
     this.registerShelterDogForm.get('specialMarks')?.setValue("None");
   }
 
   onSubmit() {
-    console.log(this.registerShelterDogForm);
     this.shelterService.postShelterDog(this.shelterID, this.constructShelterDogForm()).subscribe(response => {
-      console.log(response)
       this.router.navigate(['/shelter-employee-home']);
     });
   }
@@ -78,9 +75,10 @@ export class RegisterShelterDogComponent implements OnInit {
       [ this.registerShelterDogForm.get('behavior')?.value ],   
     );
     let data = new FormData();
-    data.append('dog', JSON.stringify(shelterDog));
+    // works only with our Backend
+    // data.append('dog', JSON.stringify(shelterDog));
+    data.append("dog", new Blob([JSON.stringify(shelterDog)], { type: "application/json", }), "");
     data.append('picture', this.selectedFile.file);
-    console.log(data.forEach(val => console.log(val)));
     return data;
   }
 
@@ -97,7 +95,6 @@ export class RegisterShelterDogComponent implements OnInit {
     const reader = new FileReader();
 
     reader.addEventListener('load', (even: any) => {
-      console.log(file);
       this.selectedFile = new ImageSnippet(even.target.result, file);
     });
     

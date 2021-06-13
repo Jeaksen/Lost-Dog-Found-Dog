@@ -75,7 +75,6 @@ export class FilterLostDogsComponent implements OnInit {
     }
 
   getLostDogs(): void {
-    console.log(localStorage.getItem('userId')!)
     this.lostDogService.getAllLostDogs()
       .subscribe(response => {
         this.lostDogs = response.data;
@@ -92,9 +91,7 @@ export class FilterLostDogsComponent implements OnInit {
   }
   
   onSubmit() {
-    console.log(this.filterForm);
     this.lostDogService.getFilteredLostDogs(this.constructFilterString()).subscribe(response => {
-      console.log(response)
       this.lostDogs = response.data;
       this.allPagesCount = response.metadata;
     });
@@ -122,7 +119,6 @@ export class FilterLostDogsComponent implements OnInit {
         filter += "filter.dateLostBefore=" + this.datepipe.transform(this.filterForm.get('dateLostBefore')?.value, 'yyyy-MM-dd')! + '&';
     if(this.filterForm.get('dateLostAfter')?.value) 
         filter += "filter.dateLostAfter=" + this.datepipe.transform(this.filterForm.get('dateLostAfter')?.value, 'yyyy-MM-dd')! + '&';
-    console.log(filter);
     if(this.sortingForm.get('sort')?.value) {
       filter += 'sort=' + this.sortingForm.get('sort')?.value;
       if(this.sortingForm.get('option')?.value) filter += ',' + this.sortingForm.get('option')?.value;
@@ -130,7 +126,6 @@ export class FilterLostDogsComponent implements OnInit {
     let tmp = this.currentPage - 1;
     filter += '&page=' + tmp;
     filter += '&size=' + this.currentSize;
-    console.log(filter);
     return filter;
   }
 

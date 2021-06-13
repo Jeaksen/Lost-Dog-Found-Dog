@@ -36,10 +36,8 @@ export class AuthenticationService {
     }
 
     register(registerData: FormData) {
-        //console.log(request)
         return this.http.post<RegisterUserResponse>(this.url + 'register', registerData)
             .pipe(map(response => {
-                console.log(response)
                 return response;
             }));
     }

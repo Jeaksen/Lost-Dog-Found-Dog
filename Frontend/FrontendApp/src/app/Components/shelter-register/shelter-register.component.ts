@@ -52,7 +52,9 @@ export class ShelterRegisterComponent implements OnInit {
       this.registerShelterForm.get('email')?.value
     )
     let data = new FormData();
-    data.append('shelter', JSON.stringify(shelter));
+    // works only with our Backend
+    // data.append('shelter', JSON.stringify(shelter));
+    data.append("shelter", new Blob([JSON.stringify(shelter)], { type: "application/json", }), "");
     return data;
   }
 
