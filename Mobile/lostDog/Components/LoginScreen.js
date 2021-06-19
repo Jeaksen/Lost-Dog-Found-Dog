@@ -8,7 +8,7 @@ const {width, height} = Dimensions.get("screen")
 export default class LoginScreen extends React.Component {
 
   state={
-    login: "popopo",
+    login: "popo",
     password: "SafePass66",
     loadingState: false,
   }
@@ -24,7 +24,7 @@ export default class LoginScreen extends React.Component {
       this.props.Navi.setToken(responseData.token,responseData.id);
       this.props.Navi.swtichPage(6);
     }).catch((x)=>
-        console.log("Login Error" + (x))
+        console.log("Login Error: " + (x))
       )
     return 0;
   }

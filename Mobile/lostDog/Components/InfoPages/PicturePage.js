@@ -25,8 +25,9 @@ export default class PicturePage extends React.Component {
         });
     
         if (!result.cancelled) {
-          //console.log(result);
-          this.props.ParentRef.setPicture(result.uri)
+          console.log("result: ");
+          console.log(result)
+          this.props.ParentRef.setPicture(result)
           this.goToNext()
           //this.setState({image: result.uri});
         }
@@ -42,7 +43,7 @@ export default class PicturePage extends React.Component {
         if (!result.cancelled) {
           //console.log(result);
           //this.setState({image: result.uri});
-          this.props.ParentRef.setPicture(result.uri)
+          this.props.ParentRef.setPicture(result)
           this.goToNext()
         }
       };

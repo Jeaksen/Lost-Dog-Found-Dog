@@ -91,7 +91,7 @@ export default class FoundDog extends React.Component {
           dateLostBefore: this.state.dateLostBefore,
           dateLostAfter: this.state.dateLostAfter,
 
-          picture: this.state.image,
+          picture: this.state.image.uri,
         }
         console.log("Wysyłam dane: "+ data);
         this.props.Navi.swtichPage(8,data);
@@ -154,7 +154,7 @@ export default class FoundDog extends React.Component {
         }
         else if(this.state.index==2)
         {
-          return (<LocationPage ParentRef={this.ChildrenRef}/>);
+          return (<LocationPage ParentRef={this.ChildrenRef} userDogImage={this.state.image}/>);
         }
         else if(this.state.index==3)
         {

@@ -22,6 +22,8 @@ import CommentPage from './CommentPage'
 import CommentListPage from './CommentListPage'
 import DogListShelter from './DogListShelter'
 import DogDetailShelter from './DogDetailShelter'
+import Map from './Maps/Map'
+
 
 const {width, height} = Dimensions.get("screen")
 const speed=250;
@@ -64,7 +66,7 @@ export default class Navigator extends React.Component {
     HeaderVisible: true,
     }
     NaviData={
-      URL: 'http://10.0.2.2:5000/',
+      URL: 'http://localhost:5000/',
       swtichPage: (pageID,item) => this.swtichPage(pageID,item),
       setToken: (token,id,mode) => this.setToken(token,id,mode),
       RunOnBackend: (fun,data) => this.RunOnBackend(fun,data),
@@ -195,7 +197,7 @@ ViewContent = (indx,item)=>{
   //console.log("ITEM: " + item);
   if(indx==0)
   {
-    return (<CommentPage Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>);
+    return (<Map Navi={this.NaviData} token={this.state.token} id={this.state.id} item={item}/>);
   }
   else if(indx==1)
   {

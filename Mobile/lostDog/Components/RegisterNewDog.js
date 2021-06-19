@@ -90,18 +90,30 @@ export default class RegisterNewDog extends React.Component {
     }
     console.log("DOG :::::")
     console.log(dog)
+    /*
     const data = new FormData();
     data.append("dog",JSON.stringify(dog));
     data.append('picture', photo);    
+    */
+    const data  = new FormData();
+    var dogInJson = JSON.stringify(dog)
+    data.append('dog',
+    {
+      dogInJson,
+      name: 'dog',
+      type: 'application/json',
+    }
+    );
+    data.append('picture', photo);    
     console.log("Data form sended");
 
-    console.log(data)
+    //console.log(data)
     this.props.Navi.RunOnBackend("registerNewDog",data).then((responseData)=>{
       //console.log(responseData)
       console.log("succes new dog added !")
       this.props.Navi.swtichPage(3,null);
     }).catch((x)=>
-        console.log("Login Error" + (x))
+        console.log("Login Error")
       )
     return 0;
 

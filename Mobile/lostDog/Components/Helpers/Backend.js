@@ -70,7 +70,7 @@ const Example = (data,url)=>{
 
 const login = (data,url) =>
 {
-    console.log("LOGIN")
+    console.log("LOGIN" + data)
     return new Promise((resolve, reject) => {
         fetch(url+'login', {
             method: "POST",
@@ -81,21 +81,21 @@ const login = (data,url) =>
             })
             .then(response=>{return response.json();})
             .then(responseData => {
-                if (responseData.statusCode >= 400) {
-                    console.log("ERROR")  
+                if (responseData.successful ==false) {
                     //console.log(responseData)  
                     reject(response.statusCode)
                     return null;
                 }
                 else
                 {
-                    resolve(responseData.data)
-                    return (responseData.data);
+                    //console.log(responseData) 
+                    resolve(responseData)
+                    return (responseData);
                 }
                 })
             .catch((x)=>{
-                reject(null)
-                return null;
+                reject(x)
+                return x;
             })
       });
 }
@@ -113,7 +113,7 @@ const register = (data,url) =>
             })
             .then(response=>{return response.json();})
             .then(responseData => {
-                if (responseData.statusCode >= 400) {
+                if (responseData.successful ==false) {
                     console.log("ERROR")  
                     //console.log(responseData)  
                     reject(response.statusCode)
@@ -148,25 +148,26 @@ const registerNewDog = (data,url,Token) =>
               body: data
             })
             .then(response=>{
-                //console.log(response)
+                //console.log(response.code)
                 return response.json();
             })
             .then(responseData => {
-                if (responseData.statusCode >= 400) {
+                if (responseData.successful ==false) {
                     console.log("ERROR")  
-                    //console.log(responseData)  
+                    console.log(responseData)  
                     reject(response.statusCode)
                     return null;
                 }
                 else
                 {
-                    //console.log("THEN RESOLVE")
+                    console.log(responseData)
+                    console.log(responseData.statusCode)
                     resolve(responseData)
                     return (responseData);
                 }
                 })
             .catch((x)=>{
-                console.log("CATCH REJECT")
+                console.log("CATCH REJECT" + (x))
                 reject(null)
                 return null;
             })
