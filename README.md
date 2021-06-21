@@ -1,4 +1,6 @@
-# Project-Group-C
+# Lost Dog - Found Dog
+
+A platform which serves as a hub for dog owners who have lost their dogs and people who want to help them to find it. 
 
 ##Branches rules
 
